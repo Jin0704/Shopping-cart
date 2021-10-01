@@ -11,7 +11,7 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
-      sm: {
+      sn: {
         type: Sequelize.INTEGER
       },
       payment_method: {

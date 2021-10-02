@@ -17,14 +17,14 @@ module.exports = (sequelize, DataTypes) => {
           model: models.CartItem, unique: false
         },
         foreignKey: "ProductId"
-      }),
-        Product.belongsToMany(models.Order, {
-          as: 'orders',
-          through: {
-            model: models.OrderItem, unique: false
-          },
-          foreignKey: 'ProductId'
-        })
+      });
+      Product.belongsToMany(models.Order, {
+        as: 'orders',
+        through: {
+          model: models.OrderItem, unique: false
+        },
+        foreignKey: 'ProductId'
+      })
 
     }
   };

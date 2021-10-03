@@ -7,7 +7,12 @@ const PAGE_OFFSET = 0
 
 let cartController = {
   getCart: (req, res) => {
-    return Cart.findOne({ include: 'items' }).then(cart => {
+    // return Cart.findOne({ include: 'items' })
+    console.log('***********')
+    console.log(req.session)
+    console.log('***********')
+    return Cart.findByPk(req.session.cartId, { include: 'items' }).then(cart => {
+      cart = cart || { items: [] }
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
       // console.log(cart)
       return res.render('cart', {
@@ -16,6 +21,32 @@ let cartController = {
       })
     })
   },
+
+  postCart: async (req, res) => {
+    const cart = await Cart.findOrCreate({
+      where: {
+        id: req.session.cartId || 0
+      }
+    })
+
+    const cartItem = await CartItem.findOrCreate({
+      where: {
+        CartId: cart[0].dataValues.id,
+        ProductId: req.body.productId
+      },
+    })
+    await cartItem[0].update({
+      quantity: (cartItem[0].quantity || 0) + 1
+    })
+
+    console.log(cart)
+
+    req.session.cartId = cart[0].dataValues.id
+    req.session.save((err) => res.redirect('back'))
+  },
+
+
+
 }
 
 module.exports = cartController

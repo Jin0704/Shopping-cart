@@ -8,6 +8,6 @@ module.exports = (app) => {
   app.get('/', shopController.getshop)
   app.get('/products', ProductController.getProducts)
   app.get('/cart', cartController.getCart)
-
+  app.post('/cart', cartController.postCart)
 
 }

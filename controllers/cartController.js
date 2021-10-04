@@ -12,11 +12,11 @@ let cartController = {
     console.log(req.session)
     console.log('***********')
     return Cart.findByPk(req.session.cartId, { include: 'items' }).then(cart => {
-      cart = cart || { items: [] }
+      cart = cart ? cart.toJSON() : { items: [] }
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
       // console.log(cart)
       return res.render('cart', {
-        cart: cart.toJSON(),
+        cart: cart,
         totalPrice: totalPrice
       })
     })
@@ -44,6 +44,39 @@ let cartController = {
     req.session.cartId = cart[0].dataValues.id
     req.session.save((err) => res.redirect('back'))
   },
+
+  addCartitem: (req, res) => {
+    CartItem.findByPk(req.params.id)
+      .then(cartItem => {
+        cartItem.update({
+          quantity: cartItem.quantity + 1
+        })
+      }).then((cartItem) => {
+        return res.redirect('back')
+      })
+  },
+
+  subCartItem: (req, res) => {
+    CartItem.findByPk(req.params.id)
+      .then(cartItem => {
+        cartItem.update({
+          quantity: cartItem.quantity - 1 >= 1 ? cartItem.quantity - 1 : 1
+        })
+      }).then((cartItem) => {
+        return res.redirect('back')
+      })
+  },
+
+  deleteCartItem: (req, res) => {
+    CartItem.findByPk(req.params.id)
+      .then(cartItem => {
+        cartItem.destroy()
+          .then((cartItem) => {
+            return res.redirect('back')
+          })
+      })
+  }
+
 
 
 

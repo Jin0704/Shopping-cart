@@ -19,4 +19,8 @@ module.exports = (app) => {
   app.post('/order', orderController.postOrder)
   app.post('/orders/:id/cancel', orderController.cancelOrder)
 
+  app.get('/order/:id/payment', orderController.getPayment)
+  app.post('/spgateway/callback', orderController.spgatewayCallback)
+
+
 }

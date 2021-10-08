@@ -3,6 +3,15 @@ const db = require('../models')
 const Cart = db.Cart
 const Order = db.Order
 const OrderItem = db.OrderItem
+const nodemailer = require('nodemailer')
+
+let mailer = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 's87160204@gmail.com',
+    pass: ''
+  }
+})
 
 
 let orderController = {
@@ -13,6 +22,7 @@ let orderController = {
       nest: true,
       include: 'items'
     }).then(orders => {
+      console.log(orders[0].items)
       return res.render('orders', {
         orders: orders
       })
@@ -42,6 +52,23 @@ let orderController = {
           )
         }
 
+        let mailOptions = {
+          from: 's87160204@gmail.com',
+          to: 's87160204@gmail.com',
+          subject: `${order.id}訂單已成立`,
+          html:
+            `
+          以下是您的訂單:
+          <h1>${order.items}</h1>
+          `
+        }
+
+        mailer.sendMail(mailOptions, (error, info) => {
+          if (error) console.log('Error:', error)
+          console.log('Email sent:', info.response)
+        })
+
+
         return Promise.all(results).then(() => {
           res.redirect('/orders')
         })
@@ -58,6 +85,22 @@ let orderController = {
         return res.redirect('back')
       })
     })
+  },
+  getPayment: (req, res) => {
+    console.log('===Payment===')
+    console.log(req.params.id)
+    console.log('==========')
+
+    return Order.findByPk(req.params.id).then(order => {
+      return res.render('payment', { order: order.toJSON() })
+    })
+  },
+  spgatewayCallback: (req, res) => {
+    console.log('======spgatewayCallback======')
+    console.log(req.body)
+    console.log('==============================')
+
+    return res.redirect('back')
   }
 
 }

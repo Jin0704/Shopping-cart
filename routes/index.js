@@ -17,7 +17,7 @@ module.exports = (app) => {
 
   app.get('/orders', orderController.getOrders)
   app.post('/order', orderController.postOrder)
-  app.post('/orders/:id/cancel', orderController.cancelOrder)
+  app.post('/order/:id/cancel', orderController.cancelOrder)
 
   app.get('/order/:id/payment', orderController.getPayment)
   app.post('/spgateway/callback', orderController.spgatewayCallback)

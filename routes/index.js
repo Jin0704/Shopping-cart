@@ -12,6 +12,7 @@ module.exports = (app) => {
   app.post('/cart', cartController.postCart)
 
   app.get('/signin', userController.getSigninPage)
+  app.get('/signup', userController.getSignUpPage)
 
   app.post('/cartItem/:id/add', cartController.addCartitem)
   app.post('/cartItem/:id/sub', cartController.subCartItem)

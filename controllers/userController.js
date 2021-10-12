@@ -6,11 +6,11 @@ const userController = {
 
   getSigninPage: (req, res) => {
     return res.render('signin')
+  },
+
+  getSignUpPage: (req, res) => {
+    return res.render('signup')
   }
-
-
-
-
 
 
 }

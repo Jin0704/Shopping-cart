@@ -2,6 +2,7 @@ const shopController = require('../controllers/shopController')
 const ProductController = require('../controllers/productsController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
+const userController = require('../controllers/userController')
 
 module.exports = (app) => {
 
@@ -10,6 +11,7 @@ module.exports = (app) => {
   app.get('/cart', cartController.getCart)
   app.post('/cart', cartController.postCart)
 
+  app.get('/signin', userController.getSigninPage)
 
   app.post('/cartItem/:id/add', cartController.addCartitem)
   app.post('/cartItem/:id/sub', cartController.subCartItem)

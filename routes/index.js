@@ -4,7 +4,7 @@ const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const userController = require('../controllers/userController')
 
-module.exports = (app) => {
+module.exports = (app, passport) => {
 
   app.get('/', shopController.getshop)
   app.get('/products', ProductController.getProducts)
@@ -14,6 +14,10 @@ module.exports = (app) => {
   app.get('/signin', userController.getSigninPage)
   app.get('/signup', userController.getSignUpPage)
   app.post('/signup', userController.SignUp)
+  app.post('/signin', passport.authenticate('local', {
+    failureRedirect: '/signin', failureFlash: true
+  }), userController.Signin)
+  app.get('/logout', userController.logout)
 
   app.post('/cartItem/:id/add', cartController.addCartitem)
   app.post('/cartItem/:id/sub', cartController.subCartItem)

@@ -22,13 +22,27 @@
       <a href="/products">AC Shop</a>
     </h5>
     <nav class="my-2 my-md-0 mr-md-3">
-      <a class="p-2 text-dark " href="/signin">Login</a>
+      {{#if user}}
+      <a href="/logout" class="p-2 text-dark">Logout</a>
+      {{else}}
+      <a href="/signin" class="p-2 text-dark">Login</a>
+      {{/if}}
       <a class="p-2 text-dark" href="/cart">Cart</a>
       <a class="p-2 text-dark" href="/orders">Orders</a>
     </nav>
   </div>
 
   <div class="container-fluid">
+    {{#if success_messages}}
+    <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
+      {{success_messages}}
+    </div>
+    {{/if}}
+    {{#if error_messages}}
+    <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
+      {{error_messages}}
+    </div>
+    {{/if}}
     {{{body}}}
   </div>
 

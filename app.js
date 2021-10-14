@@ -2,8 +2,11 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const methodoverride = require('method-override')
 const session = require('express-session')
+const flash = require('connect-flash')
 const cookieParser = require('cookie-parser')
 const path = require('path')
+const passport = require('passport')
+require('./config/passport')
 const app = express()
 const port = 3000
 
@@ -21,6 +24,16 @@ app.use(session({
   cookie: { maxAge: 80000 },
   saveUninitialized: true
 }))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(flash())
+//req.flash
+app.use((req, res, next) => {
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = req.user
+  next()
+})
 
 
 app.listen(port, () => {
@@ -30,7 +43,7 @@ app.listen(port, () => {
 
 
 
-require('./routes')(app)
+require('./routes')(app, passport)
 
 
 module.exports = app

@@ -6,6 +6,20 @@ const userController = require('../controllers/userController')
 
 module.exports = (app, passport) => {
 
+  const authenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      return next()
+    }
+    res.redirect('/signin')
+  }
+  const authenticatedAdmin = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      if (req.user.isAdmin) { return next() } return res.redirect('/')
+    }
+    res.redirect('/signin')
+  }
+
+
   app.get('/', shopController.getshop)
   app.get('/products', ProductController.getProducts)
   app.get('/cart', cartController.getCart)
@@ -23,12 +37,12 @@ module.exports = (app, passport) => {
   app.post('/cartItem/:id/sub', cartController.subCartItem)
   app.delete("/cartItem/:id", cartController.deleteCartItem)
 
-  app.get('/orders', orderController.getOrders)
+  app.get('/orders', authenticated, orderController.getOrders)
   app.post('/order', orderController.postOrder)
-  app.post('/order/:id/cancel', orderController.cancelOrder)
+  app.post('/order/:id/cancel', authenticated, orderController.cancelOrder)
 
-  app.get('/order/:id/payment', orderController.getPayment)
-  app.post('/spgateway/callback', orderController.spgatewayCallback)
+  app.get('/order/:id/payment', authenticated, orderController.getPayment)
+  app.post('/spgateway/callback', authenticated, orderController.spgatewayCallback)
 
 
 }

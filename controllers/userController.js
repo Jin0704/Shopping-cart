@@ -1,6 +1,6 @@
 const db = require('../models')
 const User = db.User
-
+const bcrypt = require('bcryptjs')
 
 const userController = {
 
@@ -25,7 +25,7 @@ const userController = {
         } else {
           User.create({
             email: req.body.email,
-            password: req.body.password
+            password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(6))
           }).then(user => {
             req.flash('success_messages', '註冊成功')
             return res.redirect('/signin')

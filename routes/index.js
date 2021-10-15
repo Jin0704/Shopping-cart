@@ -3,6 +3,7 @@ const ProductController = require('../controllers/productsController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const userController = require('../controllers/userController')
+const adminController = require('../controllers/adminController')
 
 module.exports = (app, passport) => {
 
@@ -43,6 +44,10 @@ module.exports = (app, passport) => {
 
   app.get('/order/:id/payment', authenticated, orderController.getPayment)
   app.post('/spgateway/callback', authenticated, orderController.spgatewayCallback)
+
+  //Admin routes
+  app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/products'))
+  app.get('/admin/products', authenticatedAdmin, adminController.getProducts)
 
 
 }

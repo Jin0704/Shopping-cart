@@ -53,5 +53,6 @@ module.exports = (app, passport) => {
   app.get('/admin/products/:id', authenticatedAdmin, adminController.getProduct)
   app.get('/admin/products/:id/edit', authenticatedAdmin, adminController.editProduct)
   app.put('/admin/products/:id', authenticatedAdmin, adminController.putProduct)
+  app.delete('/admin/products/:id', authenticatedAdmin, adminController.deleteProduct)
 
 }

@@ -48,6 +48,16 @@ const adminController = {
           res.redirect('/admin/products')
         })
       })
+  },
+  deleteProduct: (req, res) => {
+    return Product.findByPk(req.params.id)
+      .then((product) => {
+        product.destroy()
+          .then((product) => {
+            req.flash('success_messages', '成功刪除')
+            res.redirect('/admin/products')
+          })
+      })
   }
 }
 

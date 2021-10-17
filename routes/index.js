@@ -50,6 +50,7 @@ module.exports = (app, passport) => {
   app.get('/admin/products', authenticatedAdmin, adminController.getProducts)
   app.get('/admin/products/create', authenticatedAdmin, adminController.createProducts)
   app.post('/admin/products', authenticatedAdmin, adminController.postProdcuts)
+  app.get('/admin/products/:id', authenticatedAdmin, adminController.getProduct)
 
 
 }

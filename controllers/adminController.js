@@ -19,6 +19,14 @@ const adminController = {
       req.flash('success_messages', '新增成功')
       return res.redirect('/admin/products')
     })
+  },
+  getProduct: (req, res) => {
+    Product.findByPk(req.params.id, { raw: true })
+      .then(product => {
+        return res.render('admin/product', {
+          product: product
+        })
+      })
   }
 }
 

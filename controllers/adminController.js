@@ -35,6 +35,19 @@ const adminController = {
           product: product
         })
       })
+  },
+  putProduct: (req, res) => {
+    return Product.findByPk(req.params.id)
+      .then((product) => {
+        product.update({
+          name: req.body.name,
+          price: req.body.price,
+          description: req.body.description
+        }).then((product) => {
+          req.flash('success_messages', '更新成功')
+          res.redirect('/admin/products')
+        })
+      })
   }
 }
 

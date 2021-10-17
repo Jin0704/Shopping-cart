@@ -48,6 +48,8 @@ module.exports = (app, passport) => {
   //Admin routes
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/products'))
   app.get('/admin/products', authenticatedAdmin, adminController.getProducts)
+  app.get('/admin/products/create', authenticatedAdmin, adminController.createProducts)
+  app.post('/admin/products', authenticatedAdmin, adminController.postProdcuts)
 
 
 }

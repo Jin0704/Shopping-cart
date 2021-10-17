@@ -8,9 +8,10 @@
 <table class="table">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">#</th>
+      <th scope="col">產品序號</th>
+      <th scope="col">產品名稱</th>
+      <th scope="col">價格</th>
+      <th scope="col">編輯</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +19,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.price}}</td>
       <td>
         <button type="button" class="btn btn-link">
           <a href="/admin/products/{{this.id}}">

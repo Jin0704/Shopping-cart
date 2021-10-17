@@ -27,6 +27,14 @@ const adminController = {
           product: product
         })
       })
+  },
+  editProduct: (req, res) => {
+    Product.findByPk(req.params.id, { raw: true })
+      .then(product => {
+        return res.render('admin/create', {
+          product: product
+        })
+      })
   }
 }
 

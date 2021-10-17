@@ -1,18 +1,25 @@
-<form action="/admin/products" method="POST">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" name="name" id="name" placeholder="產品名稱" required>
-  </div>
+{{#if product}}
+<form action="/admin/products/{{prodcut.id}}?_method=PUT" method="post">
+  {{else}}
+  <form action="/admin/products" method="POST">
+    {{/if}}
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" name="name" id="name" placeholder="產品名稱" value="{{product.name}}"
+        required>
+    </div>
 
-  <div class="form-group">
-    <label for="price">Price</label>
-    <input type="number" class="form-control" name="price" id="price" placeholder="輸入價錢" required>
-  </div>
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="number" class="form-control" name="price" id="price" placeholder="輸入價錢" value="{{product.price}}"
+        required>
+    </div>
 
-  <div class="form-group">
-    <label for="description">Description</label>
-    <textarea class="form-control" id="description" name="description" rows="3" placeholder="產品描述"></textarea>
-  </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea class="form-control" id="description" name="description" rows="3" placeholder="產品描述"
+        value="{{product.description}}"></textarea>
+    </div>
 
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>

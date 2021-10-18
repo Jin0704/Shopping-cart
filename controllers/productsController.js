@@ -28,6 +28,12 @@ let ProductController = {
       })
     })
   },
+  getProduct: (req, res) => {
+    Product.findByPk(req.params.id)
+      .then(product => {
+        return res.render('product', { product: product.toJSON() })
+      })
+  }
 
 }
 

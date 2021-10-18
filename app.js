@@ -16,6 +16,7 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(methodoverride('_method'))
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/upload', express.static(__dirname + '/upload'))
 app.use(cookieParser());
 app.use(session({
   secret: 'shopping-cart',

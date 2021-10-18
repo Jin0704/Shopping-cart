@@ -4,6 +4,8 @@ const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const userController = require('../controllers/userController')
 const adminController = require('../controllers/adminController')
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 
 module.exports = (app, passport) => {
 
@@ -49,10 +51,10 @@ module.exports = (app, passport) => {
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/products'))
   app.get('/admin/products', authenticatedAdmin, adminController.getProducts)
   app.get('/admin/products/create', authenticatedAdmin, adminController.createProducts)
-  app.post('/admin/products', authenticatedAdmin, adminController.postProdcuts)
+  app.post('/admin/products', authenticatedAdmin, upload.single('image'), adminController.postProdcuts)
   app.get('/admin/products/:id', authenticatedAdmin, adminController.getProduct)
   app.get('/admin/products/:id/edit', authenticatedAdmin, adminController.editProduct)
-  app.put('/admin/products/:id', authenticatedAdmin, adminController.putProduct)
+  app.put('/admin/products/:id', authenticatedAdmin, upload.single('image'), adminController.putProduct)
   app.delete('/admin/products/:id', authenticatedAdmin, adminController.deleteProduct)
 
 }

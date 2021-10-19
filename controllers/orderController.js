@@ -10,6 +10,7 @@ const crypto = require('crypto')
 let mailer = nodemailer.createTransport({
   service: 'gmail',
   auth: {
+    //要設定Oauth2
     user: process.env.GMAIL_ACCOUNT,
     pass: process.env.GMAIL_PASSWORD
   }

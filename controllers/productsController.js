@@ -28,10 +28,27 @@ let ProductController = {
       })
     })
   },
+  // getProduct: (req, res) => {
+  //   Product.findByPk(req.params.id)
+  //     .then(product => {
+  //       return res.render('product', { product: product.toJSON() })
+  //     })
+  // },
   getProduct: (req, res) => {
     Product.findByPk(req.params.id)
       .then(product => {
-        return res.render('product', { product: product.toJSON() })
+        //sidebar page
+        return Cart.findByPk(req.session.cartId, { include: 'items' })
+          .then(cart => {
+            cart = cart ? cart.toJSON() : { items: [] }
+            let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+
+            return res.render('product', {
+              product: product.toJSON(),
+              cart: cart,
+              totalPrice: totalPrice
+            })
+          })
       })
   }
 

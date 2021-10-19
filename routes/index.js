@@ -26,7 +26,7 @@ module.exports = (app, passport) => {
   app.get('/', shopController.getshop)
   app.get('/products', ProductController.getProducts)
   app.get('/products/:id', ProductController.getProduct)
-  app.get('/cart', cartController.getCart)
+  app.get('/cart', authenticated, cartController.getCart)
   app.post('/cart', cartController.postCart)
 
   app.get('/signin', userController.getSigninPage)

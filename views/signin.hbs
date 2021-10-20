@@ -1,21 +1,30 @@
 <script type="text/javascript">
   window.history.forward(1);
 </script>
-<div class="column col-md-8">
-  <form action="/signin" method="POST">
-    <div class="form-control">
-      <label for="email">信箱:</label>
-      <input type="email" name="email" id="email" placeholder="請輸入您的email">
-    </div>
-    <div class="form-control">
-      <label for="password">密碼:</label>
-      <input type="password" name="password" id="password" placeholder="請輸入您的密碼">
-    </div>
-    <div class="mt-3" style="display: flex; justify-content: ;">
-      <button type="submit">送出</button>
-      <a href="/signup" class=" ml-2 text-dark"><strong>
-          <p>還沒有帳號? 點我註冊</p>
-        </strong></a>
-    </div>
-  </form>
+<div class="container">
+  <div class="column">
+    <form action="/signin" method="POST">
+      <div class="mb-3" style="">
+        <div>
+          <label for="email" class="form-label">信箱:</label>
+          <input type="email" name="email" id="email" class="form-control" placeholder="請輸入您的email">
+        </div>
+        <div>
+          <label for="password" class="form-label">密碼:</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="請輸入您的密碼">
+        </div>
+      </div>
+      <div class="mt-3" style="display: flex; justify-content:space-evenly ;">
+        <button type="submit" class="btn btn-primary">登入</button>
+        <a href="/signup" class=" ml-2 btn btn-primary">註冊</a>
+      </div>
+    </form>
+  </div>
+  <br>
+  <br>
+  <hr>
+  <br>
+  <div>
+    <a href="#" class="btn btn-primary" style="display: flex; justify-content:center">用Facebook帳號登入</a>
+  </div>
 </div>

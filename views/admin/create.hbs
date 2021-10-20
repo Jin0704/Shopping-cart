@@ -1,30 +1,43 @@
-{{#if product}}
-<form action="/admin/products/{{product.id}}?_method=PUT" method="post" enctype="multipart/form-data">
-  {{else}}
-  <form action="/admin/products" method="POST" enctype="multipart/form-data">
-    {{/if}}
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input type="text" class="form-control" name="name" id="name" placeholder="產品名稱" value="{{product.name}}"
-        required>
-    </div>
+<div class="column">
+  <div class="col-md-9">
+    {{#if product}}
+    <form action="/admin/products/{{product.id}}?_method=PUT" method="post" enctype="multipart/form-data">
+      {{else}}
+      <form action="/admin/products" method="POST" enctype="multipart/form-data">
+        {{/if}}
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" name="name" id="name" placeholder="產品名稱" value="{{product.name}}"
+            required>
+        </div>
+        <div class="form-group col-md-5" style="display: flex; flex-flow:row">
+          <img src="{{product.image}}" class="card-img" width="200" height="200"></li>
+          <div class="col-md-4">
+            <label for="image">上傳新圖片</label>
+            <input type="file" name="image" id="image" class="form-control-file">
+          </div>
+        </div>
 
-    <div class="form-group">
-      <label for="price">Price</label>
-      <input type="number" class="form-control" name="price" id="price" placeholder="輸入價錢" value="{{product.price}}"
-        required>
-    </div>
 
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea class="form-control" id="description" name="description" rows="3" placeholder="產品描述"
-        value="{{product.description}}"></textarea>
-    </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3"
+            placeholder="產品描述">{{product.description}}</textarea>
+        </div>
 
-    <div class="form-group">
-      <label for="image">Image</label>
-      <input type="file" name="image" id="image" class="form-control-file">
-    </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="number" class="form-control" name="price" id="price" placeholder="輸入價錢" value="{{product.price}}"
+            required>
+        </div>
+        {{!-- <div class="form-group">
+          <label for="image">Image</label>
+          <input type="file" name="image" id="image" class="form-control-file">
+        </div> --}}
+        <div>
+          <button type="submit" class="btn btn-primary" style="display: flex;justify-content:end">Submit</button>
+        </div>
+      </form>
+  </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+</div>

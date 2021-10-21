@@ -1,0 +1,39 @@
+<div class="row col-md-9">
+  <nav class="my-2 ">
+    <a class="p-2 text-dark" href="/admin/products">商品</a> |
+    <a class="p-2 text-dark" href="/admin/orders">訂單</a>
+  </nav>
+</div>
+<br />
+<br />
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">訂單編號</th>
+      <th scope="col">訂單價格</th>
+      <th scope="col">付款方式</th>
+      <th scope="col">付款狀態</th>
+      <th scope="col">運送狀態</th>
+      <th scope='col'>詳細資料</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each orders}}
+    <tr>
+      <td>{{this.id}}</td>
+      <td>${{this.amount}}</td>
+      <td>{{#if this.payment_method}}信用卡{{else}}預設ATM{{/if}}</td>
+      <td>{{#ifCond this.payment_status '1'}} 已付款{{else}} 未付款{{/ifCond}} </td>
+      <td>{{#ifCond this.shipping_status '1'}} 已出貨{{else}} 尚未出貨{{/ifCond}} </td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/orders/{{this.id}}">
+            更新訂單資料
+          </a>
+        </button>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

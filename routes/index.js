@@ -50,6 +50,7 @@ module.exports = (app, passport) => {
 
   //Admin routes
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/products'))
+  //Products
   app.get('/admin/products', authenticatedAdmin, adminController.getProducts)
   app.get('/admin/products/create', authenticatedAdmin, adminController.createProducts)
   app.post('/admin/products', authenticatedAdmin, upload.single('image'), adminController.postProdcuts)
@@ -57,5 +58,7 @@ module.exports = (app, passport) => {
   app.get('/admin/products/:id/edit', authenticatedAdmin, adminController.editProduct)
   app.put('/admin/products/:id', authenticatedAdmin, upload.single('image'), adminController.putProduct)
   app.delete('/admin/products/:id', authenticatedAdmin, adminController.deleteProduct)
+  //Orders
+  app.get('/admin/orders', authenticatedAdmin, adminController.getOrders)
 
 }

@@ -1,5 +1,7 @@
 const db = require('../models')
 const Product = db.Product
+const Order = db.Order
+const OrderItems = db.OrderItems
 const fs = require('fs')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -99,6 +101,15 @@ const adminController = {
             res.redirect('/admin/products')
           })
       })
+  },
+  getOrders: (req, res) => {
+    Order.findAll({
+      raw: true,
+      nest: true,
+      includes: ['items']
+    }).then((orders) => {
+      return res.render('admin/orders', { orders })
+    })
   }
 }
 

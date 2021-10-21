@@ -4,6 +4,7 @@ const db = require('../models')
 const Cart = db.Cart
 const Order = db.Order
 const OrderItem = db.OrderItem
+const User = db.User
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 
@@ -112,16 +113,26 @@ function getTradeInfo(Amt, Desc, email) {
 let orderController = {
 
   getOrders: (req, res) => {
-    Order.findAll({
-      raw: true,
-      nest: true,
-      include: 'items'
-    }).then(orders => {
-      console.log(orders[0].items)
-      return res.render('orders', {
-        orders: orders
+    // Order.findAll({
+    //   raw: true,
+    //   nest: true,
+    //   include: 'items'
+    // })
+    User.findByPk(req.user.id).then((user) => {
+      return Order.findAll({
+        where: { UserId: user.id },
+        raw: true,
+        nest: true,
+        include: 'items'
       })
+        .then(orders => {
+          // console.log(orders[0])
+          return res.render('orders', {
+            orders: orders
+          })
+        })
     })
+
   },
   postOrder: (req, res) => {
     return Cart.findByPk(req.body.cartId, { include: 'items' }).then(cart => {
@@ -131,7 +142,8 @@ let orderController = {
         phone: req.body.phone,
         shipping_status: req.body.shipping_status,
         payment_status: req.body.payment_status,
-        amount: req.body.amount
+        amount: req.body.amount,
+        UserId: req.user.id
       }).then(order => {
 
         var results = []

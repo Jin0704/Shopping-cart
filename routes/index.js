@@ -60,5 +60,5 @@ module.exports = (app, passport) => {
   app.delete('/admin/products/:id', authenticatedAdmin, adminController.deleteProduct)
   //Orders
   app.get('/admin/orders', authenticatedAdmin, adminController.getOrders)
-
+  app.get('/admin/orders/:id', authenticatedAdmin, adminController.getOrder)
 }

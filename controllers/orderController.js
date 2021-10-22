@@ -148,13 +148,14 @@ let orderController = {
 
         var results = []
         for (let i = 0; i < cart.items.length; i++) {
-          console.log(order.id, cart.items[i].id)
+          // console.log(order.id, cart.items[i].id)
           results.push(
             OrderItem.create({
               OrderId: order.id,
               ProductId: cart.items[i].id,
               price: cart.items[i].price,
-              quantity: cart.items[i].CartItem.quantity
+              quantity: cart.items[i].CartItem.quantity,
+              subtotal: cart.items[i].price * cart.items[i].CartItem.quantity
             })
           )
         }

@@ -110,6 +110,19 @@ const adminController = {
     }).then((orders) => {
       return res.render('admin/orders', { orders })
     })
+  },
+  getOrder: (req, res) => {
+    return Order.findByPk(
+      req.params.id,
+      { include: 'items' }
+    ).then((order) => {
+      // console.log(order)
+      console.log(order.items[0].OrderItem)
+      return res.render('admin/order',
+        {
+          order: order.toJSON(),
+        })
+    })
   }
 }
 

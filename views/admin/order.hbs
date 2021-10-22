@@ -1,0 +1,56 @@
+<br />
+
+<table class="table col-md-12">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">訂單#{{order.id}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th class="row">
+        <div class="col-md-6">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">產品名稱</th>
+                <th scope="col">價格</th>
+                <th scope="col">數量</th>
+                <th scope="col">合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each order.items}}
+              <tr>
+                {{!-- <th scope="row"></th> --}}
+                <td>{{this.name}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.OrderItem.quantity}}</td>
+                <td>$:{{this.OrderItem.subtotal}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          <hr>
+          <h1 style="display: flex;justify-content:end">總價: {{order.amount}}</h1>
+          <br>
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">出貨資訊</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <form action="/admin/order/{{order.id}}" method="post">
+            <ul>付款方式:{{#if order.payment_method}}信用卡{{else}} 預設ATM{{/if}}</ul>
+            <ul>付款狀態:</ul>
+            <ul>出貨狀態:</ul>
+            <ul><button type="submit">更新</button></ul>
+          </form>
+        </div>
+      </th>
+    </tr>
+  </tbody>
+</table>

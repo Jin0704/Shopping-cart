@@ -32,21 +32,44 @@
             </tbody>
           </table>
           <hr>
-          <h1 style="display: flex;justify-content:end">總價: {{order.amount}}</h1>
+          <h2 style="display: flex;justify-content:end;padding-right:30px">訂單總價: {{order.amount}}</h2>
           <br>
           <table class="table">
-            <thead class="thead-dark">
+            <thead class="thead-dark col-md-12">
               <tr>
                 <th scope="col">出貨資訊</th>
               </tr>
+              <td style="display: flex;justify-content:space-around">
+                <h3>收件人:{{order.name}}</h3> <br>
+                <h3>連絡電話: {{order.phone}}</h3> <br>
+                <h3>收件地址: {{order.address}}</h3>
+              </td>
             </thead>
           </table>
         </div>
         <div class="col-md-6">
           <form action="/admin/order/{{order.id}}" method="post">
             <ul>付款方式:{{#if order.payment_method}}信用卡{{else}} 預設ATM{{/if}}</ul>
-            <ul>付款狀態:</ul>
-            <ul>出貨狀態:</ul>
+            <ul class="row">
+              <div class="col-auto my-1" style="display: flex;">
+                <label class="mr-sm-2" for="inlineFormCustomSelect">付款狀態:</label>
+                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                  <option selected>{{#if order.payment_status}}尚未付款{{/if}}</option>
+                  <option value="1">款項待確認</option>
+                  <option value="2">已收到款項</option>
+                </select>
+              </div>
+            </ul>
+            <ul class="row">
+              <div class="col-auto my-1" style="display: flex;">
+                <label class="mr-sm-2" for="inlineFormCustomSelect">出貨狀態:</label>
+                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                  <option selected>{{#if order.shipping_status}}尚未出貨{{/if}}</option>
+                  <option value="1">出貨準備中</option>
+                  <option value="2">出貨完成</option>
+                </select>
+              </div>
+            </ul>
             <ul><button type="submit">更新</button></ul>
           </form>
         </div>

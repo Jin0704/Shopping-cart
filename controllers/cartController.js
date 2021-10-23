@@ -13,8 +13,11 @@ let cartController = {
     console.log('***********')
     return Cart.findByPk(req.session.cartId, { include: 'items' }).then(cart => {
       cart = cart ? cart.toJSON() : { items: [] }
+      // let subtotal = cart.items.length > 0 ? cart.items.map(s => s.price * s.CartItem.quantity) : 0
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
       // console.log(cart)
+      // console.log(cart.items)
+      // console.log(subtotal)
       return res.render('cart', {
         cart: cart,
         totalPrice: totalPrice

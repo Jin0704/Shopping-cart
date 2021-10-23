@@ -123,6 +123,18 @@ const adminController = {
           order: order.toJSON(),
         })
     })
+  },
+  putOrder: (req, res) => {
+    console.log(req.body)
+    return Order.findByPk(req.params.id)
+      .then((order) => {
+        order.update({
+          payment_status: req.body.payment_status,
+          shipping_status: req.body.shipping_status
+        }).then(() => {
+          return res.redirect('/admin/orders')
+        })
+      })
   }
 }
 

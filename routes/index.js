@@ -61,4 +61,5 @@ module.exports = (app, passport) => {
   //Orders
   app.get('/admin/orders', authenticatedAdmin, adminController.getOrders)
   app.get('/admin/orders/:id', authenticatedAdmin, adminController.getOrder)
+  app.put('/admin/orders/:id', authenticatedAdmin, adminController.putOrder)
 }

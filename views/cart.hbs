@@ -8,7 +8,7 @@
         <th scope="col">Price</th>
         <th scope="col">quantity</th>
         <th scope="col">Subtotal</th>
-        <th scope="col">#</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -87,8 +87,8 @@
             </div>
             <input type="hidden" name="cartId" value="{{cart.id}}">
             <input type="hidden" name="amount" value="{{totalPrice}}">
-            <input type="hidden" name="shipping_status" value="0">
-            <input type="hidden" name="payment_status" value="0">
+            <input type="hidden" name="shipping_status" value="尚未出貨">
+            <input type="hidden" name="payment_status" value="待收款項">
             <hr>
             <table class="table">
               <thead class="thead-dark">
@@ -99,14 +99,16 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="payment_method" id="payment_method">
+                    <div id="payment" class="form-check m-3">
+                      <input class="form-check-input" type="radio" name="payment_method" id="payment_method"
+                        value="ATM">
                       <label class="form-check-label" for="payment_method">
                         ATM轉帳
                       </label>
                     </div>
                     <div class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="payment_method" id="payment_method">
+                      <input class="form-check-input" type="radio" name="payment_method" id="payment_method"
+                        value="CREDIT">
                       <label class="form-check-label" for="payment_method">
                         信用卡
                       </label>

@@ -16,6 +16,7 @@
       <th scope="col">付款狀態</th>
       <th scope="col">運送狀態</th>
       <th scope='col'>詳細資料</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -23,15 +24,22 @@
     <tr>
       <td>{{this.id}}</td>
       <td>${{this.amount}}</td>
-      <td>{{#if this.payment_method}}信用卡{{else}}預設ATM{{/if}}</td>
-      <td>{{#ifCond this.payment_status '1'}} 已付款{{else}} 未付款{{/ifCond}} </td>
-      <td>{{#ifCond this.shipping_status '1'}} 已出貨{{else}} 尚未出貨{{/ifCond}} </td>
+      <td>{{#ifCond this.payment_method 'ATM'}}ATM轉帳{{else}}信用卡{{/ifCond}}</td>
+      <td>{{this.payment_status }} </td>
+      <td>{{ this.shipping_status }} </td>
       <td>
         <button type="button" class="btn btn-link">
           <a href="/admin/orders/{{this.id}}">
             更新訂單資料
           </a>
         </button>
+      </td>
+      <td>
+        <form action="/admin/orders/{{this.id}}?_method=DELETE" method="POST">
+          <button type="submit" class="btn btn-link">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
       </td>
     </tr>
     {{/each}}

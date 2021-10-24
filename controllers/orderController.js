@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const db = require('../models')
 const Cart = db.Cart
+const CartItem = db.CartItem
 const Order = db.Order
 const OrderItem = db.OrderItem
 const User = db.User
@@ -136,19 +137,25 @@ let orderController = {
   },
   postOrder: (req, res) => {
     return Cart.findByPk(req.body.cartId, { include: 'items' }).then(cart => {
-      return Order.create({
+      console.log(cart)
+      console.log(req.body)
+      if (!cart) {
+        req.flash('error_messages', '購物車中沒有商品喔!')
+        return res.redirect('back')
+      }
+      Order.create({
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
         shipping_status: req.body.shipping_status,
         payment_status: req.body.payment_status,
+        payment_method: req.body.payment_method,
         amount: req.body.amount,
         UserId: req.user.id
       }).then(order => {
-
         var results = []
         for (let i = 0; i < cart.items.length; i++) {
-          // console.log(order.id, cart.items[i].id)
+          console.log(order.id, cart.id, cart.items[i].id)
           results.push(
             OrderItem.create({
               OrderId: order.id,
@@ -160,26 +167,31 @@ let orderController = {
           )
         }
 
-        let mailOptions = {
-          from: process.env.GMAIL_ACCOUNT,
-          to: process.env.GMAIL_ACCOUNT,
-          subject: `${order.id}訂單已成立`,
-          html:
-            `
-          以下是您的訂單:
-          <h1>${order.items}</h1>
-          `
-        }
+        // let mailOptions = {
+        //   from: process.env.GMAIL_ACCOUNT,
+        //   to: process.env.GMAIL_ACCOUNT,
+        //   subject: `${order.id}訂單已成立`,
+        //   html:
+        //     `
+        //   以下是您的訂單:
+        //   <h1>${order.items}</h1>
+        //   `
+        // }
 
-        mailer.sendMail(mailOptions, (error, info) => {
-          if (error) console.log('Error:', error)
-          console.log('Email sent:', info.response)
-        })
+        // mailer.sendMail(mailOptions, (error, info) => {
+        //   if (error) console.log('Error:', error)
+        //   console.log('Email sent:', info.response)
+        // })
 
-
-        return Promise.all(results).then(() => {
-          res.redirect('/orders')
-        })
+        CartItem.findOne({ where: { CartId: cart.id } })
+          .then(cartItem => {
+            cartItem.destroy()
+            cart.destroy()
+          }).then(() => {
+            return Promise.all(results).then(() => {
+              res.redirect('/orders')
+            })
+          })
       })
     })
   },
@@ -240,7 +252,8 @@ let orderController = {
           return res.redirect('/orders')
         })
       })
-  }
+  },
+
 
 }
 

@@ -132,8 +132,18 @@ const adminController = {
           payment_status: req.body.payment_status,
           shipping_status: req.body.shipping_status
         }).then(() => {
+          req.flash('success_messages', '更新成功')
           return res.redirect('/admin/orders')
         })
+      })
+  },
+  deleteOrder: (req, res) => {
+    return Order.findByPk(req.params.id)
+      .then((order) => {
+        order.destroy()
+      }).then(() => {
+        req.flash('error_messages', '刪除成功')
+        return res.redirect('/admin/orders')
       })
   }
 }

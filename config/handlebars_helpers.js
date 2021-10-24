@@ -5,4 +5,10 @@ module.exports = {
     }
     return options.inverse(this);
   },
+  ifPay: function (a, b, c, options) {
+    if (a == b || a == c) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  },
 }

@@ -183,12 +183,16 @@ let orderController = {
         //   console.log('Email sent:', info.response)
         // })
 
+        //async await
         CartItem.findOne({ where: { CartId: cart.id } })
           .then(cartItem => {
             cartItem.destroy()
             cart.destroy()
           }).then(() => {
             return Promise.all(results).then(() => {
+              console.log('------------')
+              console.log(cart)
+              console.log('------------')
               res.redirect('/orders')
             })
           })
@@ -199,8 +203,8 @@ let orderController = {
     return Order.findByPk(req.params.id, {}).then(order => {
       order.update({
         ...req.body,
-        shipping_status: '-1',
-        payment_status: '-1',
+        shipping_status: '訂單取消',
+        payment_status: '訂單取消',
       }).then(order => {
         return res.redirect('back')
       })
@@ -247,7 +251,7 @@ let orderController = {
       .then(orders => {
         orders[0].update({
           ...req.body,
-          payment_status: 1,
+          payment_status: '已付款',
         }).then(order => {
           return res.redirect('/orders')
         })

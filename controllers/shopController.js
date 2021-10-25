@@ -1,7 +1,7 @@
 const shopController = {
 
   getshop: (req, res) => {
-    return res.render('index')
+    return res.redirect('/products')
   },
 
 }

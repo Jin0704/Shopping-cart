@@ -6,20 +6,18 @@ const PAGE_OFFSET = 0
 
 
 let cartController = {
-  getCart: (req, res) => {
+  getCart: async (req, res) => {
     // return Cart.findOne({ include: 'items' })
     console.log('***********')
     console.log(req.session)
     console.log('***********')
     // console.log(req.user.id)
-    return Cart.findByPk(req.session.cartId, { include: 'items' }).then(cart => {
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      console.log(cart)
-      return res.render('cart', {
-        cart: cart,
-        totalPrice: totalPrice
-      })
+    let cart = await Cart.findByPk(req.session.cartId, { include: 'items' })
+    cart = cart ? cart.toJSON() : { items: [] }
+    let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+    return res.render('cart', {
+      cart: cart,
+      totalPrice: totalPrice
     })
   },
 
@@ -41,46 +39,27 @@ let cartController = {
     })
 
     console.log(cart)
-
     req.session.cartId = cart[0].dataValues.id
     req.session.save((err) => res.redirect('back'))
   },
 
-  addCartitem: (req, res) => {
-    CartItem.findByPk(req.params.id)
-      .then(cartItem => {
-        cartItem.update({
-          quantity: cartItem.quantity + 1
-        })
-      }).then((cartItem) => {
-        return res.redirect('back')
-      })
+  addCartitem: async (req, res) => {
+    const cartItem = await CartItem.findByPk(req.params.id)
+    await cartItem.update({ quantity: cartItem.quantity + 1 })
+    return res.redirect('back')
   },
 
-  subCartItem: (req, res) => {
-    CartItem.findByPk(req.params.id)
-      .then(cartItem => {
-        cartItem.update({
-          quantity: cartItem.quantity - 1 >= 1 ? cartItem.quantity - 1 : 1
-        })
-      }).then((cartItem) => {
-        return res.redirect('back')
-      })
+  subCartItem: async (req, res) => {
+    const cartItem = await CartItem.findByPk(req.params.id)
+    await cartItem.update({ quantity: cartItem.quantity - 1 >= 1 ? cartItem.quantity - 1 : 1 })
+    return res.redirect('back')
   },
 
-  deleteCartItem: (req, res) => {
-    CartItem.findByPk(req.params.id)
-      .then(cartItem => {
-        cartItem.destroy()
-          .then((cartItem) => {
-            return res.redirect('back')
-          })
-      })
+  deleteCartItem: async (req, res) => {
+    const cartItem = await CartItem.findByPk(req.params.id)
+    await cartItem.destroy()
+    return res.redirect('back')
   }
-
-
-
-
 }
 
 module.exports = cartController

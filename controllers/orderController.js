@@ -137,7 +137,7 @@ let orderController = {
       shipping_status: req.body.shipping_status,
       payment_status: req.body.payment_status,
       payment_method: req.body.payment_method,
-      amount: req.body.amount,
+      amount: Number(req.body.amount),
       UserId: req.user.id
     })
     var results = []
@@ -174,6 +174,7 @@ let orderController = {
     const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
     // await cartItem.destroy()
     // await cart.destroy()
+
     await Promise.all(results)
     req.session.cartId = ''
     return res.redirect('/orders')

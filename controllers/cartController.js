@@ -33,12 +33,16 @@ let cartController = {
         CartId: cart[0].dataValues.id,
         ProductId: req.body.productId
       },
+      default: {
+        CartId: cart[0].dataValues.id,
+        ProductId: req.body.productId
+      }
     })
     await cartItem[0].update({
       quantity: (cartItem[0].quantity || 0) + 1
     })
 
-    console.log(cart)
+    // console.log(cart)
     req.session.cartId = cart[0].dataValues.id
     req.session.save((err) => res.redirect('back'))
   },

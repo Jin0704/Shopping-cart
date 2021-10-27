@@ -7,13 +7,38 @@ const imgur = require('imgur')
 const { error } = require('console')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setAPIUrl('https://api.imgur.com/3/')
+const PAGE_LIMIT = 6
+
 
 const adminController = {
 
   getProducts: async (req, res) => {
     try {
-      const products = await Product.findAll({ raw: true })
-      return res.render('admin/products', { products: products })
+
+      let PAGE_OFFSET = 0
+      if (req.query.page) {
+        PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
+      }
+
+      const products = await Product.findAndCountAll({
+        raw: true,
+        nest: true,
+        limit: PAGE_LIMIT,
+        offset: PAGE_OFFSET
+      })
+      let page = Number(req.query.page) || 1
+      const pages = Math.ceil(products.count / PAGE_LIMIT)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+
+      return res.render('admin/products', {
+        products: products.rows,
+        page: page,
+        totalPage: totalPage,
+        prev: prev,
+        next: next
+      })
     } catch (err) {
       console.log(err)
     }
@@ -114,12 +139,34 @@ const adminController = {
 
   getOrders: async (req, res) => {
     try {
-      const orders = await Order.findAll({
+      let PAGE_OFFSET = 0
+      const OrderPagelimit = 10
+      if (req.query.page) {
+        PAGE_OFFSET = (req.query.page - 1) * OrderPagelimit
+      }
+
+      const orders = await Order.findAndCountAll({
         raw: true,
         nest: true,
-        includes: ['items']
+        includes: ['items'],
+        limit: OrderPagelimit,
+        offset: PAGE_OFFSET
       })
-      return res.render('admin/orders', { orders })
+
+      const page = Number(req.query.page) || 1
+      const pages = Math.ceil(orders.count / OrderPagelimit)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+      console.log(orders)
+
+      return res.render('admin/orders', {
+        orders: orders.rows,
+        page: page,
+        totalPage: totalPage,
+        prev: prev,
+        next: next
+      })
     } catch (err) {
       console.log(err)
     }

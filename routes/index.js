@@ -64,4 +64,13 @@ module.exports = (app, passport) => {
   app.put('/admin/orders/:id', authenticatedAdmin, adminController.putOrder)
   app.delete('/admin/orders/:id', authenticatedAdmin, adminController.deleteOrder)
 
+  //facebook login
+  app.get('/auth/facebook', passport.authenticate('facebook', {
+    scope: 'email'
+  }))
+
+  app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/sigin'
+  }))
 }

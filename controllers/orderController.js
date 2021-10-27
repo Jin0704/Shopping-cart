@@ -114,85 +114,97 @@ function getTradeInfo(Amt, Desc, email) {
 let orderController = {
 
   getOrders: async (req, res) => {
-    const user = await User.findByPk(req.user.id)
-    const orders = await Order.findAll({
-      where: { UserId: user.id },
-      raw: true,
-      nest: true,
-      include: 'items'
-    })
-    return res.render('orders', { orders })
+    try {
+      const user = await User.findByPk(req.user.id)
+      const orders = await Order.findAll({
+        where: { UserId: user.id },
+        raw: true,
+        nest: true,
+        include: 'items'
+      })
+      return res.render('orders', { orders })
+    } catch (err) {
+      console.log(err)
+    }
   },
   postOrder: async (req, res) => {
-    const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
-    if (!cart) {
-      req.flash('error_messages', '購物車中沒有商品!')
-      return res.redirect('back')
+    try {
+      const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
+      if (!cart) {
+        req.flash('error_messages', '購物車中沒有商品!')
+        return res.redirect('back')
+      }
+
+      const order = await Order.create({
+        name: req.body.name,
+        address: req.body.address,
+        phone: req.body.phone,
+        shipping_status: req.body.shipping_status,
+        payment_status: req.body.payment_status,
+        payment_method: req.body.payment_method,
+        amount: Number(req.body.amount),
+        UserId: req.user.id
+      })
+      var results = []
+      for (let i = 0; i < cart.items.length; i++) {
+        // console.log(order.id, cart.id, cart.items[i].id)
+        results.push(
+          OrderItem.create({
+            OrderId: order.id,
+            ProductId: cart.items[i].id,
+            price: cart.items[i].price,
+            quantity: cart.items[i].CartItem.quantity,
+            subtotal: cart.items[i].price * cart.items[i].CartItem.quantity
+          })
+        )
+      }
+
+      // let mailOptions = {
+      //   from: process.env.GMAIL_ACCOUNT,
+      //   to: process.env.GMAIL_ACCOUNT,
+      //   subject: `${order.id}訂單已成立`,
+      //   html:
+      //     `
+      //   以下是您的訂單:
+      //   <h1>${order.items}</h1>
+      //   `
+      // }
+
+      // mailer.sendMail(mailOptions, (error, info) => {
+      //   if (error) console.log('Error:', error)
+      //   console.log('Email sent:', info.response)
+      // })
+
+      //async await
+      const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
+      // await cartItem.destroy()
+      // await cart.destroy()
+
+      await Promise.all(results)
+      req.session.cartId = ''
+      return res.redirect('/orders')
+      //  Promise.all(results).then(() => {
+      //   console.log('------------')
+      //   console.log(cart)
+      //   console.log('------------')
+
+      // })
+    } catch (err) {
+      console.log(err)
     }
-
-    const order = await Order.create({
-      name: req.body.name,
-      address: req.body.address,
-      phone: req.body.phone,
-      shipping_status: req.body.shipping_status,
-      payment_status: req.body.payment_status,
-      payment_method: req.body.payment_method,
-      amount: Number(req.body.amount),
-      UserId: req.user.id
-    })
-    var results = []
-    for (let i = 0; i < cart.items.length; i++) {
-      // console.log(order.id, cart.id, cart.items[i].id)
-      results.push(
-        OrderItem.create({
-          OrderId: order.id,
-          ProductId: cart.items[i].id,
-          price: cart.items[i].price,
-          quantity: cart.items[i].CartItem.quantity,
-          subtotal: cart.items[i].price * cart.items[i].CartItem.quantity
-        })
-      )
-    }
-
-    // let mailOptions = {
-    //   from: process.env.GMAIL_ACCOUNT,
-    //   to: process.env.GMAIL_ACCOUNT,
-    //   subject: `${order.id}訂單已成立`,
-    //   html:
-    //     `
-    //   以下是您的訂單:
-    //   <h1>${order.items}</h1>
-    //   `
-    // }
-
-    // mailer.sendMail(mailOptions, (error, info) => {
-    //   if (error) console.log('Error:', error)
-    //   console.log('Email sent:', info.response)
-    // })
-
-    //async await
-    const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
-    // await cartItem.destroy()
-    // await cart.destroy()
-
-    await Promise.all(results)
-    req.session.cartId = ''
-    return res.redirect('/orders')
-    //  Promise.all(results).then(() => {
-    //   console.log('------------')
-    //   console.log(cart)
-    //   console.log('------------')
-
-    // })
   },
   cancelOrder: async (req, res) => {
-    const order = await Order.findByPk(req.params.id, {})
-    await order.update({
-      ...req.body,
-      shipping_status: '訂單取消',
-      payment_status: '訂單取消',
-    })
-    return res.redirect('back')
+    try {
+      const order = await Order.findByPk(req.params.id, {})
+      await order.update({
+        ...req.body,
+        shipping_status: '訂單取消',
+        payment_status: '訂單取消',
+      })
+      return res.redirect('back')
+    } catch (err) {
+      console.log(err)
+    }
   },
   getPayment: (req, res) => {
     console.log('===Payment===')
@@ -201,7 +213,7 @@ let orderController = {
 
     return Order.findByPk(req.params.id, {})
       .then(order => {
-        const tradeInfo = getTradeInfo(order.amount, '產品名稱', 's87160204@gmail.com')
+        const tradeInfo = getTradeInfo(order.amount, '產品名稱', process.env.GMAIL_ACCOUNT)
         order.update({
           ...req.body,
           sn: tradeInfo.MerchantOrderNo

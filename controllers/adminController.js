@@ -102,19 +102,28 @@ const adminController = {
   },
 
   deleteProduct: async (req, res) => {
-    const product = await Product.findByPk(req.params.id)
-    await product.destroy()
-    req.flash('success_messages', '成功刪除')
-    res.redirect('/admin/products')
+    try {
+      const product = await Product.findByPk(req.params.id)
+      await product.destroy()
+      req.flash('success_messages', '成功刪除')
+      res.redirect('/admin/products')
+    } catch (err) {
+      console.log(err)
+    }
   },
 
   getOrders: async (req, res) => {
-    const orders = await Order.findAll({
-      raw: true,
-      nest: true,
-      includes: ['items']
-    })
-    return res.render('admin/orders', { orders })
+    try {
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true,
+        includes: ['items']
+      })
+      return res.render('admin/orders', { orders })
+    } catch (err) {
+      console.log(err)
+    }
+
   },
 
   getOrder: async (req, res) => {
@@ -150,7 +159,6 @@ const adminController = {
     } catch (err) {
       console.log(err)
     }
-
   }
 }
 

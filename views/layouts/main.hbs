@@ -23,15 +23,18 @@
     </h5>
     <nav class="my-2 my-md-0 mr-md-3">
       {{#if user.isAdmin}}
-      <a href="/admin" class="p-2 text-dark">Admin 後台</a>
+      <a href="/admin" class="p-2 text-dark">管理者後台</a>
       {{/if}}
       {{#if user}}
-      <a href="/logout" class="p-2 text-dark">Logout</a>
+      <i class="fas fa-user ">
+        {{user.email}} 您好!
+      </i>
+      <a href="/logout" class="p-2 text-dark">登出</a>
       {{else}}
-      <a href="/signin" class="p-2 text-dark">Login</a>
+      <a href="/signin" class="p-2 text-dark">登入</a>
       {{/if}}
-      <a class="p-2 text-dark" href="/cart">Cart</a>
-      <a class="p-2 text-dark" href="/orders">Orders</a>
+      <a class="p-2 text-dark" href="/cart">購物車</a>
+      <a class="p-2 text-dark" href="/orders">訂單</a>
     </nav>
   </div>
 

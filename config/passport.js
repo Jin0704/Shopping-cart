@@ -1,10 +1,10 @@
+require('dotenv').config()
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
-require('dotenv').config()
 
 passport.use(new LocalStrategy(
   {

@@ -2,11 +2,12 @@
 <html>
 
 <head>
-  <title>AC Shop</title>
+  <title>購物網</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
     integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css">
   <style type="text/css">
     .table td,
     .table th {
@@ -35,6 +36,7 @@
       {{/if}}
       <a class="p-2 text-dark" href="/cart">購物車</a>
       {{#if user}}
+      <a class="p-2 text-dark" href="/favorites">收藏</a>
       <a class="p-2 text-dark" href="/orders">訂單</a>
       {{/if}}
     </nav>

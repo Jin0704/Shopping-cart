@@ -38,6 +38,7 @@ module.exports = (app, passport) => {
   app.get('/logout', userController.logout)
 
   //favorite routes
+  app.get('/favorites', authenticated, userController.getFavoritespage)
   app.post('/favorite/:productId', authenticated, userController.addFavorite)
   app.delete('/favorite/:productId', authenticated, userController.removeFavorite)
 

@@ -1,7 +1,9 @@
 const db = require('../models')
 const User = db.User
 const Favorite = db.Favorite
+const Product = db.Product
 const bcrypt = require('bcryptjs')
+const product = require('../models/product')
 
 const userController = {
 
@@ -43,30 +45,51 @@ const userController = {
     return res.redirect('/')
   },
 
-  addFavorite: (req, res) => {
-    console.log(req.body)
-    return Favorite.create({
-      UserId: req.user.id,
-      ProductId: req.params.productId
-    }).then((product) => {
-      req.flash('success_messages', '已收藏該產品')
-      res.redirect('back')
-    })
+  getFavoritespage: async (req, res) => {
+    try {
+      let products = await User.findByPk(req.user.id, {
+        include: [
+          { model: Product, as: 'FavoritedProducts' }
+        ]
+      })
+      products = products ? products.toJSON() : products
+      return res.render('favorites', {
+        products: products.FavoritedProducts
+      })
+    } catch (err) {
+      console.log(err)
+    }
   },
 
-  removeFavorite: (req, res) => {
-    return Favorite.findOne({
-      where: {
+  addFavorite: async (req, res) => {
+    try {
+      const product = await Favorite.create({
         UserId: req.user.id,
         ProductId: req.params.productId
-      }
-    }).then((favorite) => {
-      favorite.destroy()
-        .then(() => {
-          req.flash('success_messages', '已移除該收藏')
-          res.redirect('back')
-        })
-    })
+      })
+      req.flash('success_messages', '已收藏該產品')
+      res.redirect('back')
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
+  removeFavorite: async (req, res) => {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          UserId: req.user.id,
+          ProductId: req.params.productId
+        }
+      })
+      await favorite.destroy()
+      req.flash('success_messages', '已移除該收藏')
+      res.redirect('back')
+    } catch (err) {
+      console.log(err)
+    }
+
+
   },
 
   logout: (req, res) => {

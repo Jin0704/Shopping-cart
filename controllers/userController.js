@@ -1,5 +1,6 @@
 const db = require('../models')
 const User = db.User
+const Favorite = db.Favorite
 const bcrypt = require('bcryptjs')
 
 const userController = {
@@ -40,6 +41,32 @@ const userController = {
   Signin: (req, res) => {
     req.flash('success_messages', '成功登入')
     return res.redirect('/')
+  },
+
+  addFavorite: (req, res) => {
+    console.log(req.body)
+    return Favorite.create({
+      UserId: req.user.id,
+      ProductId: req.params.productId
+    }).then((product) => {
+      req.flash('success_messages', '已收藏該產品')
+      res.redirect('back')
+    })
+  },
+
+  removeFavorite: (req, res) => {
+    return Favorite.findOne({
+      where: {
+        UserId: req.user.id,
+        ProductId: req.params.productId
+      }
+    }).then((favorite) => {
+      favorite.destroy()
+        .then(() => {
+          req.flash('success_messages', '已移除該收藏')
+          res.redirect('back')
+        })
+    })
   },
 
   logout: (req, res) => {

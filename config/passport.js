@@ -1,12 +1,11 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
+const Product = db.Product
+require('dotenv').config()
 
 passport.use(new LocalStrategy(
   {
@@ -32,13 +31,17 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((id, done) => {
-  User.findByPk(id)
+  User.findByPk(id, {
+    include: [
+      { model: Product, as: 'FavoritedProducts' }
+    ]
+  })
     .then((user) => {
       user = user.toJSON()
       done(null, user)
     }).catch(err => done(err, null))
 })
-console.log(process.env.FACEBOOK_APP_ID)
+
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,

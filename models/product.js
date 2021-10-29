@@ -24,8 +24,12 @@ module.exports = (sequelize, DataTypes) => {
           model: models.OrderItem, unique: false
         },
         foreignKey: 'ProductId'
+      });
+      Product.belongsToMany(models.User, {
+        through: models.Favorite,
+        foreignKey: 'ProductId',
+        as: 'FavoritedUsers'
       })
-
     }
   };
   Product.init({

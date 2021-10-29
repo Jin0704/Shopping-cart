@@ -23,9 +23,16 @@
         </li>
       </ul>
       <div class="btn-group">
+        {{#if isFavorited}}
+        <form action="/favorite/{{product.id}}?_method=DELETE" method="POST"><button type="submit"
+            class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
+        {{else}}
+        <form action="/favorite/{{product.id}}" method="POST"><button type="submit" class="btn btn-link"><i
+              class="fas fa-heart" style="color:thistle"></i></button></form>
+        {{/if}}
         <form action="/cart" method="POST">
           <input type="hidden" name="productId" value="{{product.id}}">
-          <button type="submit" class="btn btn-sm btn-outline-secondary">Add to Cart</button>
+          <button type="submit" class="btn btn-sm btn-outline-secondary">加入購物車</button>
         </form>
       </div>
     </div>

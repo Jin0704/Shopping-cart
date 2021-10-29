@@ -37,6 +37,10 @@ module.exports = (app, passport) => {
   }), userController.Signin)
   app.get('/logout', userController.logout)
 
+  //favorite routes
+  app.post('/favorite/:productId', authenticated, userController.addFavorite)
+  app.delete('/favorite/:productId', authenticated, userController.removeFavorite)
+
   app.post('/cartItem/:id/add', cartController.addCartitem)
   app.post('/cartItem/:id/sub', cartController.subCartItem)
   app.delete("/cartItem/:id", cartController.deleteCartItem)

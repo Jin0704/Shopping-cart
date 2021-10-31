@@ -8,7 +8,7 @@
 # 專案畫面
 
 ![home-page](home-page.jpg)
-![home-page](home-page2.jpg)
+<!-- ![home-page](home-page2.jpg) -->
 
 # 功能描述 (features)
 

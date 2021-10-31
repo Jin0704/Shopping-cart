@@ -28,9 +28,9 @@ const MerchantID = process.env.MerchantID
 const HashKey = process.env.HashKey
 const HashIV = process.env.HashIV
 const PayGateWay = "https://ccore.spgateway.com/MPG/mpg_gateway"
-const ReturnURL = URL + "/spgateway/callback?from=ReturnURL"
-const NotifyURL = URL + "/spgateway/callback?from=NotifyURL"
-const ClientBackURL = URL + "/orders"
+const ReturnURL = `${URL}/orders/spgateway/callback?from=ReturnURL`
+const NotifyURL = `${URL}/orders/spgateway/callback?from=NotifyURL`
+const ClientBackURL = `${URL}/orders`
 
 
 //取得交易字串物件並轉換成字串

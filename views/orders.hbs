@@ -1,9 +1,17 @@
 {{#each orders}}
 <div class="column col-md-12">
+  {{#ifPay shipping_status '出貨完成' '訂單取消'}}
+  <button class="btn btn-primary col-md-12 mt-2" type="button" data-toggle="collapse"
+    data-target="#collapseExample{{this.id}}" aria-expanded="false" aria-controls="collapseExample"
+    style="background-color: darkgray;">
+    <strong class="d-flex">訂單編號:{{this.id}} </strong>
+  </button>
+  {{else}}
   <button class="btn btn-primary col-md-12 mt-2" type="button" data-toggle="collapse"
     data-target="#collapseExample{{this.id}}" aria-expanded="false" aria-controls="collapseExample">
     <strong class="d-flex">訂單編號:{{this.id}} </strong>
   </button>
+  {{/ifPay}}
   <div class="collapse" id="collapseExample{{this.id}}">
     <div class="card card-body d-flex" style="flex-direction: row;">
       <div class="col-md-6">

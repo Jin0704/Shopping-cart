@@ -6,6 +6,7 @@ const CartItem = db.CartItem
 const Order = db.Order
 const OrderItem = db.OrderItem
 const User = db.User
+const Product = db.Product
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 
@@ -122,11 +123,10 @@ let orderController = {
       const user = await User.findByPk(req.user.id)
       const orders = await Order.findAll({
         where: { UserId: user.id },
-        raw: true,
-        nest: true,
-        include: 'items'
+        include: [{ model: Product, as: 'items' }]
       })
-      return res.render('orders', { orders })
+      const ordersJSON = orders.map(order => order.toJSON())
+      return res.render('orders', { orders: ordersJSON })
     } catch (err) {
       console.log(err)
     }

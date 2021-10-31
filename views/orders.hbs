@@ -1,85 +1,84 @@
 {{#each orders}}
-<div class="row  border border-secondary">
-  <table class="table col-md-12">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">訂單編號:</th>
-      </tr>
-    </thead>
-  </table>
-  <div class="col-md-6">
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Product</th>
-          <th scope="col">quantity</th>
-          <th scope="col">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each this}}
-        <tr>
-          <td>{{this.name}}</td>
-          <td>{{this.OrderItem.quantity}}</td>
-          <td>{{this.OrderItem.subtotal}}</td>
-        </tr>
-        {{/each}}
-        <tr>
-          <td></td>
-          <td style="text-align: right;">
-            <h4>Total: </h4>
-          </td>
-          <td>
-            <h4>{{this.amount}}</h4>
-          </td>
-        </tr>
-      </tbody>
-      <hr>
-      <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">收件人資訊</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="display: flex;justify-content:space-around">
-              <p>收件人:{{this.name}}</p> <br>
-              <p>連絡電話: {{this.phone}}</p> <br>
-              <p>收件地址: {{this.address}}</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-  </div>
-  <br>
-  <br>
-  <div class="d-flex flex-column  justify-content-center align-item-center">
-    <ul>
-      <li>
-        <h3 class="mb-2 ">付款方式: {{this.payment_method}}</h3>
-      </li>
-      <li>
-        <h3 class="mb-2 ">出貨狀態: {{this.shipping_status}}</h3>
-      </li>
-      <li>
-        <h3 class="mb-2 ">付款狀態: {{this.payment_status}}</h3>
-      </li>
-    </ul>
+<div class="column col-md-12">
+  <button class="btn btn-primary col-md-12 mt-2" type="button" data-toggle="collapse"
+    data-target="#collapseExample{{this.id}}" aria-expanded="false" aria-controls="collapseExample">
+    <strong class="d-flex">訂單編號:{{this.id}} </strong>
+  </button>
+  <div class="collapse" id="collapseExample{{this.id}}">
+    <div class="card card-body d-flex" style="flex-direction: row;">
+      <div class="col-md-6">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">quantity</th>
+              <th scope="col">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each this.items}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.OrderItem.quantity}}</td>
+              <td>{{this.OrderItem.subtotal}}</td>
+            </tr>
+            {{/each}}
+            <tr>
+              <td></td>
+              <td style="text-align: right;">
+                <h4>Total: </h4>
+              </td>
+              <td>
+                <h4>{{this.amount}}</h4>
+              </td>
+            </tr>
+          </tbody>
+          <hr>
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">收件人資訊</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="display: flex;justify-content:space-around">
+                  <p>收件人:{{this.name}}</p> <br>
+                  <p>連絡電話: {{this.phone}}</p> <br>
+                  <p>收件地址: {{this.address}}</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <br>
+      <br>
+      <div class="d-flex flex-column  justify-content-center align-item-center">
+        <ul>
+          <li>
+            <h3 class="mb-2 ">付款方式: {{this.payment_method}}</h3>
+          </li>
+          <li>
+            <h3 class="mb-2 ">出貨狀態: {{this.shipping_status}}</h3>
+          </li>
+          <li>
+            <h3 class="mb-2 ">付款狀態: {{this.payment_status}}</h3>
+          </li>
+        </ul>
 
-    <div style="display: flex; justify-content: space-evenly;min-width: 300px;">
-      {{#ifPay shipping_status '出貨完成' '訂單取消'}}
-      <button type="submit" class="btn btn-secondary" disabled>取消訂單</button>
-      <a href="/order/{{this.id}}/payment"><button class="btn btn-secondary" disabled>立即付款</button></a>
-      {{else}}
-      <form action="/order/{{this.id}}/cancel" method="POST">
-        <button type="submit" class="btn btn-primary">取消訂單</button>
-      </form>
-      <a href="/order/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
-      {{/ifPay}}
+        <div style="display: flex; justify-content: space-evenly;min-width: 300px;">
+          {{#ifPay shipping_status '出貨完成' '訂單取消'}}
+          <button type="submit" class="btn btn-secondary" disabled>取消訂單</button>
+          <a href="/order/{{this.id}}/payment"><button class="btn btn-secondary" disabled>立即付款</button></a>
+          {{else}}
+          <form action="/order/{{this.id}}/cancel" method="POST">
+            <button type="submit" class="btn btn-primary">取消訂單</button>
+          </form>
+          <a href="/order/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
+          {{/ifPay}}
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<br>
-<br>
 {{/each}}

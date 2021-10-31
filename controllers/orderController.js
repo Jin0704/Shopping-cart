@@ -35,43 +35,43 @@ const ClientBackURL = `${URL}/orders`
 
 //取得交易字串物件並轉換成字串
 function genDataChain(TradeInfo) {
-  let results = []
-  for (let kv of Object.entries(TradeInfo)) {
+  const results = []
+  for (const kv of Object.entries(TradeInfo)) {
     results.push(`${kv[0]}=${kv[1]}`)
   }
-  return results.join("&")
+  return results.join('&')
 }
 
 //將字串進行加密(用AES加密法)
 function create_mpg_aes_encrypt(TradeInfo) {
-  let encrypt = crypto.createCipheriv("aes256", HashKey, HashIV);
-  let enc = encrypt.update(genDataChain(TradeInfo), "utf8", "hex");
-  return enc + encrypt.final("hex");
+  const encrypt = crypto.createCipheriv('aes256', HashKey, HashIV)
+  const enc = encrypt.update(genDataChain(TradeInfo), 'utf8', 'hex')
+  return enc + encrypt.final('hex')
 }
 
 function create_mpg_aes_decrypt(TradeInfo) {
-  let decrypt = crypto.createDecipheriv("aes256", HashKey, HashIV);
-  decrypt.setAutoPadding(false);
-  let text = decrypt.update(TradeInfo, "hex", "utf8");
-  let plainText = text + decrypt.final("utf8");
-  let result = plainText.replace(/[\x00-\x20]+/g, "");
-  return result;
+  const decrypt = crypto.createDecipheriv('aes256', HashKey, HashIV)
+  decrypt.setAutoPadding(false)
+  const text = decrypt.update(TradeInfo, 'hex', 'utf8')
+  const plainText = text + decrypt.final('utf8')
+  const result = plainText.replace(/[\x00-\x20]+/g, '')
+  return result
 }
 
 //將字串雜湊
 function create_mpg_sha_encrypt(TradeInfo) {
 
-  let sha = crypto.createHash("sha256");
-  let plainText = `HashKey=${HashKey}&${TradeInfo}&HashIV=${HashIV}`
+  const sha = crypto.createHash('sha256')
+  const plainText = `HashKey=${HashKey}&${TradeInfo}&HashIV=${HashIV}`
 
-  return sha.update(plainText).digest("hex").toUpperCase();
+  return sha.update(plainText).digest('hex').toUpperCase()
 }
 
 function getTradeInfo(Amt, Desc, email) {
 
-  console.log('===== getTradeInfo =====')
-  console.log(Amt, Desc, email)
-  console.log('==========')
+  // console.log('===== getTradeInfo =====')
+  // console.log(Amt, Desc, email)
+  // console.log('==========')
 
   data = {
     'MerchantID': MerchantID, // 商店代號
@@ -89,16 +89,16 @@ function getTradeInfo(Amt, Desc, email) {
     'ClientBackURL': ClientBackURL, // 支付取消返回商店網址
   }
 
-  console.log('===== getTradeInfo: data =====')
-  console.log(data)
+  // console.log('===== getTradeInfo: data =====')
+  // console.log(data)
 
 
-  mpg_aes_encrypt = create_mpg_aes_encrypt(data)
-  mpg_sha_encrypt = create_mpg_sha_encrypt(mpg_aes_encrypt)
+  const mpg_aes_encrypt = create_mpg_aes_encrypt(data)
+  const mpg_sha_encrypt = create_mpg_sha_encrypt(mpg_aes_encrypt)
 
-  console.log('===== getTradeInfo: mpg_aes_encrypt, mpg_sha_encrypt =====')
-  console.log(mpg_aes_encrypt)
-  console.log(mpg_sha_encrypt)
+  // console.log('===== getTradeInfo: mpg_aes_encrypt, mpg_sha_encrypt =====')
+  // console.log(mpg_aes_encrypt)
+  // console.log(mpg_sha_encrypt)
 
   tradeInfo = {
     'MerchantID': MerchantID, // 商店代號
@@ -218,9 +218,9 @@ let orderController = {
     }
   },
   getPayment: (req, res) => {
-    console.log('===Payment===')
-    console.log(req.params.id)
-    console.log('==========')
+    // console.log('===Payment===')
+    // console.log(req.params.id)
+    // console.log('==========')
 
     return Order.findByPk(req.params.id, {})
       .then(order => {
@@ -238,19 +238,19 @@ let orderController = {
       })
   },
   spgatewayCallback: (req, res) => {
-    console.log('=====spgatewayCallback=====')
-    console.log(req.method)
-    console.log(req.query)
-    console.log(req.body)
-    console.log('===========================')
+    // console.log('=====spgatewayCallback=====')
+    // console.log(req.method)
+    // console.log(req.query)
+    // console.log(req.body)
+    // console.log('===========================')
 
-    console.log('=====spgatewayCallback: Tradeinfo======')
-    console.log(req.body.TradeInfo)
+    // console.log('=====spgatewayCallback: Tradeinfo======')
+    // console.log(req.body.TradeInfo)
 
     const data = JSON.parse(create_mpg_aes_decrypt(req.body.TradeInfo))
 
-    console.log('=====spgatewayCallback: create_mpg_aes_decrypt、data======')
-    console.log(data)
+    // console.log('=====spgatewayCallback: create_mpg_aes_decrypt、data======')
+    // console.log(data)
 
     return Order.findAll({ where: { sn: data['Result']['MerchantOrderNo'] } })
       .then(orders => {

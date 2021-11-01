@@ -111,7 +111,7 @@ function getTradeInfo(Amt, Desc, email) {
   }
 
   // console.log('===== getTradeInfo: tradeInfo =====')
-  console.log(tradeInfo)
+  // console.log(tradeInfo)
 
   return tradeInfo
 }
@@ -150,7 +150,7 @@ let orderController = {
         amount: Number(req.body.amount),
         UserId: req.user.id
       })
-      console.log(order)
+      // console.log(order)
       var results = []
       for (let i = 0; i < cart.items.length; i++) {
         // console.log(order.id, cart.id, cart.items[i].id)
@@ -238,30 +238,40 @@ let orderController = {
         })
       })
   },
-  spgatewayCallback: (req, res) => {
-    // console.log('=====spgatewayCallback=====')
-    // console.log(req.method)
-    // console.log(req.query)
-    // console.log(req.body)
-    // console.log('===========================')
+  spgatewayCallback: async (req, res) => {
+    try {
+      // console.log('=====spgatewayCallback=====')
+      // console.log(req.method)
+      // console.log(req.query)
+      // console.log(req.body)
+      // console.log('===========================')
 
-    // console.log('=====spgatewayCallback: Tradeinfo======')
-    // console.log(req.body.TradeInfo)
+      // console.log('=====spgatewayCallback: Tradeinfo======')
+      // console.log(req.body.TradeInfo)
 
-    const data = JSON.parse(create_mpg_aes_decrypt(req.body.TradeInfo))
+      const data = JSON.parse(create_mpg_aes_decrypt(req.body.TradeInfo))
 
-    // console.log('=====spgatewayCallback: create_mpg_aes_decrypt、data======')
-    // console.log(data)
-
-    return Order.findAll({ where: { sn: data['Result']['MerchantOrderNo'] } })
-      .then(orders => {
-        orders[0].update({
-          ...req.body,
-          payment_status: '已付款',
-        }).then(order => {
-          return res.redirect('/orders')
-        })
+      // console.log('=====spgatewayCallback: create_mpg_aes_decrypt、data======')
+      // console.log(data)
+      let orders = await Order.findAll({ where: { sn: data['Result']['MerchantOrderNo'] } })
+      console.log('=====orders======')
+      console.log(orders)
+      await orders[0].update({
+        ...req.body,
+        payment_status: '已付款',
       })
+      return res.redirect('/orders')
+    } catch (err) {
+      console.log(err)
+    }
+    // return Order.findAll({ where: { sn: data['Result']['MerchantOrderNo'] } })
+    //   .then(orders => {
+    //     orders[0].update({
+
+    //     }).then(order => {
+    //       return res.redirect('/orders')
+    //     })
+    //   })
   },
 }
 

@@ -47,10 +47,10 @@ module.exports = (app, passport) => {
   app.delete("/cartItem/:id", cartController.deleteCartItem)
 
   app.get('/orders', authenticated, orderController.getOrders)
-  app.post('/order', orderController.postOrder)
-  app.post('/order/:id/cancel', authenticated, orderController.cancelOrder)
+  app.post('/orders', orderController.postOrder)
+  app.post('/orders/:id/cancel', authenticated, orderController.cancelOrder)
 
-  app.get('/order/:id/payment', authenticated, orderController.getPayment)
+  app.get('/orders/:id/payment', authenticated, orderController.getPayment)
   app.post('/spgateway/callback', authenticated, orderController.spgatewayCallback)
 
   //Admin routes

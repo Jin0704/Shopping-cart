@@ -1,9 +1,6 @@
 const db = require('../models')
 const Cart = db.Cart
 const CartItem = db.CartItem
-const PAGE_LIMIT = 10
-const PAGE_OFFSET = 0
-
 
 let cartController = {
   getCart: async (req, res) => {
@@ -47,6 +44,7 @@ let cartController = {
         quantity: (cartItem[0].quantity || 0) + 1
       })
       // console.log(cart)
+      req.flash('success_messages', '已加入購物車!')
       req.session.cartId = cart[0].dataValues.id
       req.session.save((err) => res.redirect('back'))
     } catch (err) {

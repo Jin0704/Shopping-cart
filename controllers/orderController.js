@@ -35,8 +35,8 @@ const ClientBackURL = `${URL}/orders`
 
 //取得交易字串物件並轉換成字串
 function genDataChain(TradeInfo) {
-  const results = []
-  for (const kv of Object.entries(TradeInfo)) {
+  let results = []
+  for (let kv of Object.entries(TradeInfo)) {
     results.push(`${kv[0]}=${kv[1]}`)
   }
   return results.join('&')
@@ -44,10 +44,20 @@ function genDataChain(TradeInfo) {
 
 //將字串進行加密(用AES加密法)
 function create_mpg_aes_encrypt(TradeInfo) {
-  const encrypt = crypto.createCipheriv('aes256', HashKey, HashIV)
-  const enc = encrypt.update(genDataChain(TradeInfo), 'utf8', 'hex')
+  let encrypt = crypto.createCipheriv('aes256', HashKey, HashIV)
+  let enc = encrypt.update(genDataChain(TradeInfo), 'utf8', 'hex')
   return enc + encrypt.final('hex')
 }
+
+//將字串雜湊
+function create_mpg_sha_encrypt(TradeInfo) {
+
+  let sha = crypto.createHash('sha256')
+  let plainText = `HashKey=${HashKey}&${TradeInfo}&HashIV=${HashIV}`
+
+  return sha.update(plainText).digest('hex').toUpperCase()
+}
+
 
 function create_mpg_aes_decrypt(TradeInfo) {
   const decrypt = crypto.createDecipheriv('aes256', HashKey, HashIV)
@@ -56,15 +66,6 @@ function create_mpg_aes_decrypt(TradeInfo) {
   const plainText = text + decrypt.final('utf8')
   const result = plainText.replace(/[\x00-\x20]+/g, '')
   return result
-}
-
-//將字串雜湊
-function create_mpg_sha_encrypt(TradeInfo) {
-
-  const sha = crypto.createHash('sha256')
-  const plainText = `HashKey=${HashKey}&${TradeInfo}&HashIV=${HashIV}`
-
-  return sha.update(plainText).digest('hex').toUpperCase()
 }
 
 function getTradeInfo(Amt, Desc, email) {
@@ -109,7 +110,7 @@ function getTradeInfo(Amt, Desc, email) {
     'MerchantOrderNo': data.MerchantOrderNo,
   }
 
-  console.log('===== getTradeInfo: tradeInfo =====')
+  // console.log('===== getTradeInfo: tradeInfo =====')
   console.log(tradeInfo)
 
   return tradeInfo

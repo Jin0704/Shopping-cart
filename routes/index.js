@@ -51,7 +51,7 @@ module.exports = (app, passport) => {
   app.post('/orders/:id/cancel', authenticated, orderController.cancelOrder)
 
   app.get('/orders/:id/payment', authenticated, orderController.getPayment)
-  app.post('/spgateway/callback', authenticated, orderController.spgatewayCallback)
+  app.post('/orders/spgateway/callback', authenticated, orderController.spgatewayCallback)
 
   //Admin routes
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/products'))

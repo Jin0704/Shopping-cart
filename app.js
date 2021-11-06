@@ -1,5 +1,7 @@
 const express = require('express')
+const app = express()
 const exphbs = require('express-handlebars')
+const routes = require('./routes')
 const methodoverride = require('method-override')
 const session = require('express-session')
 const flash = require('connect-flash')
@@ -7,7 +9,6 @@ const cookieParser = require('cookie-parser')
 const path = require('path')
 const passport = require('passport')
 require('./config/passport')
-const app = express()
 const port = process.env.PORT || 3000
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -15,7 +16,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.engine('.hbs', exphbs({ defaultLayout: 'main', extname: 'hbs', helpers: require('./config/handlebars_helpers') }))
 app.set('view engine', 'hbs')
-
 app.use(express.urlencoded({ extended: true }))
 app.use(methodoverride('_method'))
 app.use(express.static(path.join(__dirname, 'public')))
@@ -46,8 +46,7 @@ app.listen(port, () => {
 
 
 
-
-require('./routes')(app, passport)
-
+app.use(routes)
+// require('./routes')(app, passport)
 
 module.exports = app

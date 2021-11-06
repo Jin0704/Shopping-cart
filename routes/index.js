@@ -1,81 +1,51 @@
+const express = require('express')
+const router = express.Router()
+const passport = require('passport')
 const shopController = require('../controllers/shopController')
 const ProductController = require('../controllers/productsController')
 const cartController = require('../controllers/cartController')
-const orderController = require('../controllers/orderController')
 const userController = require('../controllers/userController')
-const adminController = require('../controllers/adminController')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
+const admin = require('./modules/admin')
+const orders = require('./modules/orders')
+const auth = require('./modules/auth')
 
-module.exports = (app, passport) => {
+router.use('/admin', admin)
+router.use('/orders', orders)
+router.use('/auth', auth)
 
-  const authenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      return next()
-    }
-    res.redirect('/signin')
+
+const authenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next()
   }
-  const authenticatedAdmin = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      if (req.user.isAdmin) { return next() } return res.redirect('/')
-    }
-    res.redirect('/signin')
-  }
-
-
-  app.get('/', shopController.getshop)
-  app.get('/products', ProductController.getProducts)
-  app.get('/products/:id', ProductController.getProduct)
-  app.get('/cart', authenticated, cartController.getCart)
-  app.post('/cart', cartController.postCart)
-
-  app.get('/signin', userController.getSigninPage)
-  app.get('/signup', userController.getSignUpPage)
-  app.post('/signup', userController.SignUp)
-  app.post('/signin', passport.authenticate('local', {
-    failureRedirect: '/signin', failureFlash: true
-  }), userController.Signin)
-  app.get('/logout', userController.logout)
-
-  //favorite routes
-  app.get('/favorites', authenticated, userController.getFavoritespage)
-  app.post('/favorite/:productId', authenticated, userController.addFavorite)
-  app.delete('/favorite/:productId', authenticated, userController.removeFavorite)
-
-  app.post('/cartItem/:id/add', cartController.addCartitem)
-  app.post('/cartItem/:id/sub', cartController.subCartItem)
-  app.delete("/cartItem/:id", cartController.deleteCartItem)
-
-  app.get('/orders', authenticated, orderController.getOrders)
-  app.post('/orders', orderController.postOrder)
-  app.post('/orders/:id/cancel', authenticated, orderController.cancelOrder)
-
-  app.get('/orders/:id/payment', authenticated, orderController.getPayment)
-  app.post('/orders/spgateway/callback', authenticated, orderController.spgatewayCallback)
-
-  //Admin routes
-  app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/products'))
-  //Products
-  app.get('/admin/products', authenticatedAdmin, adminController.getProducts)
-  app.get('/admin/products/create', authenticatedAdmin, adminController.createProducts)
-  app.post('/admin/products', authenticatedAdmin, upload.single('image'), adminController.postProdcuts)
-  app.get('/admin/products/:id', authenticatedAdmin, adminController.getProduct)
-  app.get('/admin/products/:id/edit', authenticatedAdmin, adminController.editProduct)
-  app.put('/admin/products/:id', authenticatedAdmin, upload.single('image'), adminController.putProduct)
-  app.delete('/admin/products/:id', authenticatedAdmin, adminController.deleteProduct)
-  //Orders
-  app.get('/admin/orders', authenticatedAdmin, adminController.getOrders)
-  app.get('/admin/orders/:id', authenticatedAdmin, adminController.getOrder)
-  app.put('/admin/orders/:id', authenticatedAdmin, adminController.putOrder)
-  app.delete('/admin/orders/:id', authenticatedAdmin, adminController.deleteOrder)
-
-  //facebook login
-  app.get('/auth/facebook', passport.authenticate('facebook', {
-    scope: 'email'
-  }))
-
-  app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-    successRedirect: '/',
-    failureRedirect: '/sigin'
-  }))
+  res.redirect('/signin')
 }
+
+
+router.get('/', shopController.getshop)
+router.get('/products', ProductController.getProducts)
+router.get('/products/:id', ProductController.getProduct)
+router.get('/cart', authenticated, cartController.getCart)
+router.post('/cart', cartController.postCart)
+
+router.get('/signin', userController.getSigninPage)
+router.get('/signup', userController.getSignUpPage)
+router.post('/signup', userController.SignUp)
+router.post('/signin', passport.authenticate('local', {
+  failureRedirect: '/signin', failureFlash: true
+}), userController.Signin)
+router.get('/logout', userController.logout)
+
+//favorite routes
+router.get('/favorites', authenticated, userController.getFavoritespage)
+router.post('/favorite/:productId', authenticated, userController.addFavorite)
+router.delete('/favorite/:productId', authenticated, userController.removeFavorite)
+
+router.post('/cartItem/:id/add', cartController.addCartitem)
+router.post('/cartItem/:id/sub', cartController.subCartItem)
+router.delete("/cartItem/:id", cartController.deleteCartItem)
+
+
+module.exports = router

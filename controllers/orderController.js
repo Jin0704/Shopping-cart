@@ -10,18 +10,18 @@ const Product = db.Product
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 
-let mailer = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    type: "OAuth2",
-    user: process.env.GMAIL_ACCOUNT,
-    pass: process.env.GMAIL_PASSWORD,
-    clientId: process.env.Google_OAuth_ID,
-    clientSecret: process.env.Google_OAuth_PASSWORD,
-    refreshToken: process.env.refresh_token,
-    accessToken: process.env.access_token
-  }
-})
+// let mailer = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     type: "OAuth2",
+//     user: process.env.GMAIL_ACCOUNT,
+//     pass: process.env.GMAIL_PASSWORD,
+//     clientId: process.env.Google_OAuth_ID,
+//     clientSecret: process.env.Google_OAuth_PASSWORD,
+//     refreshToken: process.env.refresh_token,
+//     accessToken: process.env.access_token
+//   }
+// })
 
 const URL = process.env.URL
 const MerchantID = process.env.MerchantID
@@ -165,27 +165,27 @@ let orderController = {
         )
       }
 
-      let mailOptions = {
-        from: process.env.GMAIL_ACCOUNT,
-        to: process.env.GMAIL_ACCOUNT,
-        subject: `${order.name} 您的訂單已成立`,
-        html:
-          `
-        以下是您的訂單:
-        <h1>訂購者:${order.name}</h1>
-        <h1>總金額:${order.amount}元</h1>
-        <h1>付款方式:${order.payment_method}</h1>
-        <h1>付款狀態:${order.payment_status}</h1>
-        <h1>出貨狀態:${order.payment_status}</h1>
-        <br>
-        <hr>
-        `
-      }
+      // let mailOptions = {
+      //   from: process.env.GMAIL_ACCOUNT,
+      //   to: process.env.GMAIL_ACCOUNT,
+      //   subject: `${order.name} 您的訂單已成立`,
+      //   html:
+      //     `
+      //   以下是您的訂單:
+      //   <h1>訂購者:${order.name}</h1>
+      //   <h1>總金額:${order.amount}元</h1>
+      //   <h1>付款方式:${order.payment_method}</h1>
+      //   <h1>付款狀態:${order.payment_status}</h1>
+      //   <h1>出貨狀態:${order.payment_status}</h1>
+      //   <br>
+      //   <hr>
+      //   `
+      // }
 
-      mailer.sendMail(mailOptions, (error, info) => {
-        if (error) console.log('Error:', error)
-        console.log('Email sent:', info.response)
-      })
+      // mailer.sendMail(mailOptions, (error, info) => {
+      //   if (error) console.log('Error:', error)
+      //   // console.log('Email sent:', info.response)
+      // })
 
       //async await
       const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })

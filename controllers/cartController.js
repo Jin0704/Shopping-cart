@@ -56,6 +56,7 @@ let cartController = {
     try {
       const cartItem = await CartItem.findByPk(req.params.id)
       await cartItem.update({ quantity: cartItem.quantity + 1 })
+      req.flash('success_messages', '已加入購物車!')
       return res.redirect('back')
     } catch (err) {
       console.log(err)
@@ -66,6 +67,7 @@ let cartController = {
     try {
       const cartItem = await CartItem.findByPk(req.params.id)
       await cartItem.update({ quantity: cartItem.quantity - 1 >= 1 ? cartItem.quantity - 1 : 1 })
+      req.flash('success_messages', '已移出購物車!')
       return res.redirect('back')
     } catch (err) {
       console.log(err)
@@ -76,6 +78,7 @@ let cartController = {
     try {
       const cartItem = await CartItem.findByPk(req.params.id)
       await cartItem.destroy()
+      req.flash('success_messages', '已移出購物車!')
       return res.redirect('back')
     } catch (err) {
       console.log(err)

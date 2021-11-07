@@ -6,23 +6,14 @@ const ProductController = require('../controllers/productsController')
 const cartController = require('../controllers/cartController')
 const userController = require('../controllers/userController')
 const multer = require('multer')
-const upload = multer({ dest: 'temp/' })
 const admin = require('./modules/admin')
 const orders = require('./modules/orders')
 const auth = require('./modules/auth')
+const authenticated = require('../middleware/auth').authenticated
 
 router.use('/admin', admin)
 router.use('/orders', orders)
 router.use('/auth', auth)
-
-
-const authenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next()
-  }
-  res.redirect('/signin')
-}
-
 
 router.get('/', shopController.getshop)
 router.get('/products', ProductController.getProducts)

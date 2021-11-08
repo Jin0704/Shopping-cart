@@ -1,4 +1,6 @@
+const { search } = require('imgur')
 const db = require('../models')
+const product = require('../models/product')
 const User = db.User
 const Product = db.Product
 const Cart = db.Cart
@@ -83,6 +85,38 @@ let ProductController = {
     } catch (err) {
       console.log(err)
     }
+  },
+  searchProduct: async (req, res) => {
+
+    const search = req.query.search
+
+    let products = await Product.findAll({
+      raw: true,
+      nest: true,
+    })
+
+    if (req.user) {
+      var data = products.map(p => ({
+        ...p,
+        isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
+      }))
+    }
+
+    let cart = await Cart.findByPk(req.session.cartId, {
+      include: 'items'
+    })
+    //sidebar page
+    cart = cart ? cart.toJSON() : { items: [] }
+    let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+    products = data ? data : products
+    // fliter search items
+    let searchProducts = products.filter(product => product.name.toUpperCase().includes(search.toUpperCase()))
+
+    return res.render('search', {
+      products: searchProducts,
+      cart,
+      totalPrice,
+    })
   }
 }
 

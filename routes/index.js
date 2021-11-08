@@ -18,6 +18,7 @@ router.use('/auth', auth)
 router.get('/', shopController.getshop)
 router.get('/products', ProductController.getProducts)
 router.get('/products/:id', ProductController.getProduct)
+router.get('/search', ProductController.searchProduct)
 router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 

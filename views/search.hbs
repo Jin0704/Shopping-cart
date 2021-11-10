@@ -1,12 +1,25 @@
-<div>
-  <form action="/search" method="get" class=" mb-3 d-flex justify-content-center">
-    <label for="search">搜尋:
-      <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
-      <button type="submit" class="btn-primary">送出</button>
-    </label>
+<div class=" mb-3 ">
+  <form action="/searchsort" method="get">
+    <div class="d-inline-box d-flex justify-content-center">
+      <label for="search">搜尋:
+        <input type="search" name="search" id="search" placeholder=" {{search}}" class="rounded-pill m-2"
+          value='{{search}}'>
+        <button type="submit" class="btn-primary">送出</button>
+      </label>
+    </div>
+
+    <div class=" mb-2 d-flex justify-content-end dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="searchsort" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        排序方式
+      </button>
+      <div class="dropdown-menu" aria-labelledby="searchsort">
+        <button class="dropdown-item" type="submit" name="searchsort" value="DESC">價格(高→低)</button>
+        <button class="dropdown-item" type="submit" name="searchsort" value="ASC">價格(低→高)</button>
+      </div>
+    </div>
   </form>
 </div>
-<br>
 <table class="table">
   <thead class="thead-dark">
     <tr>

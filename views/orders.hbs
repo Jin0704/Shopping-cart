@@ -1,5 +1,6 @@
+<br>
 {{#each orders}}
-<div class="column col-md-12">
+<div class="column col-md-12 border-bottom">
   {{#ifPay shipping_status '出貨完成' '訂單取消'}}
   <button class="btn btn-primary col-md-12 mt-2" type="button" data-toggle="collapse"
     data-target="#collapseExample{{this.id}}" aria-expanded="false" aria-controls="collapseExample"
@@ -90,3 +91,5 @@
   </div>
 </div>
 {{/each}}
+<br>
+<hr>

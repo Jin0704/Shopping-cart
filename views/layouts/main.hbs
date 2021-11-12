@@ -24,10 +24,19 @@
 
 <body>
 
-  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm"
+    style="height: 80px;">
     <h5 class=" my-0 mr-md-auto font-weight-normal">
       <strong><a href="/products">簡式電商購物網</a></strong>
     </h5>
+    {{!-- <div class="mr-auto mt-auto">
+      <form action="/search" method="get">
+        <label for="search">搜尋:
+          <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
+          <button type="submit" class="btn-primary">送出</button>
+        </label>
+      </form>
+    </div> --}}
     <nav class="my-2 my-md-0 mr-md-3">
       {{#if user.isAdmin}}
       <a href="/admin" class="p-2 text-dark">管理者後台</a>
@@ -47,30 +56,9 @@
       {{/if}}
     </nav>
   </div>
-
   <div class="container">
-    {{#if success_messages}}
-    <div class="alert alert-info " role="alert" style="margin: 30px 0 ;">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      {{success_messages}}
-    </div>
-    {{/if}}
-    {{#if error_messages}}
-    <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      {{error_messages}}
-    </div>
-    {{/if}}
-    <div class="container">
-      {{{body}}}
-    </div>
+    {{{body}}}
   </div>
-
-
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

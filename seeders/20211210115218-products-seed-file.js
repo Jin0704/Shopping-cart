@@ -13,7 +13,8 @@ module.exports = {
         description: faker.commerce.product() + '/' + faker.commerce.productName(),
         image: faker.image.imageUrl(),
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        CategoryId: Math.floor(Math.random() * 6) * 10 + 1
       })
       ), {})
   },

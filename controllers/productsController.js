@@ -3,6 +3,7 @@ const product = require('../models/product')
 const User = db.User
 const Product = db.Product
 const Cart = db.Cart
+const Category = db.Category
 const PAGE_LIMIT = 6
 
 
@@ -18,7 +19,8 @@ let ProductController = {
         raw: true,
         nest: true,
         offset: PAGE_OFFSET,
-        limit: PAGE_LIMIT
+        limit: PAGE_LIMIT,
+        include: [Category]
       })
 
       if (req.user) {
@@ -47,6 +49,7 @@ let ProductController = {
       // console.log(products)
       // console.log('****************')
       // console.log(data)
+      // console.log(products[0])
       return res.render('products', {
         products,
         cart,
@@ -63,7 +66,7 @@ let ProductController = {
 
   getProduct: async (req, res) => {
     try {
-      const product = await Product.findByPk(req.params.id, { include: { model: User, as: 'FavoritedUsers' } })
+      const product = await Product.findByPk(req.params.id, { include: [{ model: User, as: 'FavoritedUsers' }, { model: Category }] })
       let cart = await Cart.findByPk(req.session.cartId, { include: 'items' })
       //sidebar page
       cart = cart ? cart.toJSON() : { items: [] }

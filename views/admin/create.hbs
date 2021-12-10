@@ -26,6 +26,21 @@
         </div>
 
         <div class="form-group">
+          <label for="category">Category</label>
+          <br>
+          <input list="browsers" name="category" class="col-md-12" placeholder="{{product.Category.name}}">
+          <datalist id="browsers">
+            <option value="休閒娛樂">
+            <option value="食物">
+            <option value="衣物">
+            <option value="住家裝飾">
+            <option value="書籍">
+            <option value="其它">
+          </datalist>
+          </input>
+        </div>
+
+        <div class="form-group">
           <label for="price">Price</label>
           <input type="number" class="form-control" name="price" id="price" placeholder="輸入價錢" value="{{product.price}}"
             required>

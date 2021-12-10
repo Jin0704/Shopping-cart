@@ -1,6 +1,7 @@
 const db = require('../models')
 const Product = db.Product
 const Order = db.Order
+const Category = db.Category
 const OrderItems = db.OrderItems
 const fs = require('fs')
 const imgur = require('imgur')
@@ -8,7 +9,14 @@ const { error } = require('console')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setAPIUrl('https://api.imgur.com/3/')
 const PAGE_LIMIT = 6
-
+const categoryId = {
+  '食物': 1,
+  '衣物': 11,
+  '休閒娛樂': 21,
+  '住家裝飾': 31,
+  '書籍': 41,
+  '其它': 51
+}
 
 const adminController = {
 
@@ -58,14 +66,16 @@ const adminController = {
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: file ? img.link : null
+          image: file ? img.link : null,
+          CategoryId: categoryId[req.body.category]
         })
       } else {
         const products = await Product.create({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: null
+          image: null,
+          CategoryId: categoryId[req.body.category]
         })
       }
       req.flash('success_messages', '新增成功')
@@ -78,7 +88,8 @@ const adminController = {
 
   getProduct: async (req, res) => {
     try {
-      const product = await Product.findByPk(req.params.id, { raw: true })
+      const product = await Product.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
+      console.log(product)
       return res.render('admin/product', {
         product: product
       })
@@ -89,7 +100,8 @@ const adminController = {
 
   editProduct: async (req, res) => {
     try {
-      const product = await Product.findByPk(req.params.id, { raw: true })
+      const product = await Product.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
+      console.log(product)
       return res.render('admin/create', { product: product })
     } catch (err) {
       console.log(err)
@@ -102,20 +114,25 @@ const adminController = {
       if (file) {
         imgur.setClientId(IMGUR_CLIENT_ID);
         const img = await imgur.uploadFile(file.path)
-        const product = await Product.findByPk(req.params.id)
+        const product = await Product.findByPk(req.params.id, { include: [Category] })
+        // console.log(categoryId[req.body.category])
         await product.update({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: file ? img.link : product.image
+          image: file ? img.link : product.image,
+          CategoryId: categoryId[req.body.category]
         })
       } else {
-        const product = await Product.findByPk(req.params.id)
+        const product = await Product.findByPk(req.params.id, { include: [Category] })
+        console.log(req.body)
+        // console.log(categoryId[req.body.category])
         await product.update({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: product.image
+          image: product.image,
+          CategoryId: categoryId[req.body.category]
         })
       }
       req.flash('success_messages', '更新成功')

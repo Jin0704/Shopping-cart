@@ -1,6 +1,9 @@
 const passport = require('passport')
+const passportJWY = require('passport-jwt')
 const LocalStrategy = require('passport-local').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
+const JWTStrategy = passportJWY.Strategy
+const ExtractJWT = passportJWY.ExtractJwt
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
@@ -41,6 +44,22 @@ passport.deserializeUser((id, done) => {
       done(null, user)
     }).catch(err => done(err, null))
 })
+
+// jwt
+const jwtOptions = {
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET
+}
+// jwt strategy
+passport.use(new JWTStrategy(jwtOptions, (jwtPayload, cb) => {
+  User.findByPk(jwtPayload.id, {
+    include: [
+      { model: Product, as: 'FavoritedProducts' }
+    ]
+  })
+    .then(user => cb(null, user))
+    .catch(err => cb(err))
+}))
 
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,

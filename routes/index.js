@@ -41,8 +41,8 @@ router.use(authenticated)
 router.get('/cart', cartController.getCart)
 //favorite routes
 router.get('/favorites', userController.getFavoritespage)
-router.post('/favorite/:productId', userController.addFavorite)
-router.delete('/favorite/:productId', userController.removeFavorite)
+router.post('/favorites/:productId', userController.addFavorite)
+router.delete('/favorites/:productId', userController.removeFavorite)
 
 
 

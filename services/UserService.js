@@ -1,5 +1,7 @@
 const db = require('../models')
 const User = db.User
+const Product = db.Product
+const Favorite = db.Favorite
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
@@ -54,6 +56,47 @@ const UserService = {
       throw new Error(err)
     }
 
+  },
+  getFavoritesPage: async (req) => {
+    try {
+      let products = await User.findByPk(req.user.id, {
+        include: [
+          { model: Product, as: 'FavoritedProducts' }
+        ]
+      })
+      products = products ? products.toJSON() : []
+      return { products: products.FavoritedProducts }
+    } catch (err) {
+      console.log(err)
+      throw new Error(err)
+    }
+  },
+  addFavorite: async (req, res) => {
+    try {
+      await Favorite.create({
+        UserId: req.user.id,
+        ProductId: req.params.productId
+      })
+      return { 'message': '收藏成功' }
+    } catch (err) {
+      console.error(err)
+      throw new Error(err)
+    }
+  },
+  removeFavorite: async (req, res) => {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          UserId: req.user.id,
+          ProductId: req.params.productId
+        }
+      })
+      await favorite.destroy()
+      return { 'message': '已移除收藏' }
+    } catch (err) {
+      console.error(err)
+      throw new Error(err)
+    }
   }
 }
 

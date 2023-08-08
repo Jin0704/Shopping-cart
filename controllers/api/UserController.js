@@ -24,6 +24,37 @@ const UserController = {
       return responseBuilder.error(req, res, 500, err)
     }
     return responseBuilder.success(res, 200, data)
+  },
+
+  getFavoritesPage: async (req, res) => {
+    let data;
+    try {
+      data = await UserService.getFavoritesPage(req)
+    } catch (err) {
+      console.error(err)
+      return responseBuilder.error(req, res, 500, err)
+    }
+    return responseBuilder.success(res, 200, data)
+  },
+  addFavorite: async (req, res) => {
+    let data;
+    try {
+      data = await UserService.addFavorite(req);
+    } catch (err) {
+      console.error(err)
+      return responseBuilder.error(req, res, 500, err)
+    }
+    return responseBuilder.success(res, 200, data)
+  },
+  removeFavorite: async (req, res) => {
+    let data;
+    try {
+      data = await UserService.removeFavorite(req);
+    } catch (err) {
+      console.error(err)
+      return responseBuilder.error(req, res, 500, err)
+    }
+    return responseBuilder.success(res, 200, data)
   }
 
 }

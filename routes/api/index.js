@@ -6,7 +6,8 @@ const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth
 
 
 router.use('/', user)
-// router.use(authenticated);
+// router.use(authenticated)
+// router.use(authenticatedAdmin)
 router.use('/products', product)
 
 

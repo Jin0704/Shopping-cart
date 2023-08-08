@@ -27,7 +27,7 @@ let ProductController = {
     }
 
     return responseBuilder.success(res, 200, data)
-  }
+  },
 }
 
 

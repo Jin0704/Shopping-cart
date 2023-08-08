@@ -55,7 +55,7 @@ const ProductService = {
       console.error(err)
       throw new Error(err)
     }
-  }
+  },
 }
 
 

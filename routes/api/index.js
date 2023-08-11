@@ -2,13 +2,11 @@ const express = require('express')
 const router = express.Router()
 const product = require('./product')
 const user = require('./user')
-const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth')
+const cart = require('./cart')
 
-
-router.use('/', user)
-// router.use(authenticated)
-// router.use(authenticatedAdmin)
 router.use('/products', product)
+router.use('/cart',cart)
+router.use('/', user)
 
 
 module.exports = router

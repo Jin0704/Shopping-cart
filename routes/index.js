@@ -9,18 +9,19 @@ const multer = require('multer')
 const admin = require('./modules/admin')
 const orders = require('./modules/orders')
 const auth = require('./modules/auth')
+const api = require('./api')
 const authenticated = require('../middleware/auth').authenticated
 
 router.use('/admin', admin)
 router.use('/orders', orders)
 router.use('/auth', auth)
+router.use('/api', api)
 
 router.get('/', shopController.getshop)
 router.get('/products', ProductController.getProducts)
 router.get('/products/:id', ProductController.getProduct)
 router.get('/search', ProductController.searchProduct)
 router.get('/searchsort', ProductController.sortProducts)
-router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 
 router.get('/signin', userController.getSigninPage)
@@ -30,15 +31,19 @@ router.post('/signin', passport.authenticate('local', {
   failureRedirect: '/signin', failureFlash: true
 }), userController.Signin)
 router.get('/logout', userController.logout)
-
-//favorite routes
-router.get('/favorites', authenticated, userController.getFavoritespage)
-router.post('/favorite/:productId', authenticated, userController.addFavorite)
-router.delete('/favorite/:productId', authenticated, userController.removeFavorite)
-
 router.post('/cartItem/:id/add', cartController.addCartitem)
 router.post('/cartItem/:id/sub', cartController.subCartItem)
 router.delete("/cartItem/:id", cartController.deleteCartItem)
+
+
+// use authenticated
+router.use(authenticated)
+router.get('/cart', cartController.getCart)
+//favorite routes
+router.get('/favorites', userController.getFavoritespage)
+router.post('/favorites/:productId', userController.addFavorite)
+router.delete('/favorites/:productId', userController.removeFavorite)
+
 
 
 module.exports = router

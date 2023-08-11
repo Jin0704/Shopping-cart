@@ -9,7 +9,7 @@ const UserController = {
       data = await UserService.signUp(input)
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
 
     return responseBuilder.success(res, 200, data)
@@ -21,7 +21,7 @@ const UserController = {
       data = await UserService.signIn(input)
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
     return responseBuilder.success(res, 200, data)
   },
@@ -32,7 +32,7 @@ const UserController = {
       data = await UserService.getFavoritesPage(req)
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
     return responseBuilder.success(res, 200, data)
   },
@@ -42,7 +42,7 @@ const UserController = {
       data = await UserService.addFavorite(req);
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
     return responseBuilder.success(res, 200, data)
   },
@@ -52,7 +52,7 @@ const UserController = {
       data = await UserService.removeFavorite(req);
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
     return responseBuilder.success(res, 200, data)
   }

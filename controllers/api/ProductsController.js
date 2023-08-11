@@ -9,7 +9,7 @@ let ProductController = {
       data = await ProductService.getProducts(req)
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
     return responseBuilder.success(res, 200, data)
   },
@@ -23,7 +23,7 @@ let ProductController = {
       }
     } catch (err) {
       console.error(err)
-      return responseBuilder.error(req, res, 500, err)
+      return responseBuilder.error(req, res, 400, err)
     }
 
     return responseBuilder.success(res, 200, data)

@@ -10,7 +10,7 @@ const cartController = {
       data = await CartService.getCart(req)
     }catch(err){
       console.error(err)
-      return responseBuilder.error(req,res,500,err)
+      return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
@@ -21,7 +21,7 @@ const cartController = {
       data = await CartService.postCart(req)
     }catch(err){
       console.error(err)
-      return responseBuilder.error(req,res,500,err)
+      return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
@@ -32,7 +32,7 @@ const cartController = {
       data = await CartService.addCartItem(req)
     }catch(err){
       console.error(err)
-      return responseBuilder.error(req,res,500,err)
+      return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
@@ -43,7 +43,7 @@ const cartController = {
       data = await CartService.subCartItem(req)
     }catch(err){
       console.error(err)
-      return responseBuilder.error(req,res,500,err)
+      return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
@@ -54,7 +54,7 @@ const cartController = {
       data = await CartService.deleteCartItem(req)
     }catch(err){
       console.error(err)
-      return responseBuilder.error(req,res,500,err)
+      return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   }

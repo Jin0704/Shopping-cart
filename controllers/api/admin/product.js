@@ -42,6 +42,7 @@ const ProductController = {
     }
     return responseBuilder.success(res,200,data)
   },
+  // 做成軟刪除
   deleteProduct: async(req,res)=>{
     let data;
     try{

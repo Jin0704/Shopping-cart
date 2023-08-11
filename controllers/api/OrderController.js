@@ -1,4 +1,4 @@
-const OrderService = require('../../services/OrderService')
+const OrderService = require('../../services/order')
 const responseBuilder = require('../../helper/responseBuilder')
 
 

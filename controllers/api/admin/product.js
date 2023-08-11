@@ -1,66 +1,57 @@
-const CartService = require('../../services/cart')
-const responseBuilder = require('../../helper/responseBuilder')
+const responseBuilder = require('../../../helper/responseBuilder')
+const ProductService = require('../../../services/admin/product')
 
-
-const cartController = {
-
-  getCart : async(req,res)=>{
+const ProductController = {
+  getProducts: async(req,res)=>{
     let data;
     try{
-      data = await CartService.getCart(req)
+      data = await ProductService.getProducts(req)
     }catch(err){
       console.error(err)
       return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
-
-  postCart : async(req,res)=>{
+  getProduct: async(req,res)=>{
     let data;
     try{
-      data = await CartService.postCart(req)
+      data = await ProductService.getProduct(req)
     }catch(err){
       console.error(err)
       return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
-
-  addCartItem: async(req,res)=>{
+  postProduct: async(req,res)=>{
     let data;
     try{
-      data = await CartService.addCartItem(req)
+      data = await ProductService.postProduct(req)
     }catch(err){
       console.error(err)
       return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
-
-  subCartItem: async(req,res)=>{
+  putProduct: async(req,res)=>{
     let data;
     try{
-      data = await CartService.subCartItem(req)
+      data = await ProductService.putProduct(req)
     }catch(err){
       console.error(err)
       return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   },
-
-  deleteCartItem: async(req,res)=>{
+  deleteProduct: async(req,res)=>{
     let data;
     try{
-      data = await CartService.deleteCartItem(req)
+      data = await ProductService.deleteProduct(req)
     }catch(err){
       console.error(err)
       return responseBuilder.error(req,res,400,err)
     }
     return responseBuilder.success(res,200,data)
   }
-
 }
 
-
-
-module.exports = cartController;
+module.exports = ProductController

@@ -1,4 +1,4 @@
-const UserService = require('../../services/UserService')
+const UserService = require('../../services/user')
 const responseBuilder = require('../../helper/responseBuilder')
 
 const UserController = {

@@ -1,6 +1,7 @@
 const db = require('../../models')
 const Product = db.Product
 const _ = require('lodash')
+const uploadFileToS3 = require('../../helper/uploadFileToS3')
 
 const ProductService = {
   getProducts: async(req)=>{
@@ -45,11 +46,15 @@ const ProductService = {
   },
   postProduct: async(req)=>{
     try{
+      let imageUrl;
       await checkProductValid(req.body)
+      if(req.file){
+        imageUrl  = await uploadFileToS3(req)
+      }
       await Product.create({
         ...req.body,
         description: req.body.description ? req.body.description : '',
-        image:''
+        image: imageUrl ? imageUrl:''
       })
       return { 'message':' 產品新增成功'}
     }catch(err){

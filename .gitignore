@@ -90,3 +90,6 @@ typings/
 
 #image
 upload/
+
+#temp
+temp/

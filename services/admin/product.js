@@ -64,15 +64,19 @@ const ProductService = {
   },
   putProduct: async(req)=>{
     try{
+      let imageUrl;
       const product =  await Product.findByPk(req.params.id)
       if (!product){
         throw new error('Product not exists!')
+      }
+      if(req.file){
+        imageUrl  = await uploadFileToS3(req)
       }
       await checkProductValid(req.body)
       await product.update({
         ...req.body,
         description: req.body.description ? req.body.description : '',
-        image:''
+        image: imageUrl ? imageUrl:''
       })
       return { 'message':' 產品更新成功'}
     }catch(err){
@@ -101,6 +105,9 @@ async function checkProductValid(input){
   }
   if(!_.has(input,'price')){
     throw new Error('product price is required!')
+  }
+  if(!_.has(input,'CategoryId')){
+    throw new Error('category is required')
   }
   return true
 }

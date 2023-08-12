@@ -4,10 +4,11 @@ const Order = db.Order
 const Category = db.Category
 const OrderItems = db.OrderItems
 const fs = require('fs')
-const imgur = require('imgur')
+// const imgur = require('imgur')
 const { error } = require('console')
-const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
-imgur.setAPIUrl('https://api.imgur.com/3/')
+// const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+// imgur.setAPIUrl('https://api.imgur.com/3/')
+const uploadFileToS3 = require('../helper/uploadFileToS3')
 const PAGE_LIMIT = 6
 const categoryId = {
   '食物': 1,
@@ -60,13 +61,12 @@ const adminController = {
     try {
       const { file } = req
       if (file) {
-        imgur.setClientId(IMGUR_CLIENT_ID);
-        const img = await imgur.uploadFile(req.file.path)
+        let imageUrl  = await uploadFileToS3(req)
         const products = await Product.create({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: file ? img.link : null,
+          image: imageUrl ? imageUrl : '',
           CategoryId: categoryId[req.body.category]
         })
       } else {
@@ -74,7 +74,7 @@ const adminController = {
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: null,
+          image: '',
           CategoryId: categoryId[req.body.category]
         })
       }
@@ -112,15 +112,16 @@ const adminController = {
     try {
       const { file } = req
       if (file) {
-        imgur.setClientId(IMGUR_CLIENT_ID);
-        const img = await imgur.uploadFile(file.path)
+        // imgur.setClientId(IMGUR_CLIENT_ID);
+        // const img = await imgur.uploadFile(file.path)
+        let imageUrl  = await uploadFileToS3(req)
         const product = await Product.findByPk(req.params.id, { include: [Category] })
         // console.log(categoryId[req.body.category])
         await product.update({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
-          image: file ? img.link : product.image,
+          image: imageUrl ? imageUrl: product.image,
           CategoryId: categoryId[req.body.category]
         })
       } else {

@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const database = {
+const config = {
   "development": {
     "username": process.env.RDS_USERNAME,
     "password": process.env.RDS_PASSWORD,
@@ -34,4 +34,4 @@ const database = {
   // }
 }
 
-module.exports = database
+module.exports = config

@@ -35,6 +35,14 @@ router.post('/cartItem/:id/add', cartController.addCartitem)
 router.post('/cartItem/:id/sub', cartController.subCartItem)
 router.delete("/cartItem/:id", cartController.deleteCartItem)
 
+// private
+router.get('/private',(req,res)=>{
+  res.render('private')
+})
+// terms
+router.get('/terms',(req,res)=>{
+  res.render('terms')
+})
 
 // use authenticated
 router.use(authenticated)

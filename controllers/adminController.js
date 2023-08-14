@@ -4,20 +4,8 @@ const Order = db.Order
 const Category = db.Category
 const OrderItems = db.OrderItems
 const fs = require('fs')
-// const imgur = require('imgur')
-const { error } = require('console')
-// const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
-// imgur.setAPIUrl('https://api.imgur.com/3/')
 const uploadFileToS3 = require('../helper/uploadFileToS3')
 const PAGE_LIMIT = 6
-const categoryId = {
-  '食物': 1,
-  '衣物': 11,
-  '休閒娛樂': 21,
-  '住家裝飾': 31,
-  '書籍': 41,
-  '其它': 51
-}
 
 const adminController = {
 
@@ -33,7 +21,8 @@ const adminController = {
         raw: true,
         nest: true,
         limit: PAGE_LIMIT,
-        offset: PAGE_OFFSET
+        offset: PAGE_OFFSET,
+        include:Category
       })
       let page = Number(req.query.page) || 1
       const pages = Math.ceil(products.count / PAGE_LIMIT)
@@ -53,11 +42,12 @@ const adminController = {
     }
   },
 
-  createProducts: (req, res) => {
-    return res.render('admin/create')
+  createProducts:async (req, res) => {
+    const categories = await Category.findAll({raw:true,attributes:['id','name']})
+    return res.render('admin/create',{categories})
   },
 
-  postProdcuts: async (req, res) => {
+  postProducts: async (req, res) => {
     try {
       const { file } = req
       if (file) {
@@ -67,7 +57,7 @@ const adminController = {
           price: req.body.price,
           description: req.body.description,
           image: imageUrl ? imageUrl : '',
-          CategoryId: categoryId[req.body.category]
+          CategoryId: req.body.categoryId
         })
       } else {
         const products = await Product.create({
@@ -75,7 +65,7 @@ const adminController = {
           price: req.body.price,
           description: req.body.description,
           image: '',
-          CategoryId: categoryId[req.body.category]
+          CategoryId: req.body.categoryId
         })
       }
       req.flash('success_messages', '新增成功')
@@ -89,9 +79,8 @@ const adminController = {
   getProduct: async (req, res) => {
     try {
       const product = await Product.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
-      console.log(product)
       return res.render('admin/product', {
-        product: product
+        product: product,
       })
     } catch (err) {
       console.log(err)
@@ -101,8 +90,12 @@ const adminController = {
   editProduct: async (req, res) => {
     try {
       const product = await Product.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
-      console.log(product)
-      return res.render('admin/create', { product: product })
+      const categories = await Category.findAll({
+        raw:true,
+        where:{status:1},
+        attributes:['id','name']
+      })
+      return res.render('admin/create', { product, categories })
     } catch (err) {
       console.log(err)
     }
@@ -112,28 +105,23 @@ const adminController = {
     try {
       const { file } = req
       if (file) {
-        // imgur.setClientId(IMGUR_CLIENT_ID);
-        // const img = await imgur.uploadFile(file.path)
         let imageUrl  = await uploadFileToS3(req)
         const product = await Product.findByPk(req.params.id, { include: [Category] })
-        // console.log(categoryId[req.body.category])
         await product.update({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
           image: imageUrl ? imageUrl: product.image,
-          CategoryId: categoryId[req.body.category]
+          CategoryId: req.body.categoryId
         })
       } else {
         const product = await Product.findByPk(req.params.id, { include: [Category] })
-        console.log(req.body)
-        // console.log(categoryId[req.body.category])
         await product.update({
           name: req.body.name,
           price: req.body.price,
           description: req.body.description,
           image: product.image,
-          CategoryId: categoryId[req.body.category]
+          CategoryId: req.body.categoryId
         })
       }
       req.flash('success_messages', '更新成功')
@@ -239,7 +227,7 @@ const adminController = {
         nest: true,
         limit: categoryPagelimit,
         offset: PAGE_OFFSET,
-        attributes:['id','name']
+        attributes:['id','name','status']
       })
 
       const page = Number(req.query.page) || 1
@@ -263,6 +251,7 @@ const adminController = {
   getCategory: async(req,res)=>{
     try {
       const category = await Category.findByPk(req.params.id)
+      console.log('----category',category.toJSON())
       return res.render('admin/category', { category: category.toJSON(), })
     } catch (error) {
       console.log(error)
@@ -277,6 +266,7 @@ const adminController = {
     try {
       await Category.create({
         name: req.body.name,
+        status: req.body.status
       })
       req.flash('success_messages', '新增成功')
       return res.redirect('/admin/categories')
@@ -290,6 +280,7 @@ const adminController = {
       let category = await Category.findByPk(req.params.id)
       await category.update({
         name: req.body.name,
+        status: req.body.status
       })
       req.flash('success_messages', '更新成功')
       return res.redirect('/admin/categories')

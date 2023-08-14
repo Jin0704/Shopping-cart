@@ -52,6 +52,7 @@ let ProductController = {
 
       const categories = await Category.findAll({
         raw:true,
+        where:{status:1},
         attributes:['id','name']
       })
 

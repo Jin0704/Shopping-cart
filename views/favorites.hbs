@@ -16,7 +16,7 @@
       <td>{{this.name}}</td>
       <td>{{this.price}}</td>
       <td>
-        <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+        <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
             class="btn btn-outline-secondary mb-2">移除收藏</button></form>
         <form action="/cart" method="POST">
           <input type="hidden" name="productId" value="{{this.id}}">

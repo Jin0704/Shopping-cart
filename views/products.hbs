@@ -29,10 +29,10 @@
                 <small class="text-muted">[{{this.Category.name}}]</small>
                 <div class="btn-group">
                   {{#if this.isFavorited}}
-                  <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+                  <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
                       class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
                   {{else}}
-                  <form action="/favorite/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
+                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
                         class="fas fa-heart" style="color:thistle"></i></button></form>
                   {{/if}}
                   <form action="/cart" method="POST">

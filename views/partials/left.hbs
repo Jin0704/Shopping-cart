@@ -1,5 +1,10 @@
-{{!-- <div class="d-flex justify-content-center">
-  <li>1</li>
-  <li>2</li>
-  <li>3</li>
-</div> --}}
+<div class="d-flex flex-column justify-content-center">
+  <div>
+    <h2><strong>產品分類</strong></h2>
+  </div>
+  {{#each categories}}
+    <div class="p-3" style="font-size: 20px;"><strong><a
+          href="/categories/{{this.id}}"
+        >{{this.name}}</a></strong></div>
+  {{/each}}
+</div>

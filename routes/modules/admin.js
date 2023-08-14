@@ -20,7 +20,12 @@ router.get('/orders', authenticatedAdmin, adminController.getOrders)
 router.get('/orders/:id', authenticatedAdmin, adminController.getOrder)
 router.put('/orders/:id', authenticatedAdmin, adminController.putOrder)
 router.delete('/orders/:id', authenticatedAdmin, adminController.deleteOrder)
-
-
+// categories
+router.get('/categories',authenticatedAdmin,adminController.getCategories)
+router.get('/categories/create', authenticatedAdmin, adminController.createCategory)
+router.post('/categories',authenticatedAdmin,adminController.postCategory)
+router.get('/categories/:id', authenticatedAdmin, adminController.getCategory)
+router.put('/categories/:id', authenticatedAdmin, adminController.editCategory)
+router.delete('/categories/:id', authenticatedAdmin, adminController.deleteCategory)
 
 module.exports = router

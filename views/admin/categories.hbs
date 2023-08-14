@@ -5,37 +5,38 @@
     <a class="p-2 text-dark" href="/admin/categories">分類</a>
   </nav>
 </div>
+<a href='/admin/categories/create'>
+  <button type="button" class="btn btn-primary">新增分類</button>
+</a>
+
+<br />
 <hr>
 {{>messages}}
 <table class="table">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">訂單編號</th>
-      <th scope="col">訂單價格</th>
-      <th scope="col">付款方式</th>
-      <th scope="col">付款狀態</th>
-      <th scope="col">運送狀態</th>
-      <th scope='col'>詳細資料</th>
+      <th scope="col">分類編號</th>
+      <th scope="col">分類名稱</th>
+      <th scope="col">分類狀態</th>
+      <th scope="col">詳細資料</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    {{#each orders}}
+    {{#each categories}}
     <tr>
       <td>{{this.id}}</td>
-      <td>${{this.amount}}</td>
-      <td>{{#ifCond this.payment_method 'ATM'}}ATM轉帳{{else}}信用卡{{/ifCond}}</td>
-      <td>{{this.payment_status }} </td>
-      <td>{{ this.shipping_status }} </td>
+      <td>{{this.name}}</td>
+      <td>預設開啟</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a href="/admin/orders/{{this.id}}">
-            更新訂單資料
+          <a href="/admin/categories/{{this.id}}">
+            編輯分類
           </a>
         </button>
       </td>
       <td>
-        <form action="/admin/orders/{{this.id}}?_method=DELETE" method="POST">
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-link">
             <i class="fas fa-trash"></i>
           </button>

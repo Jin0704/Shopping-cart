@@ -224,7 +224,90 @@ const adminController = {
     } catch (err) {
       console.log(err)
     }
-  }
+  },
+
+  getCategories: async(req,res)=>{
+    try {
+      let PAGE_OFFSET = 0
+      const categoryPagelimit = 10
+      if (req.query.page) {
+        PAGE_OFFSET = (req.query.page - 1) * categoryPagelimit
+      }
+
+      const categories = await Category.findAndCountAll({
+        raw: true,
+        nest: true,
+        limit: categoryPagelimit,
+        offset: PAGE_OFFSET,
+        attributes:['id','name']
+      })
+
+      const page = Number(req.query.page) || 1
+      const pages = Math.ceil(categories.count / categoryPagelimit)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+
+      return res.render('admin/categories', {
+        categories: categories.rows,
+        page: page,
+        totalPage: totalPage,
+        prev: prev,
+        next: next
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
+  getCategory: async(req,res)=>{
+    try {
+      const category = await Category.findByPk(req.params.id)
+      return res.render('admin/category', { category: category.toJSON(), })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+
+  createCategory: (req, res) => {
+    return res.render('admin/createCategory')
+  },
+
+  postCategory: async(req,res)=>{
+    try {
+      await Category.create({
+        name: req.body.name,
+      })
+      req.flash('success_messages', '新增成功')
+      return res.redirect('/admin/categories')
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
+  editCategory: async (req, res) => {
+    try {
+      let category = await Category.findByPk(req.params.id)
+      await category.update({
+        name: req.body.name,
+      })
+      req.flash('success_messages', '更新成功')
+      return res.redirect('/admin/categories')
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
+  deleteCategory: async (req, res) => {
+    try {
+      const category = await Category.findByPk(req.params.id)
+      await category.destroy()
+      req.flash('success_messages', '刪除成功')
+      return res.redirect('/admin/categories')
+    } catch (err) {
+      console.log(err)
+    }
+  },
 }
 
 

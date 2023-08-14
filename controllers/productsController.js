@@ -1,5 +1,4 @@
 const db = require('../models')
-const product = require('../models/product')
 const User = db.User
 const Product = db.Product
 const Cart = db.Cart
@@ -50,9 +49,16 @@ let ProductController = {
       // console.log('****************')
       // console.log(data)
       // console.log(products[0])
+
+      const categories = await Category.findAll({
+        raw:true,
+        attributes:['id','name']
+      })
+
       return res.render('products', {
         products,
         cart,
+        categories,
         totalPrice,
         page: page,
         totalPage: totalPage,

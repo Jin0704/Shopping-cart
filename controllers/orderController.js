@@ -16,7 +16,7 @@ const crypto = require('crypto')
 //     type: "OAuth2",
 //     user: process.env.GMAIL_ACCOUNT,
 //     pass: process.env.GMAIL_PASSWORD,
-//     clientId: process.env.Google_OAuth_ID,
+//     clientId: process.env.GOOGLE_OAUTH_ID,
 //     clientSecret: process.env.Google_OAuth_PASSWORD,
 //     refreshToken: process.env.refresh_token,
 //     accessToken: process.env.access_token

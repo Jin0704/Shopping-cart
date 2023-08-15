@@ -10,7 +10,7 @@ router.get('/', authenticatedAdmin, (req, res) => res.redirect('/admin/products'
 //Products
 router.get('/products', authenticatedAdmin, adminController.getProducts)
 router.get('/products/create', authenticatedAdmin, adminController.createProducts)
-router.post('/products', authenticatedAdmin, upload.single('image'), adminController.postProdcuts)
+router.post('/products', authenticatedAdmin, upload.single('image'), adminController.postProducts)
 router.get('/products/:id', authenticatedAdmin, adminController.getProduct)
 router.get('/products/:id/edit', authenticatedAdmin, adminController.editProduct)
 router.put('/products/:id', authenticatedAdmin, upload.single('image'), adminController.putProduct)

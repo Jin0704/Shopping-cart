@@ -2,6 +2,7 @@ const passport = require('passport')
 const passportJWY = require('passport-jwt')
 const LocalStrategy = require('passport-local').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
+const GoogleStrategy = require('passport-google-oauth2').Strategy
 const JWTStrategy = passportJWY.Strategy
 const ExtractJWT = passportJWY.ExtractJwt
 const bcrypt = require('bcryptjs')
@@ -85,5 +86,37 @@ passport.use(new FacebookStrategy({
 }
 ))
 
+
+// Google
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_OAUTH_ID,
+  clientSecret: process.env.GOOGLE_OAUTH_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK,
+  passReqToCallback: true
+  },
+  (req,accessToken, refreshToken, profile,done)=>{
+    // const newUser = {
+    //   googleId: profile.id,
+    //   email:profile.email,
+    //   displayName: profile.displayName,
+    //   firstName: profile.name.givenName,
+    //   lastName: profile.name.familyName,
+    //   image: profile.photos[0].value,
+    // }
+    User.findOne({ where: { email: profile.email } })
+    .then(user => {
+      if (user) return done(null, user)
+      const randomPassword = Math.random().toString(36).slice(-8)
+      bcrypt.genSalt(6)
+        .then(salt => bcrypt.hashSync(randomPassword, salt))
+        .then(hash => User.create({
+          email: profile.email,
+          password: hash
+        }))
+        .then(user => done(null, user))
+        .catch(err => done(err, false))
+    })
+  }
+))
 
 module.exports = passport

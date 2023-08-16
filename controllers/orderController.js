@@ -9,6 +9,7 @@ const User = db.User
 const Product = db.Product
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
+const redis = require('../redis')
 
 // let mailer = nodemailer.createTransport({
 //   service: 'gmail',
@@ -121,13 +122,19 @@ let orderController = {
 
   getOrders: async (req, res) => {
     try {
+      let data;
+      data = await redis.getKey(`user${req.user.id}_orders`)
+      if(data){
+        return res.render('orders', { orders:data})
+      }
       const user = await User.findByPk(req.user.id)
       const orders = await Order.findAll({
         where: { UserId: user.id },
         include: [{ model: Product, as: 'items' }]
       })
-      const ordersJSON = orders.map(order => order.toJSON())
-      return res.render('orders', { orders: ordersJSON })
+      data = orders.map(order => order.toJSON())
+      await redis.setKey(`user${req.user.id}_orders`, JSON.stringify(data))
+      return res.render('orders', { orders: data })
     } catch (err) {
       console.log(err)
     }
@@ -150,7 +157,6 @@ let orderController = {
         amount: Number(req.body.amount),
         UserId: req.user.id
       })
-      // console.log(order)
       var results = []
       for (let i = 0; i < cart.items.length; i++) {
         // console.log(order.id, cart.id, cart.items[i].id)
@@ -194,6 +200,8 @@ let orderController = {
 
       await Promise.all(results)
       req.session.cartId = ''
+      await redis.clearKey(`user${req.user.id}_orders`)
+      await redis.clearKey("admin-orders")
       return res.redirect('/orders')
       //  Promise.all(results).then(() => {
       //   console.log('------------')
@@ -213,6 +221,8 @@ let orderController = {
         shipping_status: '訂單取消',
         payment_status: '訂單取消',
       })
+      await redis.clearKey(`user${req.user.id}_orders`)
+      await redis.clearKey("admin-orders")
       return res.redirect('back')
     } catch (err) {
       console.log(err)

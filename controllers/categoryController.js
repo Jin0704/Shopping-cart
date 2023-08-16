@@ -1,13 +1,28 @@
 const db = require('../models')
-const User = db.User
 const Product = db.Product
 const Cart = db.Cart
 const Category = db.Category
 const PAGE_LIMIT = 6
+const redis = require('../redis')
 
 const categoryController = {
   getCategory:async(req,res)=>{
     try {
+      let data;
+      let cart = await Cart.findByPk(req.session.cartId, {
+        include: 'items'
+      })
+      //sidebar page
+      cart = cart ? cart.toJSON() : { items: [] }
+      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      data = await redis.getKey(`category-${req.params.id}`)
+      if(data){
+        return res.render('category', {
+        ...data,
+        cart,
+        totalPrice
+      })
+      }
       const categoryId = req.params.id
       let PAGE_OFFSET = 0
       if (req.query.page) {
@@ -24,7 +39,7 @@ const categoryController = {
       })
 
       if (req.user) {
-        var data = products.rows.map(p => ({
+        var productData = products.rows.map(p => ({
           ...p,
           isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
         }))
@@ -36,27 +51,13 @@ const categoryController = {
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
 
-
-      let cart = await Cart.findByPk(req.session.cartId, {
-        include: 'items'
-      })
-      //sidebar page
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      products = data ? data : products.rows
-      // console.log(req.user)
-      // console.log('****************')
-      // console.log(products)
-      // console.log('****************')
-      // console.log(data)
-      // console.log(products[0])
+      products = productData ? productData : products.rows
 
       const categories = await Category.findAll({
         raw:true,
         attributes:['id','name']
       })
-      
-      return res.render('category', {
+      data = {
         products,
         cart,
         categories,
@@ -66,6 +67,10 @@ const categoryController = {
         prev: prev,
         next: next,
         categoryId:req.params.id
+      }
+      await redis.setKey(`category-${req.params.id}`,JSON.stringify(data))
+      return res.render('category', {
+        ...data
       })
     } catch (err) {
       console.log(err)

@@ -8,6 +8,9 @@ const category = require('./category')
 // admin
 const admin = require('./admin/index')
 
+router.get('/live',(req,res)=>{
+  return res.send('Alive!')
+})
 router.use('/admin',admin)
 router.use('/orders',order)
 router.use('/products', product)

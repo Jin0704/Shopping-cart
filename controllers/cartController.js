@@ -12,6 +12,7 @@ let cartController = {
       // console.log(req.user.id)
       let cart = await Cart.findByPk(req.session.cartId, { include: 'items' })
       cart = cart ? cart.toJSON() : { items: [] }
+      console.log('=======cart',cart)
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
       return res.render('cart', {
         cart: cart,

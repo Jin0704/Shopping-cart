@@ -6,12 +6,18 @@ const OrderItems = db.OrderItems
 const fs = require('fs')
 const uploadFileToS3 = require('../helper/uploadFileToS3')
 const PAGE_LIMIT = 6
+const redis = require('../redis')
 
 const adminController = {
-
   getProducts: async (req, res) => {
     try {
-
+      let data;
+      data = await redis.getKey('admin-products')
+      if(data){
+        return res.render('admin/products', {
+          ...data
+        })
+      }
       let PAGE_OFFSET = 0
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
@@ -30,20 +36,26 @@ const adminController = {
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
 
-      return res.render('admin/products', {
+      data = {
         products: products.rows,
         page: page,
         totalPage: totalPage,
         prev: prev,
         next: next
+      }
+      await redis.setKey('admin-products',JSON.stringify(data))
+      return res.render('admin/products', {
+        ...data
       })
     } catch (err) {
       console.log(err)
     }
   },
 
-  createProducts:async (req, res) => {
+  createProducts: async (req, res) => {
     const categories = await Category.findAll({raw:true,attributes:['id','name']})
+    await redis.clearKey('products')
+    await redis.clearKey('admin-products')
     return res.render('admin/create',{categories})
   },
 
@@ -68,6 +80,8 @@ const adminController = {
           CategoryId: req.body.categoryId
         })
       }
+      await redis.clearKey('products')
+      await redis.clearKey('admin-products')
       req.flash('success_messages', '新增成功')
       return res.redirect('/admin/products')
     } catch (err) {
@@ -95,6 +109,8 @@ const adminController = {
         where:{status:1},
         attributes:['id','name']
       })
+      await redis.clearKey('products')
+      await redis.clearKey('admin-products')
       return res.render('admin/create', { product, categories })
     } catch (err) {
       console.log(err)
@@ -124,6 +140,8 @@ const adminController = {
           CategoryId: req.body.categoryId
         })
       }
+      await redis.clearKey('products')
+      await redis.clearKey('admin-products')
       req.flash('success_messages', '更新成功')
       res.redirect('/admin/products')
     } catch (err) {
@@ -136,6 +154,8 @@ const adminController = {
     try {
       const product = await Product.findByPk(req.params.id)
       await product.destroy()
+      await redis.clearKey('products')
+      await redis.clearKey('admin-products')
       req.flash('success_messages', '成功刪除')
       res.redirect('/admin/products')
     } catch (err) {
@@ -145,6 +165,13 @@ const adminController = {
 
   getOrders: async (req, res) => {
     try {
+      let data;
+      data = await redis.getKey('admin-orders')
+      if(data){
+        return res.render('admin/orders', {
+        ...data
+        })
+      }
       let PAGE_OFFSET = 0
       const OrderPagelimit = 10
       if (req.query.page) {
@@ -164,14 +191,17 @@ const adminController = {
       const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
-      console.log(orders)
-
-      return res.render('admin/orders', {
+     
+      data ={
         orders: orders.rows,
         page: page,
         totalPage: totalPage,
         prev: prev,
         next: next
+      }
+      await redis.setKey('admin-orders',JSON.stringify(data))
+      return res.render('admin/orders', {
+        ...data
       })
     } catch (err) {
       console.log(err)
@@ -196,6 +226,8 @@ const adminController = {
         payment_status: req.body.payment_status,
         shipping_status: req.body.shipping_status
       })
+      await redis.clearKey(`user${order.toJSON().UserId}_orders`)
+      await redis.clearKey('admin-orders')
       req.flash('success_messages', '更新成功')
       return res.redirect('/admin/orders')
     } catch (err) {
@@ -207,6 +239,8 @@ const adminController = {
     try {
       const order = await Order.findByPk(req.params.id)
       await order.destroy()
+      await redis.clearKey(`user${order.toJSON().UserId}_orders`)
+      await redis.clearKey('admin-orders')
       req.flash('success_messages', '刪除成功')
       return res.redirect('/admin/orders')
     } catch (err) {
@@ -216,6 +250,13 @@ const adminController = {
 
   getCategories: async(req,res)=>{
     try {
+      let data;
+      data = await redis.getKey('admin-categories')
+      if(data){
+        return res.render('admin/categories', {
+          ...data
+        })
+      }
       let PAGE_OFFSET = 0
       const categoryPagelimit = 10
       if (req.query.page) {
@@ -236,12 +277,16 @@ const adminController = {
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
 
-      return res.render('admin/categories', {
+      data = {
         categories: categories.rows,
         page: page,
         totalPage: totalPage,
         prev: prev,
         next: next
+      }
+      await redis.setKey('admin-categories',JSON.stringify(data))
+      return res.render('admin/categories', {
+        ...data
       })
     } catch (err) {
       console.log(err)
@@ -251,14 +296,14 @@ const adminController = {
   getCategory: async(req,res)=>{
     try {
       const category = await Category.findByPk(req.params.id)
-      console.log('----category',category.toJSON())
       return res.render('admin/category', { category: category.toJSON(), })
     } catch (error) {
       console.log(error)
     }
   },
 
-  createCategory: (req, res) => {
+  createCategory: async (req, res) => {
+    await redis.clearKey('admin-categories')
     return res.render('admin/createCategory')
   },
 
@@ -268,6 +313,7 @@ const adminController = {
         name: req.body.name,
         status: req.body.status
       })
+      await redis.clearKey('admin-categories')
       req.flash('success_messages', '新增成功')
       return res.redirect('/admin/categories')
     } catch (err) {
@@ -282,6 +328,7 @@ const adminController = {
         name: req.body.name,
         status: req.body.status
       })
+      await redis.clearKey('admin-categories')
       req.flash('success_messages', '更新成功')
       return res.redirect('/admin/categories')
     } catch (err) {
@@ -293,6 +340,7 @@ const adminController = {
     try {
       const category = await Category.findByPk(req.params.id)
       await category.destroy()
+      await redis.clearKey('admin-categories')
       req.flash('success_messages', '刪除成功')
       return res.redirect('/admin/categories')
     } catch (err) {

@@ -1,11 +1,11 @@
 const db = require('../models')
 const Product = db.Product
 const User = db.User
-const Cart = db.Cart
 const PAGE_LIMIT = 6
 const redis = require('../redis')
 
 const ProductService = {
+  /**取得所有產品 */
   getProducts: async (req, res) => {
     try {
       let data;
@@ -38,10 +38,11 @@ const ProductService = {
       throw new Error(err)
     }
   },
-
+  /**取得單一產品 */
   getProduct: async (req, res) => {
     try {
       let product = await Product.findByPk(req.params.id, { include: { model: User, as: 'FavoritedUsers' } })
+      if(!product) throw new Error('product not exists!')
       product['dataValues'].isFavorited = req.user? product.FavoritedUsers.map(d => d.id).includes(req.user.id) : false
       delete product['dataValues'].FavoritedUsers
       await redis.setKey(`product-${req.params.id}`,JSON.stringify(product))

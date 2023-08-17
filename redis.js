@@ -19,10 +19,12 @@ const Redis = {
     return true;
   },
   setKey: async (key,value)=>{
+    console.log('====== data insert into redis ======')
     await this.redisClient.set(key,value, 'EX', expireDay)
     return true;
   },
   getKey: async (key)=>{
+    console.log('====== data from redis ======')
     const value = await this.redisClient.get(key);
     return JSON.parse(value);
   },

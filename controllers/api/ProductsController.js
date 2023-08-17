@@ -7,12 +7,8 @@ let ProductController = {
   getProducts: async (req, res) => {
     let data;
     try {
-     // data = await redis.getKey('products')
-     // console.log('data',data)
-      if(data){
-        return responseBuilder.success(res, 200, data)
-      }
-      data = await ProductService.getProducts(req)
+      const result  = await redis.getKey('products')
+      data = result ? result : await ProductService.getProducts(req)
     } catch (err) {
       console.error(err)
       return responseBuilder.error(req, res, 400, err)
@@ -23,10 +19,8 @@ let ProductController = {
   getProduct: async (req, res) => {
     let data;
     try {
-      data = await ProductService.getProduct(req)
-      if (!data.product) {
-        return responseBuilder.error(req, res, 404, { message: 'Product not exist' })
-      }
+      const result = await redis.getKey(`product-${req.params.id}`)
+      data = result ? result : await ProductService.getProduct(req)
     } catch (err) {
       console.error(err)
       return responseBuilder.error(req, res, 400, err)

@@ -1,6 +1,6 @@
-const sequelize = require('sequelize')
 const db = require('../models')
 const Category = db.Category
+const redis = require('../redis')
 
 const CategoryService = {
   getCategories: async(req)=>{
@@ -9,6 +9,7 @@ const CategoryService = {
         raw:true,
         attributes:['id','name']
       })
+      await redis.setKey('api-categories',JSON.stringify(data))
       return {data}
     }catch(err){
       console.error(err)

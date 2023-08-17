@@ -7,6 +7,7 @@ const fs = require('fs')
 const uploadFileToS3 = require('../helper/uploadFileToS3')
 const PAGE_LIMIT = 6
 const redis = require('../redis')
+const yup = require('yup')
 
 const adminController = {
   getProducts: async (req, res) => {
@@ -38,6 +39,7 @@ const adminController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -47,30 +49,25 @@ const adminController = {
   },
 
   postProducts: async (req, res) => {
+    const bodyShape = yup.object().shape({
+      name: yup.string().required(),
+      price: yup.number().required(),
+      description: yup.string().nullable().default(''),
+      CategoryId: yup.number().required(),
+      image: yup.string().nullable().default('')
+    })
     try {
-      const { file } = req
-      if (file) {
-        let imageUrl  = await uploadFileToS3(req)
-        const products = await Product.create({
-          name: req.body.name,
-          price: req.body.price,
-          description: req.body.description,
-          image: imageUrl ? imageUrl : '',
-          CategoryId: req.body.categoryId
-        })
-      } else {
-        const products = await Product.create({
-          name: req.body.name,
-          price: req.body.price,
-          description: req.body.description,
-          image: '',
-          CategoryId: req.body.categoryId
-        })
-      }
+      const imageUrl = req.file ? await uploadFileToS3(req): ''
+      let input = req.body
+      input.image = imageUrl
+      await bodyShape.validate(input)
+      await Product.create({...input})
+      
       req.flash('success_messages', '新增成功')
       return res.redirect('/admin/products')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
 
   },
@@ -83,6 +80,7 @@ const adminController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -97,36 +95,31 @@ const adminController = {
       return res.render('admin/create', { product, categories })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
   putProduct: async (req, res) => {
     try {
-      const { file } = req
-      if (file) {
-        let imageUrl  = await uploadFileToS3(req)
-        const product = await Product.findByPk(req.params.id, { include: [Category] })
-        await product.update({
-          name: req.body.name,
-          price: req.body.price,
-          description: req.body.description,
-          image: imageUrl ? imageUrl: product.image,
-          CategoryId: req.body.categoryId
-        })
-      } else {
-        const product = await Product.findByPk(req.params.id, { include: [Category] })
-        await product.update({
-          name: req.body.name,
-          price: req.body.price,
-          description: req.body.description,
-          image: product.image,
-          CategoryId: req.body.categoryId
-        })
-      }
+      const product = await Product.findByPk(req.params.id, { include: [Category] })
+      if(!product){ return res.render('error',{err:'product not exists!'}) }
+      const bodyShape = yup.object().shape({
+        name: yup.string().required(),
+        price: yup.number().required(),
+        description: yup.string().nullable().default(''),
+        CategoryId: yup.number().required(),
+        image: yup.string().nullable().default('')
+      })
+      const imageUrl  =  req.file ? await uploadFileToS3(req) : product.image
+      let input = req.body
+      input.image = imageUrl
+      await bodyShape.validate(input)
+      await product.update({...input})
       req.flash('success_messages', '更新成功')
       res.redirect('/admin/products')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
 
   },
@@ -139,6 +132,7 @@ const adminController = {
       res.redirect('/admin/products')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -173,6 +167,7 @@ const adminController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
 
   },
@@ -183,6 +178,7 @@ const adminController = {
       return res.render('admin/order', { order: order.toJSON(), })
     } catch (error) {
       console.log(error)
+      return res.render('error',{err})
     }
 
   },
@@ -199,6 +195,7 @@ const adminController = {
       return res.redirect('/admin/orders')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -210,6 +207,7 @@ const adminController = {
       return res.redirect('/admin/orders')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -255,6 +253,7 @@ const adminController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -264,6 +263,7 @@ const adminController = {
       return res.render('admin/category', { category: category.toJSON(), })
     } catch (error) {
       console.log(error)
+      return res.render('error',{err})
     }
   },
 
@@ -274,6 +274,11 @@ const adminController = {
 
   postCategory: async(req,res)=>{
     try {
+      const bodyShape = yup.object().shape({
+        name: yup.string().required(),
+        status: yup.number().oneOf([0,1]).default(0)
+      })
+      await bodyShape.validate(req.body)
       await Category.create({
         name: req.body.name,
         status: req.body.status
@@ -283,12 +288,18 @@ const adminController = {
       return res.redirect('/admin/categories')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
   editCategory: async (req, res) => {
+    const bodyShape = yup.object().shape({
+      name: yup.string().required(),
+      status: yup.number().oneOf([0,1]).default(0)
+    })
     try {
       let category = await Category.findByPk(req.params.id)
+      await bodyShape.validate(req.body)
       await category.update({
         name: req.body.name,
         status: req.body.status
@@ -298,6 +309,7 @@ const adminController = {
       return res.redirect('/admin/categories')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 
@@ -310,6 +322,7 @@ const adminController = {
       return res.redirect('/admin/categories')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err})
     }
   },
 }

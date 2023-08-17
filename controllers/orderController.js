@@ -10,7 +10,7 @@ const Product = db.Product
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const redis = require('../redis')
-
+const yup = require('yup')
 // let mailer = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -137,25 +137,31 @@ let orderController = {
       return res.render('orders', { orders: data })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'個人訂單錯誤'})
     }
   },
   postOrder: async (req, res) => {
     try {
+      const bodyShape = yup.object().shape({
+        name: yup.string().required(),
+        address: yup.string().required(),
+        phone: yup.string().required(),
+        shipping_status: yup.string().required(),
+        payment_status: yup.string().required(),
+        payment_method: yup.string().required(),
+        amount: yup.number().required(),
+        UserId: yup.number().required(),
+      })
       const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
       if (!cart) {
         req.flash('error_messages', '購物車中沒有商品!')
         return res.redirect('back')
       }
-
+      let input = req.body
+      input.UserId = req.user.id
+      await bodyShape.validate(input)
       const order = await Order.create({
-        name: req.body.name,
-        address: req.body.address,
-        phone: req.body.phone,
-        shipping_status: req.body.shipping_status,
-        payment_status: req.body.payment_status,
-        payment_method: req.body.payment_method,
-        amount: Number(req.body.amount),
-        UserId: req.user.id
+        ...input
       })
       var results = []
       for (let i = 0; i < cart.items.length; i++) {
@@ -211,13 +217,13 @@ let orderController = {
       // })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'建立訂單錯誤'})
     }
   },
   cancelOrder: async (req, res) => {
     try {
       const order = await Order.findByPk(req.params.id, {})
       await order.update({
-        ...req.body,
         shipping_status: '訂單取消',
         payment_status: '訂單取消',
       })
@@ -226,6 +232,7 @@ let orderController = {
       return res.redirect('back')
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'取消訂單錯誤'})
     }
   },
   getPayment: (req, res) => {

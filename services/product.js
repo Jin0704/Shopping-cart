@@ -28,8 +28,6 @@ const ProductService = {
         totalPage,
       }
 
-      await redis.setKey('products', JSON.stringify(data))
-
       return {
         ...data
       }
@@ -45,7 +43,6 @@ const ProductService = {
       if(!product) throw new Error('product not exists!')
       product['dataValues'].isFavorited = req.user? product.FavoritedUsers.map(d => d.id).includes(req.user.id) : false
       delete product['dataValues'].FavoritedUsers
-      await redis.setKey(`product-${req.params.id}`,JSON.stringify(product))
       return { product }
     } catch (err) {
       console.error(err)

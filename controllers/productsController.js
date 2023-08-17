@@ -4,34 +4,10 @@ const Product = db.Product
 const Cart = db.Cart
 const Category = db.Category
 const PAGE_LIMIT = 6
-const redis = require('../redis')
 
 let ProductController = {
   getProducts: async (req, res) => {
     try {
-      let data;
-      let cart = await Cart.findByPk(req.session.cartId, {
-        include: 'items'
-      })
-      //sidebar page
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      // category
-      const categories = await Category.findAll({
-        raw:true,
-        where:{status:1},
-        attributes:['id','name']
-      })
-      data = await redis.getKey('products')
-      if(data){
-        console.log('=products from Redis=')
-        return res.render('products', {
-          ...data,
-          cart,
-          totalPrice,
-          categories
-        })
-      }
       let PAGE_OFFSET = 0
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
@@ -58,29 +34,30 @@ let ProductController = {
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
 
-      // let cart = await Cart.findByPk(req.session.cartId, {
-      //   include: 'items'
-      // })
-      // //sidebar page
-      // cart = cart ? cart.toJSON() : { items: [] }
-      // let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      let cart = await Cart.findByPk(req.session.cartId, {
+        include: 'items'
+      })
+      //sidebar page
+      cart = cart ? cart.toJSON() : { items: [] }
+      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      // category
+      const categories = await Category.findAll({
+        raw:true,
+        where:{status:1},
+        attributes:['id','name']
+      })
+
       products = productData ? productData : products.rows
 
-
-      data ={
+      return res.render('products', {
         products,
+        cart,
+        totalPrice,
         categories,
         page: page,
         totalPage: totalPage,
         prev: prev,
         next: next,
-      }
-      await redis.setKey('products',JSON.stringify(data))
-      return res.render('products', {
-        ...data,
-        cart,
-        totalPrice,
-        categories
       })
     } catch (err) {
       console.log(err)
@@ -89,36 +66,22 @@ let ProductController = {
 
   getProduct: async (req, res) => {
     try {
-      let data;
+      const product = await Product.findByPk(req.params.id, { include: [{ model: User, as: 'FavoritedUsers' }, { model: Category }] })
+
       let cart = await Cart.findByPk(req.session.cartId, { include: 'items' })
       //sidebar page
       cart = cart ? cart.toJSON() : { items: [] }
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      data = await redis.getKey(`product-${req.params.id}`)
-      if(data){
-        console.log('==product data from redis===')
-        return res.render('product',{
-          ...data,
-          cart,
-          totalPrice
-        })
-      }
-      const product = await Product.findByPk(req.params.id, { include: [{ model: User, as: 'FavoritedUsers' }, { model: Category }] })
-
       // const isFavorited = product.FavoritedUsers.map(d => d.id).includes(req.user.id)
       if (req.user) {
         var isFavorited = product.FavoritedUsers.map(d => d.id).includes(req.user.id)
       }
 
-      data = {
+      return res.render('product', {
         product: product.toJSON(),
         cart: cart,
         totalPrice: totalPrice,
         isFavorited: isFavorited
-      }
-      await redis.setKey(`product-${req.params.id}`,JSON.stringify(data))
-      return res.render('product', {
-        ...data
       })
     } catch (err) {
       console.log(err)

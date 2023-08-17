@@ -1,11 +1,17 @@
 const ProductService = require('../../services/product')
 const responseBuilder = require('../../helper/responseBuilder')
+const redis = require('../../redis')
 let ProductController = {
 
   // 要再將search跟sort 合併進這個controller
   getProducts: async (req, res) => {
-    let data = []
+    let data;
     try {
+     // data = await redis.getKey('products')
+     // console.log('data',data)
+      if(data){
+        return responseBuilder.success(res, 200, data)
+      }
       data = await ProductService.getProducts(req)
     } catch (err) {
       console.error(err)

@@ -15,12 +15,19 @@ const categoryController = {
       //sidebar page
       cart = cart ? cart.toJSON() : { items: [] }
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      // category
+      const categories = await Category.findAll({
+        raw:true,
+        attributes:['id','name']
+      })
+
       data = await redis.getKey(`category-${req.params.id}`)
       if(data){
         return res.render('category', {
         ...data,
         cart,
-        totalPrice
+        totalPrice,
+        categories
       })
       }
       const categoryId = req.params.id
@@ -53,10 +60,6 @@ const categoryController = {
 
       products = productData ? productData : products.rows
 
-      const categories = await Category.findAll({
-        raw:true,
-        attributes:['id','name']
-      })
       data = {
         products,
         cart,
@@ -70,7 +73,10 @@ const categoryController = {
       }
       await redis.setKey(`category-${req.params.id}`,JSON.stringify(data))
       return res.render('category', {
-        ...data
+        ...data,
+        categories,
+        cart,
+        totalPrice
       })
     } catch (err) {
       console.log(err)

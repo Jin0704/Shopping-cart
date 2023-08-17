@@ -16,13 +16,20 @@ let ProductController = {
       //sidebar page
       cart = cart ? cart.toJSON() : { items: [] }
       let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      // category
+      const categories = await Category.findAll({
+        raw:true,
+        where:{status:1},
+        attributes:['id','name']
+      })
       data = await redis.getKey('products')
       if(data){
         console.log('=products from Redis=')
         return res.render('products', {
           ...data,
           cart,
-          totalPrice
+          totalPrice,
+          categories
         })
       }
       let PAGE_OFFSET = 0
@@ -59,11 +66,7 @@ let ProductController = {
       // let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
       products = productData ? productData : products.rows
 
-      const categories = await Category.findAll({
-        raw:true,
-        where:{status:1},
-        attributes:['id','name']
-      })
+
       data ={
         products,
         categories,
@@ -76,7 +79,8 @@ let ProductController = {
       return res.render('products', {
         ...data,
         cart,
-        totalPrice
+        totalPrice,
+        categories
       })
     } catch (err) {
       console.log(err)

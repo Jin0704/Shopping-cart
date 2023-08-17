@@ -80,6 +80,7 @@ const categoryController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'分類產品頁面錯誤'})
     }
   }
 }

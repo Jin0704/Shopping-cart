@@ -61,6 +61,7 @@ let ProductController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'產品頁面錯誤'})
     }
   },
 
@@ -85,6 +86,7 @@ let ProductController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'產品頁面錯誤'})
     }
   },
   searchProduct: async (req, res) => {
@@ -122,6 +124,7 @@ let ProductController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'搜尋產品出現錯誤'})
     }
   },
   sortProducts: async (req, res) => {
@@ -159,6 +162,7 @@ let ProductController = {
       })
     } catch (err) {
       console.log(err)
+      return res.render('error',{err:'排序產品出現錯誤'})
     }
   }
 }

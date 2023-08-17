@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="alert alert-danger" role="alert">
+    {{err}}
+    <div>
+      <span>請將畫面截圖並寄到此信箱:tjin810704@gmail.com 我們將盡速為您處理!</span>
+    </div>
+  </div>
+  <div>
+    <button id="goBackButton">回上一頁</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('goBackButton').addEventListener('click', function() {
+  history.back(); });
+</script>

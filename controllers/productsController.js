@@ -12,13 +12,14 @@ let ProductController = {
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
-
+      const sort = req.query.sort ? req.query.sort : 'DESC'
       let products = await Product.findAndCountAll({
         raw: true,
         nest: true,
         offset: PAGE_OFFSET,
         limit: PAGE_LIMIT,
-        include: [Category]
+        include: [Category],
+        order: [['price', sort]],
       })
 
       if (req.user) {
@@ -97,6 +98,7 @@ let ProductController = {
         order: [['price', 'ASC']],
         raw: true,
         nest: true,
+        include: Category
       })
 
       if (req.user) {
@@ -130,7 +132,7 @@ let ProductController = {
   sortProducts: async (req, res) => {
     try {
       let search = req.query.search
-      let searchsort = await req.query.searchsort
+      let searchsort = req.query.searchsort
       searchsort = searchsort ? searchsort : 'ASC'
 
       let products = await Product.findAll({

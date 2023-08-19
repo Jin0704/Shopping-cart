@@ -76,13 +76,16 @@
         </ul>
 
         <div style="display: flex; justify-content: space-evenly;min-width: 300px;">
-          {{#ifPay shipping_status '出貨完成' '訂單取消'}}
+          {{#ifPay payment_status '出貨完成' '訂單取消'}}
           <button type="submit" class="btn btn-secondary" disabled>取消訂單</button>
-          <a href="/orders/{{this.id}}/payment"><button class="btn btn-secondary" disabled>立即付款</button></a>
           {{else}}
           <form action="/orders/{{this.id}}/cancel" method="POST">
             <button type="submit" class="btn btn-primary">取消訂單</button>
           </form>
+          {{/ifPay}}
+          {{#ifPay payment_status '已付款' '訂單取消'}}
+          <a href="/orders/{{this.id}}/payment"><button class="btn btn-secondary" disabled>立即付款</button></a>
+          {{else}}
           <a href="/orders/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
           {{/ifPay}}
         </div>

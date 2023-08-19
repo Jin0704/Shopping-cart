@@ -2,6 +2,7 @@ const db = require('../../models')
 const Product = db.Product
 const _ = require('lodash')
 const uploadFileToS3 = require('../../helper/uploadFileToS3')
+const yupCheck = require('../../helper/yupCheck')
 
 const ProductService = {
   getProducts: async(req)=>{
@@ -46,16 +47,10 @@ const ProductService = {
   },
   postProduct: async(req)=>{
     try{
-      let imageUrl;
-      await checkProductValid(req.body)
-      if(req.file){
-        imageUrl  = await uploadFileToS3(req)
-      }
-      await Product.create({
-        ...req.body,
-        description: req.body.description ? req.body.description : '',
-        image: imageUrl ? imageUrl:''
-      })
+      const imageUrl = req.file ? await uploadFileToS3(req): ''
+      const input = { ...req.body, image:imageUrl}
+      await yupCheck.productShape(input)
+      await Product.create({ ...input })
       return { 'message':' 產品新增成功'}
     }catch(err){
       console.error(err)
@@ -64,20 +59,14 @@ const ProductService = {
   },
   putProduct: async(req)=>{
     try{
-      let imageUrl;
       const product =  await Product.findByPk(req.params.id)
       if (!product){
         throw new error('Product not exists!')
       }
-      if(req.file){
-        imageUrl  = await uploadFileToS3(req)
-      }
-      await checkProductValid(req.body)
-      await product.update({
-        ...req.body,
-        description: req.body.description ? req.body.description : '',
-        image: imageUrl ? imageUrl:''
-      })
+      const imageUrl  = req.file ? await uploadFileToS3(req) : product.image
+      const input = { ...req.body, image:imageUrl}
+      await yupCheck.productShape(input)
+      await product.update({...input })
       return { 'message':' 產品更新成功'}
     }catch(err){
       console.error(err)
@@ -96,20 +85,20 @@ const ProductService = {
       console.error(err)
       throw new Error(err)
     }
-  }
-}
-
-async function checkProductValid(input){
-  if(!_.has(input,'name')){
-    throw new Error('product name is required')
-  }
-  if(!_.has(input,'price')){
-    throw new Error('product price is required!')
-  }
-  if(!_.has(input,'CategoryId')){
-    throw new Error('category is required')
-  }
-  return true
+  },
+  // checkProductValid:async(input)=>{
+  //   if(!_.has(input,'name')){
+  //     throw new Error('product name is required')
+  //   }
+  //   if(!_.has(input,'price')){
+  //     throw new Error('product price is required!')
+  //   }
+  //   if(!_.has(input,'CategoryId')){
+  //     throw new Error('category is required')
+  //   }
+  //   await this.yupCheck(input)
+  //   return true
+  // },
 }
 
 module.exports = ProductService

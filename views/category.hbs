@@ -1,12 +1,28 @@
 <div class="row">
   <div class="col-md-10">
     <div class=" mb-3 d-flex justify-content-center">
-      <form action="/search" method="get">
-        <label for="search">搜尋:
-          <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
-          <button type="submit" class="btn-primary">送出</button>
-        </label>
-      </form>
+      <div class="m-3">
+        <form action="/search" method="get">
+          <label for="search">搜尋:
+            <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
+            <button type="submit" class="btn-primary">送出</button>
+          </label>
+        </form>
+      </div>
+      <div class="m-3 d-flex-end">
+        <form action="/categories/{{categoryId}}" method="get">
+          <div class=" mb-2 d-flex justify-content-end dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="sort" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              排序方式
+            </button>
+            <div class="dropdown-menu" aria-labelledby="sort">
+              <button class="dropdown-item" type="submit" name="sort" value="DESC">價格(高→低)</button>
+              <button class="dropdown-item" type="submit" name="sort" value="ASC">價格(低→高)</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
     <hr>
     <div class="row">
@@ -26,7 +42,7 @@
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">$ {{this.price}}</small>
-                <small class="text-muted">[{{this.Category.name}}]</small>
+                <small class="text-muted"><a href="/categories/{{this.Category.id}}">{{this.Category.name}}</a></small>
                 <div class="btn-group">
                   {{#if this.isFavorited}}
                   <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"

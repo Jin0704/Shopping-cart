@@ -18,31 +18,24 @@ const categoryController = {
       // category
       const categories = await Category.findAll({
         raw:true,
+        where:{'status':true},
         attributes:['id','name']
       })
-
-      data = await redis.getKey(`category-${req.params.id}`)
-      if(data){
-        return res.render('category', {
-        ...data,
-        cart,
-        totalPrice,
-        categories
-      })
-      }
+    
       const categoryId = req.params.id
       let PAGE_OFFSET = 0
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
-
+      const sort = req.query.sort ? req.query.sort : 'DESC'
       let products = await Product.findAndCountAll({
         raw: true,
         nest: true,
         offset: PAGE_OFFSET,
         limit: PAGE_LIMIT,
         include: [Category],
-        where:{CategoryId:categoryId}
+        where:{CategoryId:categoryId},
+        order: [['price', sort]],
       })
 
       if (req.user) {
@@ -71,7 +64,7 @@ const categoryController = {
         next: next,
         categoryId:req.params.id
       }
-      await redis.setKey(`category-${req.params.id}`,JSON.stringify(data))
+      
       return res.render('category', {
         ...data,
         categories,

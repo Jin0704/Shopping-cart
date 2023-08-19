@@ -7,6 +7,7 @@ const JWTStrategy = passportJWY.Strategy
 const ExtractJWT = passportJWY.ExtractJwt
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const yupCheck = require('../helper/yupCheck')
 const User = db.User
 const Product = db.Product
 require('dotenv').config()
@@ -17,7 +18,14 @@ passport.use(new LocalStrategy(
     passwordField: 'password',
     passReqToCallback: true
   },
-  (req, email, password, done) => {
+  async (req, email, password, done) => {
+    const input = req.body
+    try{
+      await yupCheck.signInShape(input)
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
     User.findOne({ where: { email } })
       .then(user => {
         if (!user) {

@@ -1,5 +1,6 @@
 const db = require('../../models')
 const Category = db.Category
+const yupCheck = require('../../helper/yupCheck')
 
 const CategoryService = {
   getCategories: async(req)=>{
@@ -52,6 +53,7 @@ const CategoryService = {
          where: { name: input.name } 
       })
       if(category) throw new Error('Category have existed!')
+      await yupCheck.categoryShape(req.body)
       await Category.create({
         name: input.name,
         status: input.status
@@ -66,6 +68,7 @@ const CategoryService = {
     try{
       const category = await Category.findByPk(req.params.id)
       if(!category) throw new Error('Category not exists!')
+      await yupCheck.categoryShape(req.body)
       await category.update({
         name: req.body.name,
         status: req.body.status

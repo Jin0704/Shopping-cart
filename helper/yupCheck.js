@@ -1,6 +1,33 @@
 const yup = require('yup')
 
 const yupCheck = {
+  signInShape: async(input)=>{
+    const bodyShape = yup.object().shape({
+      email: yup.string().matches(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/, 'Invalid email format').required(),
+      password: yup.string().matches(/^[a-zA-Z0-9+_.-]/).required()
+    })
+    try{
+      await bodyShape.validate(input)
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  },
+  signUpShape: async(input)=>{
+    const bodyShape = yup.object().shape({
+      email: yup.string().matches(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/, 'Invalid email format').required(),
+      password: yup.string().matches(/^[a-zA-Z0-9+_.-]/).required(),
+      confirmpassword: yup.string().matches(/^[a-zA-Z0-9+_.-]/).required(),
+    })
+    try{
+      await bodyShape.validate(input)
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  },
   productShape: async(input)=>{
     const bodyShape = yup.object().shape({
       name: yup.string().required(),

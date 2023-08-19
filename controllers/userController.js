@@ -3,7 +3,7 @@ const User = db.User
 const Favorite = db.Favorite
 const Product = db.Product
 const bcrypt = require('bcryptjs')
-const product = require('../models/product')
+const yupCheck = require('../helper/yupCheck')
 
 const userController = {
 
@@ -18,6 +18,7 @@ const userController = {
   SignUp: async (req, res) => {
     try {
       // console.log(req.body)
+      await yupCheck.signUpShape(req.body)
       if (req.body.confirmpassword !== req.body.password) {
         req.flash('error_messages', '兩次密碼輸入不同')
         return res.redirect('/signup')

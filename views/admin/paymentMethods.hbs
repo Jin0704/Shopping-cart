@@ -6,37 +6,42 @@
     <a class="p-2 text-dark" href="/admin/paymentMethods">付款方式</a>
   </nav>
 </div>
+<a href='/admin/paymentMethods/create'>
+  <button type="button" class="btn btn-primary">新增付款方式</button>
+</a>
+
+<br />
 <hr>
 {{>messages}}
 <table class="table">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">訂單編號</th>
-      <th scope="col">訂單價格</th>
-      <th scope="col">付款方式</th>
-      <th scope="col">付款狀態</th>
-      <th scope="col">運送狀態</th>
-      <th scope='col'>詳細資料</th>
+      <th scope="col">編號</th>
+      <th scope="col">名稱</th>
+      <th scope="col">狀態</th>
+      <th scope="col">詳細資料</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    {{#each orders}}
+    {{#each paymentMethods}}
     <tr>
       <td>{{this.id}}</td>
-      <td>${{this.amount}}</td>
-      <td>{{#ifCond this.payment_method 'ATM'}}ATM轉帳{{else}}信用卡{{/ifCond}}</td>
-      <td>{{this.payment_status }} </td>
-      <td>{{ this.shipping_status }} </td>
+      <td>{{this.name}}</td>
+      {{#if this.status}}
+      <td>開啟</td>
+      {{else}}
+      <td>關閉</td>
+      {{/if}}
       <td>
         <button type="button" class="btn btn-link">
-          <a href="/admin/orders/{{this.id}}">
-            更新訂單資料
+          <a href="/admin/paymentMethods/{{this.id}}">
+            編輯付款方式
           </a>
         </button>
       </td>
       <td>
-        <form action="/admin/orders/{{this.id}}?_method=DELETE" method="POST">
+        <form action="/admin/paymentMethods/{{this.id}}?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-link">
             <i class="fas fa-trash"></i>
           </button>
@@ -47,7 +52,7 @@
   </tbody>
 </table>
 <hr>
-<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+{{!-- <nav aria-label="Page navigation example" class="d-flex justify-content-center">
   <ul class="pagination">
     <li class="page-item">
       <a class="page-link" href="/admin/orders?page={{prev}}" aria-label="Previous">
@@ -66,4 +71,4 @@
       </a>
     </li>
   </ul>
-</nav>
+</nav> --}}

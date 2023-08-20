@@ -6,7 +6,7 @@ module.exports = {
     watch: false,
     max_memory_restart:'500M',
     env:{
-      NODE_ENV:'development',
+      NODE_ENV:'local',
       ID:'10'
     },
     env_development:{

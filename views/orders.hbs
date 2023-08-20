@@ -29,7 +29,11 @@
             <tr>
               <td>{{this.name}}</td>
               <td>{{this.OrderItem.quantity}}</td>
-              <td>{{this.OrderItem.subtotal}}</td>
+              {{#if this.subtotal}}
+              <td>{{this.subtotal}}</td>
+              {{else}}
+              <td>{{#multiply this.price this.OrderItem.quantity}} {{/multiply}}</td>
+              {{/if}}
             </tr>
             {{/each}}
             <tr>
@@ -65,7 +69,7 @@
       <div class="d-flex flex-column  justify-content-center align-item-center">
         <ul>
           <li>
-            <h3 class="mb-2 ">付款方式: {{this.payment_method}}</h3>
+            <h3 class="mb-2 ">付款方式: {{this.methods.name}}</h3>
           </li>
           <li>
             <h3 class="mb-2 ">出貨狀態: {{this.shipping_status}}</h3>

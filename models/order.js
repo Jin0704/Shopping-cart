@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       Order.belongsTo(models.User)
       Order.hasMany(models.Payment)
+      Order.belongsTo(models.PaymentMethod,{
+        as:'methods',
+        foreignKey:'PaymentMethodId'
+      })
     }
   };
   Order.init({
@@ -27,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     amount: DataTypes.INTEGER,
     phone: DataTypes.STRING,
     address: DataTypes.STRING,
-    sn: DataTypes.INTEGER,
-    payment_method: DataTypes.STRING,
+    sn: DataTypes.BIGINT,
     payment_status: DataTypes.STRING,
     shipping_status: DataTypes.STRING,
-    UserId: DataTypes.INTEGER
+    UserId: DataTypes.INTEGER,
+    PaymentMethodId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Order',

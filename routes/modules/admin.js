@@ -27,5 +27,12 @@ router.post('/categories',authenticatedAdmin,adminController.postCategory)
 router.get('/categories/:id', authenticatedAdmin, adminController.getCategory)
 router.put('/categories/:id', authenticatedAdmin, adminController.editCategory)
 router.delete('/categories/:id', authenticatedAdmin, adminController.deleteCategory)
+//paymentMethods
+router.get('/paymentMethods', authenticatedAdmin, adminController.getPaymentMethods)
+router.get('/paymentMethods/create', authenticatedAdmin, adminController.createPaymentMethod)
+router.post('/paymentMethods',authenticatedAdmin,adminController.postPaymentMethod)
+router.get('/paymentMethods/:id', authenticatedAdmin, adminController.getPaymentMethod)
+router.put('/paymentMethods/:id', authenticatedAdmin, adminController.editPaymentMethod)
+router.delete('/paymentMethods/:id', authenticatedAdmin, adminController.deletePaymentMethod)
 
 module.exports = router

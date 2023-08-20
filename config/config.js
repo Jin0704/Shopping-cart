@@ -2,10 +2,10 @@ require('dotenv').config()
 
 const config = {
   "development": {
-    "username": process.env.RDS_USERNAME,
-    "password": process.env.RDS_PASSWORD,
-    "host": process.env.RDS_HOSTNAME,
-    "port": process.env.RDS_PORT,
+    "username": process.env.RDS_USERNAME || "root",
+    "password": process.env.RDS_PASSWORD || "password",
+    "host": process.env.RDS_HOSTNAME || "127.0.0.1",
+    "port": process.env.RDS_PORT || "3306",
     "database": "shopping_cart",
     "dialect": "mysql"
   },
@@ -24,14 +24,6 @@ const config = {
       }
     }
   },
-  // "rds": {
-  //   "username": process.env.RDS_USERNAME,
-  //   "password": process.env.RDS_PASSWORD,
-  //   "host": process.env.RDS_HOSTNAME,
-  //   "port": process.env.RDS_PORT,
-  //   "database": "shopping_cart",
-  //   "dialect": "mysql"
-  // }
 }
 
 module.exports = config

@@ -1,82 +1,95 @@
-<!DOCTYPE html>
 <html>
 
-<head>
-  <title>購物網</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-    integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css">
-  <style type="text/css">
-    .table td,
-    .table th {
-      vertical-align: middle;
-    }
-  </style>
-  <style>
-    .container {
-      max-width: 1680px;
-      margin: 0 auto;
-    }
-  </style>
-</head>
+  <head>
+    <title>購物網</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+      integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/4/minty/bootstrap.min.css"
+    />
+    <style type="text/css">
+      .table td, .table th { vertical-align: middle; }
+    </style>
+    <style>
+      .container { max-width: 1680px; margin: 0 auto; }
+    </style>
+  </head>
 
-<body>
+  <body>
 
-  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm"
-    style="height: 90px;">
-    <h5 class=" my-0 mr-md-auto font-weight-normal">
-      <strong><a href="/products">簡式電商購物網</a></strong>
-    </h5>
-    <div class="d-flex col-2">
-      <div class="d-flex flex-column flex-md-row mr-3">
-        <strong><a href="/private">隱私政策</a></strong>
+    <div
+      class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm"
+      style="height: 90px;"
+    >
+      <h5 class="my-0 mr-md-auto font-weight-normal">
+        <strong><a href="/products">電商購物網</a></strong>
+      </h5>
+      <div class="d-flex col-2">
+        <div class="d-flex flex-column flex-md-row mr-3">
+          <strong><a href="/private">隱私政策</a></strong>
+        </div>
+        <div class="d-flex flex-column flex-md-row mr-3">
+          <strong><a href="/terms">服務條款</a></strong>
+        </div>
       </div>
-      <div class="d-flex flex-column flex-md-row mr-3">
-        <strong><a href="/terms">服務條款</a></strong>
-      </div>
-    </div>
-    {{!-- <div class="mr-auto mt-auto">
+      {{! <div class="mr-auto mt-auto">
       <form action="/search" method="get">
         <label for="search">搜尋:
           <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
           <button type="submit" class="btn-primary">送出</button>
         </label>
       </form>
-    </div> --}}
-    <nav class="my-2 my-md-0 mr-md-3">
-      {{#if user.isAdmin}}
-      <a href="/admin" class="p-2 text-dark">管理者後台</a>
-      {{/if}}
-      {{#if user}}
-      <i class="fas fa-user ">
-        {{user.email}} 您好!
-      </i>
-      <a href="/logout" class="p-2 text-dark">登出</a>
-      {{else}}
-      <a href="/signin" class="p-2 text-dark">登入</a>
-      {{/if}}
-      <a class="p-2 text-dark" href="/cart">購物車</a>
-      {{#if user}}
-      <a class="p-2 text-dark" href="/favorites">收藏</a>
-      <a class="p-2 text-dark" href="/orders">訂單</a>
-      {{/if}}
-    </nav>
-  </div>
-  <div class="container">
-    {{{body}}}
-  </div>
+    </div> }}
+      <nav class="my-2 my-md-0 mr-md-3">
+        {{#if user.isAdmin}}
+          <a href="/admin" class="p-2 text-dark">管理者後台</a>
+        {{/if}}
+        {{#if user}}
+          <i class="fas fa-user">
+            {{user.email}}
+            您好!
+          </i>
+          <a href="/logout" class="p-2 text-dark">登出</a>
+        {{else}}
+          <a href="/signin" class="p-2 text-dark">登入</a>
+        {{/if}}
+        <a class="p-2 text-dark" href="/cart">購物車</a>
+        {{#if user}}
+          <a class="p-2 text-dark" href="/favorites">收藏</a>
+          <a class="p-2 text-dark" href="/orders">訂單</a>
+        {{/if}}
+      </nav>
+    </div>
+    <div class="container">
+      {{{body}}}
+    </div>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 
 </html>

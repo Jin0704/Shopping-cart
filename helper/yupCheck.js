@@ -64,9 +64,9 @@ const yupCheck = {
       phone: yup.string().required(),
       shipping_status: yup.string().required(),
       payment_status: yup.string().required(),
-      payment_method: yup.string().required(),
       amount: yup.number().required(),
       UserId: yup.number().required(),
+      PaymentMethodId: yup.number().required(),
     })    
     try{
       await bodyShape.validate(input)

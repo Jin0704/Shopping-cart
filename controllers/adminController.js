@@ -157,7 +157,7 @@ const adminController = {
 
   getOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id, { include: 'items' })
+      const order = await Order.findByPk(req.params.id, { include: ['items','methods'] })
       return res.render('admin/order', { order: order.toJSON(), })
     } catch (error) {
       console.log(error)

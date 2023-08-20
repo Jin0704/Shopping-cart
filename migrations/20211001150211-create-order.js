@@ -21,10 +21,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       sn: {
-        type: Sequelize.INTEGER
-      },
-      payment_method: {
-        type: Sequelize.STRING
+        type: Sequelize.BIGINT
       },
       payment_status: {
         type: Sequelize.STRING
@@ -33,6 +30,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       UserId: {
+        type: Sequelize.INTEGER
+      },
+      PaymentMethodId: {
         type: Sequelize.INTEGER
       },
       createdAt: {

@@ -8,6 +8,7 @@ const OrderItem = db.OrderItem
 const User = db.User
 const Product = db.Product
 const Payment = db.Payment
+const PaymentMethod = db.PaymentMethod
 const nodemailer = require('nodemailer')
 const redis = require('../redis')
 const yupCheck = require('../helper/yupCheck')
@@ -29,14 +30,14 @@ const orderController = {
   getOrders: async (req, res) => {
     try {
       let data;
-      // data = await redis.getKey(`user${req.user.id}_orders`)
+      data = await redis.getKey(`user${req.user.id}_orders`)
       if(data){
         return res.render('orders', { orders:data})
       }
       const user = await User.findByPk(req.user.id)
       const orders = await Order.findAll({
         where: { UserId: user.id },
-        include: [{ model: Product, as: 'items' }]
+        include: [{ model: Product, as: 'items' },{ model: PaymentMethod, as:'methods'}]
       })
       data = orders.map(order => order.toJSON())
       await redis.setKey(`user${req.user.id}_orders`, JSON.stringify(data))

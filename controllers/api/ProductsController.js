@@ -1,6 +1,6 @@
 const ProductService = require('../../services/product')
 const responseBuilder = require('../../helper/responseBuilder')
-const redis = require('../../redis')
+
 let ProductController = {
 
   // 要再將search跟sort 合併進這個controller

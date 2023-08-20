@@ -13,6 +13,7 @@ module.exports = {
         paid_at: new Date(),
         params: null,
         OrderId: Math.floor(Math.random() * 2) + 1,
+        PaymentMethodId: 21,
         createdAt: new Date(),
         updatedAt: new Date(),
       })

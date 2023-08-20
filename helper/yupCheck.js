@@ -76,6 +76,19 @@ const yupCheck = {
       throw new Error(err)
     }
   },
+  paymentMethodShape: async(input)=>{
+    const bodyShape = yup.object().shape({
+      name: yup.string().required(),
+      status: yup.number().oneOf([0,1]).default(0)
+    })
+    try{
+      await bodyShape.validate(input)
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  }
 }
 
 module.exports = yupCheck

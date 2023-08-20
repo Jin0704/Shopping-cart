@@ -1,0 +1,24 @@
+<div class="column">
+  <div class="col-md-9">
+      <form action="/admin/paymentMethods" method="POST">
+        <div class="form-group">
+          <label for="name">名稱</label>
+          <input type="text" class="form-control" name="name" id="name" placeholder="付款方式名稱" value="{{paymentMethods.name}}"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="status">狀態</label>
+          <select  name="status" class="col-md-12">
+            <option value="" disabled selected>請選擇</option>
+            <option value="1">開啟</option>
+            <option value="0">關閉</option>
+          </select>
+          </input>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary" style="display: flex;justify-content:end">Submit</button>
+        </div>
+      </form>
+  </div>
+
+</div>

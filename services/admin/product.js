@@ -86,19 +86,6 @@ const ProductService = {
       throw new Error(err)
     }
   },
-  // checkProductValid:async(input)=>{
-  //   if(!_.has(input,'name')){
-  //     throw new Error('product name is required')
-  //   }
-  //   if(!_.has(input,'price')){
-  //     throw new Error('product price is required!')
-  //   }
-  //   if(!_.has(input,'CategoryId')){
-  //     throw new Error('category is required')
-  //   }
-  //   await this.yupCheck(input)
-  //   return true
-  // },
 }
 
 module.exports = ProductService

@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       sn: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       payment_method: {
         type: Sequelize.STRING
@@ -24,6 +24,9 @@ module.exports = {
         type: Sequelize.TEXT
       },
       OrderId: {
+        type: Sequelize.INTEGER
+      },
+      PaymentMethodId: {
         type: Sequelize.INTEGER
       },
       createdAt: {

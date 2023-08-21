@@ -1,39 +1,70 @@
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-10">
+    <div class=" mb-3 d-flex justify-content-center">
+      <div class="m-3">
+        <form action="/search" method="get">
+          <label for="search">搜尋:
+            <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
+            <button type="submit" class="btn-primary">送出</button>
+          </label>
+        </form>
+      </div>
+      <div class="m-3 d-flex-end">
+        <form action="/products" method="get">
+          <div class=" mb-2 d-flex justify-content-end dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="searchsort" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              排序方式
+            </button>
+            <div class="dropdown-menu" aria-labelledby="searchsort">
+              <button class="dropdown-item" type="submit" name="sort" value="DESC">價格(高→低)</button>
+              <button class="dropdown-item" type="submit" name="sort" value="ASC">價格(低→高)</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <hr>
     <div class="row">
-      {{#each products}}
-      <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-          <a href="/products/{{this.id}}"><img class="bd-placeholder-img card-img-top" width="100%" height="225"
-              src={{this.image}}></img></a>
-          <div class="card-body">
-            <p class="card-text">
-            <h4><a href="/products/{{this.id}}">{{this.name}}</a></h4>
-            <span>{{this.description}}</span>
-            </p>
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">$ {{this.price}}</small>
-              <div class="btn-group">
-                {{#if this.isFavorited}}
-                <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
-                    class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
-                {{else}}
-                <form action="/favorite/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
-                      class="fas fa-heart" style="color:thistle"></i></button></form>
-                {{/if}}
-                <form action="/cart" method="POST">
-                  <input type="hidden" name="productId" value="{{this.id}}">
-                  <button type="submit" class="btn btn-sm btn-outline-secondary">加入購物車</button>
-                </form>
+      <div class="col-md-3">
+        {{>left categories=categories}}
+      </div>
+      <div class="col-md-9 row">
+        {{#each products}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <a href="/products/{{this.id}}"><img class="bd-placeholder-img card-img-top" width="100%" height="225"
+                src={{this.image}}></img></a>
+            <div class="card-body">
+              <p class="card-text">
+              <h4><a href="/products/{{this.id}}">{{this.name}}</a></h4>
+              <span>{{this.description}}</span>
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">$ {{this.price}}</small>
+                <a href="/categories/{{this.Category.id}}"><small class="text-muted">{{this.Category.name}}</small></a>
+                <div class="btn-group">
+                  {{#if this.isFavorited}}
+                  <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+                      class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
+                  {{else}}
+                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
+                        class="fas fa-heart" style="color:thistle"></i></button></form>
+                  {{/if}}
+                  <form action="/cart" method="POST">
+                    <input type="hidden" name="productId" value="{{this.id}}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">加入購物車</button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {{/each}}
       </div>
-      {{/each}}
     </div>
   </div>
-  <nav class="col-md-3 d-none d-md-block bg-light sidebar">
+  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
     <div class="sidebar-sticky">
       <ul class="list-group list-group-flush">
         <li class="list-group-item">

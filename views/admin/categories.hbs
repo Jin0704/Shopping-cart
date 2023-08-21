@@ -1,0 +1,74 @@
+<div class="row col-md-9 mb-2">
+  <nav class="my-2 ">
+    <a class="p-2 text-dark" href="/admin/products">商品</a> |
+    <a class="p-2 text-dark" href="/admin/orders">訂單</a> |
+    <a class="p-2 text-dark" href="/admin/categories">分類</a> |
+    <a class="p-2 text-dark" href="/admin/paymentMethods">付款方式</a>
+  </nav>
+</div>
+<a href='/admin/categories/create'>
+  <button type="button" class="btn btn-primary">新增分類</button>
+</a>
+
+<br />
+<hr>
+{{>messages}}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">分類編號</th>
+      <th scope="col">分類名稱</th>
+      <th scope="col">分類狀態</th>
+      <th scope="col">詳細資料</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <td>{{this.id}}</td>
+      <td>{{this.name}}</td>
+      {{#if this.status}}
+      <td>開啟</td>
+      {{else}}
+      <td>關閉</td>
+      {{/if}}
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/categories/{{this.id}}">
+            編輯分類
+          </a>
+        </button>
+      </td>
+      <td>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST">
+          <button type="submit" class="btn btn-link">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+<hr>
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="/admin/orders?page={{prev}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+    {{#ifCond this ../page}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+    <li class="page-item"><a class="page-link" href="/admin/orders?page={{this}}">{{this}}</a></li>
+    {{/ifCond}}
+    {{/each}}
+    <li class="page-item"><a class="page-link" href="/admin/orders?page={{next}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>

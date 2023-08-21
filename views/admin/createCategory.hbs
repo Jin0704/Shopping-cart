@@ -1,0 +1,28 @@
+<div class="column">
+  <div class="col-md-9">
+      <form action="/admin/categories" method="POST">
+        <div class="form-group">
+          <label for="name">分類名稱</label>
+          <input type="text" class="form-control" name="name" id="name" placeholder="分類名稱" value="{{category.name}}"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="status">分類狀態</label>
+          <select  name="status" class="col-md-12">
+            <option value="" disabled selected>請選擇</option>
+            <option value="1">開啟</option>
+            <option value="0">關閉</option>
+          </select>
+          </input>
+        </div>
+        {{!-- <div class="form-group">
+          <label for="image">Image</label>s
+          <input type="file" name="image" id="image" class="form-control-file">
+        </div> --}}
+        <div>
+          <button type="submit" class="btn btn-primary" style="display: flex;justify-content:end">Submit</button>
+        </div>
+      </form>
+  </div>
+
+</div>

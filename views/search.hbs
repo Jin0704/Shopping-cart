@@ -1,0 +1,57 @@
+<div class=" mb-3 ">
+  <form action="/searchsort" method="get">
+    <div class="d-inline-box d-flex justify-content-center">
+      <label for="search">搜尋:
+        <input type="search" name="search" id="search" placeholder=" {{search}}" class="rounded-pill m-2"
+          value='{{search}}'>
+        <button type="submit" class="btn-primary">送出</button>
+      </label>
+    </div>
+
+    <div class=" mb-2 d-flex justify-content-end dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="searchsort" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        排序方式
+      </button>
+      <div class="dropdown-menu" aria-labelledby="searchsort">
+        <button class="dropdown-item" type="submit" name="searchsort" value="DESC">價格(高→低)</button>
+        <button class="dropdown-item" type="submit" name="searchsort" value="ASC">價格(低→高)</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{>messages}}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">圖片</th>
+      <th scope="col">產品名稱</th>
+      <th scope="col">產品分類</th>
+      <th scope="col">價格</th>
+      <th scope="col">編輯</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each products}}
+    <tr>
+      <td><a href="/products/{{this.id}}"><img src="{{this.image}}" width="150" height="150"></a></td>
+      <td><a href="/products/{{this.id}}">{{this.name}}</a></td>
+      <td>{{this.Category.name}}</td>
+      <td>{{this.price}}</td>
+      <td>
+        {{#if this.isFavorited}}
+        <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit" class="btn btn-link"><i
+              class="fas fa-heart" style="color: red;"></i></button></form>
+        {{else}}
+        <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
+              class="fas fa-heart" style="color:thistle"></i></button></form>
+        {{/if}}
+        <form action="/cart" method="POST">
+          <input type="hidden" name="productId" value="{{this.id}}">
+          <button type="submit" class="btn  btn-outline-secondary">加入購物車</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

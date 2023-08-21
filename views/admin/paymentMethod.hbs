@@ -1,0 +1,32 @@
+<div class="column">
+  <div class="col-md-9">
+    {{#if paymentMethod}}
+    <form action="/admin/paymentMethods/{{paymentMethod.id}}?_method=PUT" method="post">
+      {{else}}
+      <form action="/admin/paymentMethods" method="POST">
+        {{/if}}
+        <div class="form-group">
+          <label for="name">名稱</label>
+          <input type="text" class="form-control" name="name" id="name" placeholder="名稱" value="{{paymentMethod.name}}"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="status">狀態</label>
+          <select  name="status" class="col-md-12">
+            {{#if paymentMethod.status}}
+            <option value="1" selected>開啟</option>
+            <option value="0">關閉</option>
+            {{else}}
+            <option value="1" selected>開啟</option>
+            <option value="0" selected>關閉</option>
+            {{/if}}
+          </select>
+          </input>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary" style="display: flex;justify-content:end">Submit</button>
+        </div>
+      </form>
+  </div>
+
+</div>

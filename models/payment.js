@@ -16,11 +16,12 @@ module.exports = (sequelize, DataTypes) => {
   };
   Payment.init({
     amount: DataTypes.INTEGER,
-    sn: DataTypes.INTEGER,
+    sn: DataTypes.BIGINT,
     payment_method: DataTypes.STRING,
     paid_at: DataTypes.DATE,
     params: DataTypes.TEXT,
-    OrderId: DataTypes.INTEGER
+    OrderId: DataTypes.INTEGER,
+    PaymentMethodId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Payment',

@@ -1,7 +1,9 @@
 <div class="row col-md-9">
   <nav class="my-2 ">
     <a class="p-2 text-dark" href="/admin/products">商品</a> |
-    <a class="p-2 text-dark" href="/admin/orders">訂單</a>
+    <a class="p-2 text-dark" href="/admin/orders">訂單</a> |
+    <a class="p-2 text-dark" href="/admin/categories">分類</a> |
+    <a class="p-2 text-dark" href="/admin/paymentMethods">付款方式</a>
   </nav>
 </div>
 <br>
@@ -11,12 +13,13 @@
 
 <br />
 <br />
-
+{{>messages}}
 <table class="table">
   <thead class="thead-dark">
     <tr>
       <th scope="col">產品序號</th>
       <th scope="col">產品名稱</th>
+      <th scope="col">產品分類</th>
       <th scope="col">圖片</th>
       <th scope="col">價格</th>
       <th scope="col">編輯</th>
@@ -27,6 +30,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.Category.name}}</td>
       <td><img src="{{this.image}}" width="150" height="150"></td>
       <td>{{this.price}}</td>
       <td>

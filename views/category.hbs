@@ -1,0 +1,132 @@
+<div class="row">
+  <div class="col-md-10">
+    <div class=" mb-3 d-flex justify-content-center">
+      <div class="m-3">
+        <form action="/search" method="get">
+          <label for="search">搜尋:
+            <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
+            <button type="submit" class="btn-primary">送出</button>
+          </label>
+        </form>
+      </div>
+      <div class="m-3 d-flex-end">
+        <form action="/categories/{{categoryId}}" method="get">
+          <div class=" mb-2 d-flex justify-content-end dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="sort" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              排序方式
+            </button>
+            <div class="dropdown-menu" aria-labelledby="sort">
+              <button class="dropdown-item" type="submit" name="sort" value="DESC">價格(高→低)</button>
+              <button class="dropdown-item" type="submit" name="sort" value="ASC">價格(低→高)</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-3">
+        {{>left categories=categories}}
+      </div>
+      <div class="col-md-9 row">
+        {{#each products}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <a href="/products/{{this.id}}"><img class="bd-placeholder-img card-img-top" width="100%" height="225"
+                src={{this.image}}></img></a>
+            <div class="card-body">
+              <p class="card-text">
+              <h4><a href="/products/{{this.id}}">{{this.name}}</a></h4>
+              <span>{{this.description}}</span>
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">$ {{this.price}}</small>
+                <small class="text-muted"><a href="/categories/{{this.Category.id}}">{{this.Category.name}}</a></small>
+                <div class="btn-group">
+                  {{#if this.isFavorited}}
+                  <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+                      class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
+                  {{else}}
+                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
+                        class="fas fa-heart" style="color:thistle"></i></button></form>
+                  {{/if}}
+                  <form action="/cart" method="POST">
+                    <input type="hidden" name="productId" value="{{this.id}}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">加入購物車</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+    <div class="sidebar-sticky">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          {{#each cart.items}}
+          <div class="row no-gutters">
+            <div class="col-md-4" style="display: flex;align-items: center;">
+              <a href="/products/{{this.id}}"><img src="{{this.image}}" class="card-img" alt="..."></a>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <a href="/products/{{this.id}}">
+                  <h5 class="card-title">{{this.name}}</h5>
+                </a>
+                <p>${{this.price}}</p>
+                <div class="btn-group">
+                  <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                  </form>
+                  <span style="margin: 0 20px;">{{this.CartItem.quantity}}</span>
+                  <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+                  </form>
+
+                  <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
+                    <button type="submit" class="btn btn-link">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </li>
+      </ul>
+      <hr>
+      <li class="list-group-item">
+        Total: ${{totalPrice}}
+        <a href="/cart"><button class="btn btn-primary">Go to Cart</button></a>
+      </li>
+
+    </div>
+  </nav>
+</div>
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="/categories/{{categoryId}}?page={{prev}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+    {{#ifCond this ../page}}
+      <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+      <li class="page-item"><a class="page-link" href="/categories/{{../categoryId}}?page={{this}}">{{this}}</a></li>
+    {{/ifCond}}
+    {{/each}}
+    <li class="page-item"><a class="page-link" href="/categories/{{categoryId}}?page={{next}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>

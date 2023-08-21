@@ -1,5 +1,5 @@
 {{!-- <h1>顯示購物車</h1> --}}
-
+{{>messages}}
 <div class="box border">
   <table class="table">
     <thead>
@@ -99,20 +99,15 @@
               <tbody>
                 <tr>
                   <td>
+                    {{#each paymentMethods}}
                     <div id="payment" class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="payment_method" id="payment_method"
-                        value="ATM">
-                      <label class="form-check-label" for="payment_method">
-                        ATM轉帳
+                      <input class="form-check-input" type="radio" name="PaymentMethodId" id="payment_method"
+                        value="{{this.id}}" required>
+                      <label class="form-check-label" for="PaymentMethodId">
+                        {{this.name}}
                       </label>
                     </div>
-                    <div class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="payment_method" id="payment_method"
-                        value="信用卡">
-                      <label class="form-check-label" for="payment_method">
-                        信用卡
-                      </label>
-                    </div>
+                    {{/each}}
                   </td>
                 </tr>
               </tbody>

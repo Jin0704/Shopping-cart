@@ -29,14 +29,16 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Favorite,
         foreignKey: 'ProductId',
         as: 'FavoritedUsers'
-      })
+      });
+      Product.belongsTo(models.Category)
     }
   };
   Product.init({
     name: DataTypes.STRING,
     price: DataTypes.INTEGER,
     description: DataTypes.TEXT,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    CategoryId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Product',

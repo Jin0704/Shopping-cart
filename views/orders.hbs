@@ -1,5 +1,6 @@
+<br>
 {{#each orders}}
-<div class="column col-md-12">
+<div class="column col-md-12 border-bottom">
   {{#ifPay shipping_status '出貨完成' '訂單取消'}}
   <button class="btn btn-primary col-md-12 mt-2" type="button" data-toggle="collapse"
     data-target="#collapseExample{{this.id}}" aria-expanded="false" aria-controls="collapseExample"
@@ -28,7 +29,11 @@
             <tr>
               <td>{{this.name}}</td>
               <td>{{this.OrderItem.quantity}}</td>
-              <td>{{this.OrderItem.subtotal}}</td>
+              {{#if this.subtotal}}
+              <td>{{this.subtotal}}</td>
+              {{else}}
+              <td>{{#multiply this.price this.OrderItem.quantity}} {{/multiply}}</td>
+              {{/if}}
             </tr>
             {{/each}}
             <tr>
@@ -64,7 +69,7 @@
       <div class="d-flex flex-column  justify-content-center align-item-center">
         <ul>
           <li>
-            <h3 class="mb-2 ">付款方式: {{this.payment_method}}</h3>
+            <h3 class="mb-2 ">付款方式: {{this.methods.name}}</h3>
           </li>
           <li>
             <h3 class="mb-2 ">出貨狀態: {{this.shipping_status}}</h3>
@@ -75,13 +80,16 @@
         </ul>
 
         <div style="display: flex; justify-content: space-evenly;min-width: 300px;">
-          {{#ifPay shipping_status '出貨完成' '訂單取消'}}
+          {{#ifPay payment_status '出貨完成' '訂單取消'}}
           <button type="submit" class="btn btn-secondary" disabled>取消訂單</button>
-          <a href="/orders/{{this.id}}/payment"><button class="btn btn-secondary" disabled>立即付款</button></a>
           {{else}}
           <form action="/orders/{{this.id}}/cancel" method="POST">
             <button type="submit" class="btn btn-primary">取消訂單</button>
           </form>
+          {{/ifPay}}
+          {{#ifPay payment_status '已付款' '訂單取消'}}
+          <a href="/orders/{{this.id}}/payment"><button class="btn btn-secondary" disabled>立即付款</button></a>
+          {{else}}
           <a href="/orders/{{this.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
           {{/ifPay}}
         </div>
@@ -90,3 +98,5 @@
   </div>
 </div>
 {{/each}}
+<br>
+<hr>

@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1435.0",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
@@ -23,17 +24,26 @@
     "faker": "^5.5.3",
     "imgur": "^1.0.2",
     "imgur-node-api": "^0.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "multer": "^1.4.3",
+    "multer-s3": "^3.0.1",
     "mysql2": "^2.3.0",
     "ngrok": "^4.2.2",
     "nodemailer": "^6.6.5",
     "passport": "^0.5.0",
     "passport-facebook": "^3.0.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.7.1",
+    "pm2": "^5.3.0",
     "react-scripts": "^4.0.3",
+    "redis": "^4.6.7",
     "sequelize": "^6.6.5",
-    "sequelize-cli": "^6.2.0"
+    "sequelize-cli": "^6.2.0",
+    "uuid": "^9.0.0",
+    "yup": "^1.2.0"
   }
 }

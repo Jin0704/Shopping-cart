@@ -46,6 +46,16 @@ const userController = {
     return res.redirect('/')
   },
 
+  getUser: async(req,res)=>{
+    try{
+      const user = await User.findByPk(req.user.id)
+      return res.render('user',{user:user.toJSON()})
+    }catch(err){
+      console.log(err)
+      return res.render('error',{err:'個人葉面錯誤'})
+    }
+  },
+
   getFavoritespage: async (req, res) => {
     try {
       let products = await User.findByPk(req.user.id, {

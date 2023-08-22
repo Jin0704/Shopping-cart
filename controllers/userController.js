@@ -52,7 +52,7 @@ const userController = {
       return res.render('user/profile',{user:user.toJSON()})
     }catch(err){
       console.log(err)
-      return res.render('error',{err:'個人葉面錯誤'})
+      return res.render('error',{err:'個人頁面錯誤'})
     }
   },
 
@@ -91,7 +91,23 @@ const userController = {
       })
     }catch(err){
       console.log(err)
-      return res.render('error',{err:'個人葉面錯誤'})
+      return res.render('error',{err:'個人頁面錯誤'})
+    }
+  },
+  getUserFavorites: async (req, res) => {
+    try {
+      let products = await User.findByPk(req.user.id, {
+        include: [
+          { model: Product, as: 'FavoritedProducts' }
+        ]
+      })
+      products = products ? products.toJSON() : products
+      return res.render('user/favorites', {
+        products: products.FavoritedProducts
+      })
+    } catch (err) {
+      console.log(err)
+      return res.render('error',{err:'個人頁面錯誤'})
     }
   },
 

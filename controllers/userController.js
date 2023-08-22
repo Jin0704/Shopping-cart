@@ -5,6 +5,7 @@ const Product = db.Product
 const Order  = db.Order
 const bcrypt = require('bcryptjs')
 const yupCheck = require('../helper/yupCheck')
+const uploadFileToS3 = require('../helper/uploadFileToS3')
 const userController = {
 
   getSigninPage: (req, res) => {
@@ -50,6 +51,22 @@ const userController = {
     try{
       const user = await User.findByPk(req.user.id)
       return res.render('user/profile',{user:user.toJSON()})
+    }catch(err){
+      console.log(err)
+      return res.render('error',{err:'個人頁面錯誤'})
+    }
+  },
+
+  editUser: async(req,res)=>{
+    try{
+      const user = await User.findByPk(req.user.id)
+      if(!user){ return res.render('error',{err:'user not exists!'}) }
+      const imageUrl  =  req.file ? await uploadFileToS3(req) : user.image? user.image:''
+      const input = {...req.body, image: imageUrl}
+      await yupCheck.userShape(input)
+      await user.update({...input})
+      req.flash('success_messages', '更新成功')
+      res.redirect(`/users/${req.user.id}/profile`)
     }catch(err){
       console.log(err)
       return res.render('error',{err:'個人頁面錯誤'})

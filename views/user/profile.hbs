@@ -3,29 +3,35 @@
     {{>userSideBar user=user}}
   </div>
   <div class="col-md-8">
+    {{>messages}}
     <div class="column">
       <div class="col-md-9">
-        <form action="/admin/products/{{user.id}}?_method=PUT" method="post" enctype="multipart/form-data">
+        <form action="/users/{{user.id}}?_method=PUT" method="post" enctype="multipart/form-data">
             <div class="form-group">
               <div class="col-md-12 row">
                 <div class="col-md-6">
                   <label for="name">姓名</label>
-                  <input type="text" class="form-control" name="name" id="name" placeholder="{{user.name}}"
+                  <input type="text" class="form-control" name="name" id="name" placeholder="{{user.name}}" value="{{user.name}}"
                     disabled>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-2">
                   <label for="gender">性別</label>
-                  <select id="gender" name="gender" class="col-md-12" placeholder="性別" disabled>
+                  <select id="gender" name="gender" class="col-md-12" disabled>
+                    {{#if user.gender}}
                     <option value="0">女性</option> 
-                    <option value="1">男性</option>
+                    <option value="1" selected>男性</option>
+                    {{else}}
+                    <option value="0" selected>女性</option> 
+                    <option value="1" >男性</option>
+                    {{/if}}
                   </select>
                 <div class="col-md-3"></div>
                 </div>
               </div>
             </div>
             <div class="form-group col-md-6" style="display: flex; flex-flow:row ;align-items:center">
-              <img src="{{user.image}}" class="card-img" width="100" height="100"></li>
+              <img src="{{user.image}}" class="card-img" width="200" height="200"></li>
               <div class="col-md-8">
                 <label for="image">上傳新圖片</label>
                 <input type="file" name="image" id="image" class="form-control-file" disabled>
@@ -37,7 +43,7 @@
             </div>
             <div class="col-md-10">
               <label for="address" class="form-label">住址</label>
-              <input type="text" class="form-control" name="address" id="address" placeholder="台北市大安區大安路" disabled>
+              <input type="text" class="form-control" name="address" id="address" placeholder="{{user.address}}" value="{{user.address}}" disabled>
             </div>
 
             <div class="col-md-12 mt-3 row">
@@ -61,14 +67,12 @@
     const editButton = document.getElementById('editButton');
     const submitButton = document.getElementById('submitButton');
     const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
     const addressInput = document.getElementById('address');
     const genderInput = document.getElementById('gender');
     const imageInput = document.getElementById('image');
 
     editButton.addEventListener('click', () => {
         nameInput.disabled = false;
-        emailInput.disabled = false;
         submitButton.disabled = false;
         addressInput.disabled = false;
         genderInput.disabled = false;

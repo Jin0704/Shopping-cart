@@ -1,4 +1,5 @@
 const db = require('../../models')
+const redis = require('../../redis')
 const Order = db.Order
 
 const OrderController = {
@@ -56,7 +57,8 @@ const OrderController = {
         payment_status: req.body.payment_status,
         shipping_status: req.body.shipping_status
       })
-
+      await redis.clearKey(`user${order.UserId}_orders`)
+      await redis.clearKey("admin-orders")
       req.flash('success_messages', '更新成功')
       return res.redirect('/admin/orders')
     } catch (err) {
@@ -69,6 +71,8 @@ const OrderController = {
     try {
       const order = await Order.findByPk(req.params.id)
       await order.destroy()
+      await redis.clearKey(`user${order.UserId}_orders`)
+      await redis.clearKey("admin-orders")
       req.flash('success_messages', '刪除成功')
       return res.redirect('/admin/orders')
     } catch (err) {

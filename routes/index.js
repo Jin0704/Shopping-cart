@@ -50,6 +50,7 @@ router.get('/terms',(req,res)=>{
 router.use(authenticated)
 // user
 router.get('/users/:id/profile', userController.getUser)
+router.get('/users/:id/orders', userController.getOrders)
 router.get('/cart', cartController.getCart)
 //favorite routes
 router.get('/favorites', userController.getFavoritespage)

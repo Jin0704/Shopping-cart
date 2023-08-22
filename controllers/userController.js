@@ -2,9 +2,9 @@ const db = require('../models')
 const User = db.User
 const Favorite = db.Favorite
 const Product = db.Product
+const Order  = db.Order
 const bcrypt = require('bcryptjs')
 const yupCheck = require('../helper/yupCheck')
-
 const userController = {
 
   getSigninPage: (req, res) => {
@@ -49,7 +49,46 @@ const userController = {
   getUser: async(req,res)=>{
     try{
       const user = await User.findByPk(req.user.id)
-      return res.render('user',{user:user.toJSON()})
+      return res.render('user/profile',{user:user.toJSON()})
+    }catch(err){
+      console.log(err)
+      return res.render('error',{err:'個人葉面錯誤'})
+    }
+  },
+
+  getOrders: async(req,res)=>{
+    try{
+      const userId = req.user.id
+      const user = await User.findByPk(req.user.id)
+      let PAGE_OFFSET = 0
+      const OrderPagelimit = 10
+      if (req.query.page) {
+        PAGE_OFFSET = (req.query.page - 1) * OrderPagelimit
+      }
+      //要改用sql語法去撈關聯資料，用include會有問題
+      const orders = await Order.findAndCountAll({
+        raw: true,
+        nest: true,
+        // includes: ['items'],
+        limit: OrderPagelimit,
+        offset: PAGE_OFFSET,
+        where:{ UserId: userId}
+      })
+
+      const page = Number(req.query.page) || 1
+      const pages = Math.ceil(orders.count / OrderPagelimit)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+
+      return res.render('user/orders', {
+        orders: orders.rows,
+        page: page,
+        totalPage: totalPage,
+        prev: prev,
+        next: next,
+        user: user.toJSON()
+      })
     }catch(err){
       console.log(err)
       return res.render('error',{err:'個人葉面錯誤'})

@@ -173,8 +173,6 @@ const orderController = {
       if(req.query.from == 'NotifyURL'){
         const data = JSON.parse(newebpay.create_mpg_aes_decrypt(req.body.TradeInfo))
         let orders = await Order.findAll({ where: { sn: data['Result']['MerchantOrderNo'] } })
-        // console.log('=====data======')
-        // console.log(data)
         await orders[0].update({
           ...req.body,
           payment_status: '已付款',
@@ -187,6 +185,8 @@ const orderController = {
           params:data['Result']['TradeNo'],
           OrderId: orders[0].dataValues.id
         })
+        await redis.clearKey(`user${orders[0].UserId}_orders`)
+        await redis.clearKey("admin-orders")
         return true
       }
     } catch (err) {

@@ -1,0 +1,55 @@
+<div class="container row m-6" style="width: auto;height:auto"> 
+  <div class="col-md-3">
+    {{>userSideBar user=user}}
+  </div>
+  <div class="col-md-9">
+  <br />
+  {{>messages}}
+  <table class="table border-bottom">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">圖片</th>
+        <th scope="col">產品名稱</th>
+        <th scope="col">價格</th>
+        <th scope="col">編輯</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+      <tr>
+        <td><a href="/products/{{this.id}}"><img src="{{this.image}}" width="150" height="150"></a></td>
+        <td><a href="/products/{{this.id}}">{{this.name}}</a></td>
+        <td>{{this.price}}</td>
+        <td>
+          <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+              class="btn btn-outline-secondary mb-2">移除收藏</button></form>
+          <form action="/cart" method="POST">
+            <input type="hidden" name="productId" value="{{this.id}}">
+            <button type="submit" class="btn  btn-outline-secondary">加入購物車</button>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="/favorites?page={{prev}}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {{#each totalPage}}
+      {{#ifCond this ../page}}
+      <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+      {{else}}
+      <li class="page-item"><a class="page-link" href="/favorites?page={{this}}">{{this}}</a></li>
+      {{/ifCond}}
+      {{/each}}
+      <li class="page-item"><a class="page-link" href="/favorites?page={{next}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

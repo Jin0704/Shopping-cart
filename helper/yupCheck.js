@@ -28,6 +28,21 @@ const yupCheck = {
       throw new Error(err)
     }
   },
+  userShape: async(input)=>{
+    const bodyShape = yup.object().shape({
+      name: yup.string().nullable().default(''),
+      gender: yup.number().oneOf([0,1]).default(0),
+      address: yup.string().nullable().default(''),
+      image: yup.string().nullable().default('')
+    })
+    try{
+      await bodyShape.validate(input)
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  },
   productShape: async(input)=>{
     const bodyShape = yup.object().shape({
       name: yup.string().required(),

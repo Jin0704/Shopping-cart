@@ -8,6 +8,11 @@ const flash = require('connect-flash')
 const cookieParser = require('cookie-parser')
 const path = require('path')
 const passport = require('passport')
+// socket
+const io = require('./helper/socket')
+const http = require('http')
+const server = http.createServer(app) 
+// redis
 const redis = require('./redis')
 redis.connectRedis()
 require('./config/passport')
@@ -42,8 +47,9 @@ app.use((req, res, next) => {
   next()
 })
 
+io(server)
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`http://localhost:${port}`)
 })
 

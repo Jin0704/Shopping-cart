@@ -4,30 +4,22 @@ const Cart = db.Cart
 const Category = db.Category
 const PAGE_LIMIT = 6
 const redis = require('../redis')
+const CartService = require('../services/cart')
+const CategoryService = require('../services/category')
 
 const categoryController = {
   getCategory:async(req,res)=>{
     try {
-      let data;
-      let cart = await Cart.findByPk(req.session.cartId, {
-        include: 'items'
-      })
-      //sidebar page
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      // category
-      const categories = await Category.findAll({
-        raw:true,
-        where:{'status':true},
-        attributes:['id','name']
-      })
-    
+      let data={};
+      data['cart'] = await CartService.getCart(req)
+      data['totalPrice'] = await CartService.computeTotalPrice(data['cart'])
+      data['categories'] = await CategoryService.getCategories()
       const categoryId = req.params.id
       let PAGE_OFFSET = 0
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
-      const sort = req.query.sort ? req.query.sort : 'DESC'
+      const sort = req.query.sort=='ASC' ? 'ASC':"DESC"
       let products = await Product.findAndCountAll({
         raw: true,
         nest: true,
@@ -38,38 +30,20 @@ const categoryController = {
         order: [['price', sort]],
       })
 
-      if (req.user) {
-        var productData = products.rows.map(p => ({
+      data['products'] = req.user ? products.rows.map(p => ({
           ...p,
           isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
-        }))
-      }
+        })): products.rows
 
-      const page = Number(req.query.page) || 1
-      const pages = Math.ceil(products.count / PAGE_LIMIT)
-      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
-      const prev = page - 1 < 1 ? 1 : page - 1
-      const next = page + 1 > pages ? pages : page + 1
+      data['page'] = Number(req.query.page) || 1
+      data['pages'] = Math.ceil(products.count / PAGE_LIMIT)
+      data['totalPage'] = Array.from({ length: data['pages'] }).map((item, index) => index + 1)
+      data['prev'] = data['page'] - 1 < 1 ? 1 : data['page'] - 1
+      data['next'] = data['page'] + 1 > data['pages'] ? data['pages'] : data['page'] + 1
 
-      products = productData ? productData : products.rows
-
-      data = {
-        products,
-        cart,
-        categories,
-        totalPrice,
-        page: page,
-        totalPage: totalPage,
-        prev: prev,
-        next: next,
-        categoryId:req.params.id
-      }
-      
       return res.render('category', {
         ...data,
-        categories,
-        cart,
-        totalPrice
+        categoryId:req.params.id
       })
     } catch (err) {
       console.log(err)

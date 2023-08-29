@@ -7,6 +7,19 @@ const CategoryService = {
     try{
       const data = await Category.findAll({ 
         raw:true,
+        where:{status:1},
+        attributes:['id','name']
+      })
+      return data
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  },
+  getCategoriesAPI: async(req)=>{
+    try{
+      const data = await Category.findAll({ 
+        raw:true,
         attributes:['id','name']
       })
       await redis.setKey('api-categories',JSON.stringify(data))
@@ -15,7 +28,7 @@ const CategoryService = {
       console.error(err)
       throw new Error(err)
     }
-  },
+  },  
   getCategory:{
 
   },

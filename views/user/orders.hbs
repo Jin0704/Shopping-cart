@@ -51,7 +51,7 @@
     <nav aria-label="Page navigation example" class="d-flex justify-content-center">
       <ul class="pagination">
         <li class="page-item">
-          <a class="page-link" href="/user/{{user.id}}/orders?page={{prev}}" aria-label="Previous">
+          <a class="page-link" href="/users/{{user.id}}/orders?page={{prev}}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -59,10 +59,10 @@
         {{#ifCond this ../page}}
         <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
         {{else}}
-        <li class="page-item"><a class="page-link" href="/user/{{user.id}}/orders?page={{this}}">{{this}}</a></li>
+        <li class="page-item"><a class="page-link" href="/users/{{user.id}}/orders?page={{this}}">{{this}}</a></li>
         {{/ifCond}}
         {{/each}}
-        <li class="page-item"><a class="page-link" href="/user/{{user.id}}/orders?page={{next}}" aria-label="Next">
+        <li class="page-item"><a class="page-link" href="/users/{{user.id}}/orders?page={{next}}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>

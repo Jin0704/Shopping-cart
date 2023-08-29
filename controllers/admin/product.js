@@ -1,4 +1,5 @@
 const db = require('../../models')
+const Sequelize = db.Sequelize
 const Product = db.Product
 const Category = db.Category
 const yupCheck = require('../../helper/yupCheck')
@@ -12,12 +13,15 @@ const ProductController = {
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
-
+      const keyword = req.query.keyword || ''
       const products = await Product.findAndCountAll({
         raw: true,
         nest: true,
         limit: PAGE_LIMIT,
         offset: PAGE_OFFSET,
+        where:{
+          name:{[Sequelize.Op.like]:`%${keyword}%`}
+        },
         include:Category
       })
       let page = Number(req.query.page) || 1
@@ -31,7 +35,8 @@ const ProductController = {
         page: page,
         totalPage: totalPage,
         prev: prev,
-        next: next
+        next: next,
+        keyword
       })
     } catch (err) {
       console.log(err)

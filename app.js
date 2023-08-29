@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const db = require('./models')
 const exphbs = require('express-handlebars')
 const routes = require('./routes')
 const methodoverride = require('method-override')
@@ -44,6 +45,8 @@ app.use((req, res, next) => {
 
 
 app.listen(port, () => {
+  //同步資料庫
+  db.sequelize.sync()
   console.log(`http://localhost:${port}`)
 })
 

@@ -2,9 +2,9 @@
   <div class="col-md-10">
     <div class=" mb-3 d-flex justify-content-center">
       <div class="m-3">
-        <form action="/search" method="get">
+        <form action="/products" method="get">
           <label for="search">搜尋:
-            <input type="search" name="search" id="search" placeholder=" 搜尋產品" class="rounded-pill">
+            <input type="search" name="keyword" id="keyword" placeholder=" 搜尋產品" class="rounded-pill" value="{{keyword}}">
             <button type="submit" class="btn-primary">送出</button>
           </label>
         </form>
@@ -12,11 +12,11 @@
       <div class="m-3 d-flex-end">
         <form action="/products" method="get">
           <div class=" mb-2 d-flex justify-content-end dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="searchsort" data-toggle="dropdown"
+            <button class="btn btn-primary dropdown-toggle" type="button" id="sort" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               排序方式
             </button>
-            <div class="dropdown-menu" aria-labelledby="searchsort">
+            <div class="dropdown-menu" aria-labelledby="sort">
               <button class="dropdown-item" type="submit" name="sort" value="DESC">價格(高→低)</button>
               <button class="dropdown-item" type="submit" name="sort" value="ASC">價格(低→高)</button>
             </div>
@@ -113,7 +113,7 @@
 <nav aria-label="Page navigation example" class="d-flex justify-content-center">
   <ul class="pagination">
     <li class="page-item">
-      <a class="page-link" href="/products?page={{prev}}" aria-label="Previous">
+      <a class="page-link" href="/products?page={{prev}}&keyword={{keyword}}&sort={{sort}}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
@@ -121,10 +121,10 @@
     {{#ifCond this ../page}}
     <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
     {{else}}
-    <li class="page-item"><a class="page-link" href="/products?page={{this}}">{{this}}</a></li>
+    <li class="page-item"><a class="page-link" href="/products?page={{this}}&keyword={{keyword}}&sort={{sort}}">{{this}}</a></li>
     {{/ifCond}}
     {{/each}}
-    <li class="page-item"><a class="page-link" href="/products?page={{next}}" aria-label="Next">
+    <li class="page-item"><a class="page-link" href="/products?page={{next}}&keyword={{keyword}}&sort={{sort}}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

@@ -1,4 +1,5 @@
 const db = require('../models')
+const Sequelize = db.Sequelize
 const User = db.User
 const Product = db.Product
 const Cart = db.Cart
@@ -12,12 +13,16 @@ let ProductController = {
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
-      const sort = req.query.sort ? req.query.sort : 'DESC'
+      const keyword = req.query.keyword || ''
+      const sort = req.query.sort=='ASC' ? 'ASC':"DESC"
       let products = await Product.findAndCountAll({
         raw: true,
         nest: true,
         offset: PAGE_OFFSET,
         limit: PAGE_LIMIT,
+        where:{
+          name:{[Sequelize.Op.like]:`%${keyword}%`}
+        },
         include: [Category],
         order: [['price', sort]],
       })
@@ -59,6 +64,8 @@ let ProductController = {
         totalPage: totalPage,
         prev: prev,
         next: next,
+        keyword,
+        sort
       })
     } catch (err) {
       console.log(err)
@@ -90,83 +97,6 @@ let ProductController = {
       return res.render('error',{err:'產品頁面錯誤'})
     }
   },
-  searchProduct: async (req, res) => {
-    try {
-      const search = req.query.search
-
-      let products = await Product.findAll({
-        order: [['price', 'ASC']],
-        raw: true,
-        nest: true,
-        include: Category
-      })
-
-      if (req.user) {
-        var data = products.map(p => ({
-          ...p,
-          isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
-        }))
-      }
-
-      let cart = await Cart.findByPk(req.session.cartId, {
-        include: 'items'
-      })
-      //sidebar page
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      products = data ? data : products
-      // fliter search items
-      let searchProducts = products.filter(product => product.name.toUpperCase().includes(search.toUpperCase()))
-
-      return res.render('search', {
-        products: searchProducts,
-        cart,
-        totalPrice,
-        search
-      })
-    } catch (err) {
-      console.log(err)
-      return res.render('error',{err:'搜尋產品出現錯誤'})
-    }
-  },
-  sortProducts: async (req, res) => {
-    try {
-      let search = req.query.search
-      let searchsort = req.query.searchsort
-      searchsort = searchsort ? searchsort : 'ASC'
-
-      let products = await Product.findAll({
-        order: [['price', `${searchsort}`]],
-        raw: true,
-        nest: true
-      })
-      if (req.user) {
-        var data = products.map(p => ({
-          ...p,
-          isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
-        }))
-      }
-
-      let cart = await Cart.findByPk(req.session.cartId, {
-        include: 'items'
-      })
-      //sidebar page
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      products = data ? data : products
-      let searchProducts = products.filter(product => product.name.toUpperCase().includes(search.toUpperCase()))
-
-      return res.render('search', {
-        products: searchProducts,
-        cart,
-        totalPrice,
-        search
-      })
-    } catch (err) {
-      console.log(err)
-      return res.render('error',{err:'排序產品出現錯誤'})
-    }
-  }
 }
 
 module.exports = ProductController

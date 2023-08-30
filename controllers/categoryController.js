@@ -1,4 +1,5 @@
 const db = require('../models')
+const Sequelize = db.Sequelize
 const Product = db.Product
 const Cart = db.Cart
 const Category = db.Category
@@ -20,6 +21,7 @@ const categoryController = {
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
       }
+      const keyword = req.query.keyword || ''
       const sort = req.query.sort=='ASC' ? 'ASC':"DESC"
       let products = await Product.findAndCountAll({
         raw: true,
@@ -27,7 +29,7 @@ const categoryController = {
         offset: PAGE_OFFSET,
         limit: PAGE_LIMIT,
         include: [Category],
-        where:{CategoryId:categoryId},
+        where:{[Sequelize.Op.and]:[{CategoryId:categoryId},{name:{[Sequelize.Op.like]:`%${keyword}%`}}]},
         order: [['price', sort]],
       })
 
@@ -40,7 +42,9 @@ const categoryController = {
 
       return res.render('category', {
         ...data,
-        categoryId:req.params.id
+        categoryId:req.params.id,
+        keyword,
+        sort
       })
     } catch (err) {
       console.log(err)

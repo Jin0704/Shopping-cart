@@ -6,12 +6,13 @@ const Cart = db.Cart
 const Category = db.Category
 const CartService = require('../services/cart')
 const CategoryService = require('../services/category')
+const CommonService = require('../services/common')
 const PAGE_LIMIT = 6
 
 let ProductController = {
   getProducts: async (req, res) => {
     try {
-      const data = {}
+      let data = {}
       let PAGE_OFFSET = 0
       if (req.query.page) {
         PAGE_OFFSET = (req.query.page - 1) * PAGE_LIMIT
@@ -35,12 +36,7 @@ let ProductController = {
           isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
         })): products.rows
 
-      data['page'] = Number(req.query.page) || 1
-      data['pages'] = Math.ceil(products.count / PAGE_LIMIT)
-      data['totalPage'] = Array.from({ length: data['pages'] }).map((item, index) => index + 1)
-      data['prev'] = data['page'] - 1 < 1 ? 1 : data['page'] - 1
-      data['next'] = data['page'] + 1 > data['pages'] ? data['pages'] : data['page'] + 1
-
+      data = await CommonService.calculatePagination(data,products.count,req.query.page)
       data['cart'] = await CartService.getCart(req)
       data['totalPrice'] = await CartService.computeTotalPrice(data['cart'])
       data['categories'] = await CategoryService.getCategories()

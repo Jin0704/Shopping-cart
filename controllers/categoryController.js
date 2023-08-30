@@ -6,6 +6,7 @@ const PAGE_LIMIT = 6
 const redis = require('../redis')
 const CartService = require('../services/cart')
 const CategoryService = require('../services/category')
+const CommonService = require('../services/common')
 
 const categoryController = {
   getCategory:async(req,res)=>{
@@ -35,11 +36,7 @@ const categoryController = {
           isFavorited: req.user.FavoritedProducts.map(d => d.id).includes(p.id)
         })): products.rows
 
-      data['page'] = Number(req.query.page) || 1
-      data['pages'] = Math.ceil(products.count / PAGE_LIMIT)
-      data['totalPage'] = Array.from({ length: data['pages'] }).map((item, index) => index + 1)
-      data['prev'] = data['page'] - 1 < 1 ? 1 : data['page'] - 1
-      data['next'] = data['page'] + 1 > data['pages'] ? data['pages'] : data['page'] + 1
+      data = await CommonService.calculatePagination(data,products.count,req.query.page)
 
       return res.render('category', {
         ...data,

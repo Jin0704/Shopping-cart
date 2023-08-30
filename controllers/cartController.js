@@ -2,27 +2,25 @@ const db = require('../models')
 const Cart = db.Cart
 const CartItem = db.CartItem
 const PaymentMethod = db.PaymentMethod
+const CartService = require('../services/cart')
 
 let cartController = {
   getCart: async (req, res) => {
     try {
+      let data ={}
       // return Cart.findOne({ include: 'items' })
       console.log('***********')
       console.log(req.session)
       console.log('***********')
       // console.log(req.user.id)
-      let cart = await Cart.findByPk(req.session.cartId, { include: 'items' })
-      const paymentMethods = await PaymentMethod.findAll({
+      data['cart'] = await CartService.getCart(req)
+      data['totalPrice'] = await CartService.computeTotalPrice(data['cart'])
+      data['paymentMethods'] = await PaymentMethod.findAll({
         raw:true,
         where:{status:1}
       })
-      cart = cart ? cart.toJSON() : { items: [] }
-      let totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      return res.render('cart', {
-        cart: cart,
-        paymentMethods,
-        totalPrice: totalPrice
-      })
+      
+      return res.render('cart', { ...data})
     } catch (err) {
       console.log(err)
     }

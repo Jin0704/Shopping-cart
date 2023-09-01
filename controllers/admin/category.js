@@ -26,12 +26,12 @@ const CategoryController = {
         offset: PAGE_OFFSET,
         attributes:['id','name','status']
       })
-
-      const page = Number(req.query.page) || 1
-      const pages = Math.ceil(categories.count / categoryPagelimit)
-      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
-      const prev = page - 1 < 1 ? 1 : page - 1
-      const next = page + 1 > pages ? pages : page + 1
+      // others
+        const page = Number(req.query.page) || 1
+        const pages = Math.ceil(categories.count / categoryPagelimit)
+        const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+        const prev = page - 1 < 1 ? 1 : page - 1
+        const next = page + 1 > pages ? pages : page + 1
 
       data = {
         categories: categories.rows,

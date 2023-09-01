@@ -12,11 +12,7 @@ const CartService = {
     try{
       let cart = await Cart.findByPk(req.session.cartId,{include:'items'})
       cart = cart ? cart.toJSON(): { items:[]}
-      const totalPrice = cart.items.length > 0 ? cart.items.map(d=>d.price*d.CartItem.quantity).reduce((a,b)=>a+b):0
-      return {
-        cart,
-        totalPrice
-      }
+      return cart
     }catch(err){
       console.error(err)
       throw new Error(err)
@@ -79,6 +75,15 @@ const CartService = {
       const cartItem = await CartItem.findByPk(req.params.id)
       await cartItem.destroy()
       return {'message':'已移出購物車'}
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  },
+  computeTotalPrice: async(cart)=>{
+    try{
+      const totalPrice = cart.items.length > 0 ? cart.items.map(d=>d.price*d.CartItem.quantity).reduce((a,b)=>a+b):0
+      return totalPrice
     }catch(err){
       console.error(err)
       throw new Error(err)

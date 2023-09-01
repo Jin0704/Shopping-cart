@@ -2,11 +2,12 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const shopController = require('../controllers/shopController')
-const ProductController = require('../controllers/productsController')
+const productController = require('../controllers/productsController')
 const cartController = require('../controllers/cartController')
 const userController = require('../controllers/userController')
 const categoryController = require('../controllers/categoryController') 
 const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 const admin = require('./modules/admin')
 const orders = require('./modules/orders')
 const auth = require('./modules/auth')
@@ -20,10 +21,8 @@ router.use('/api', api)
 
 router.get('/', shopController.getshop)
 router.get('/categories/:id',categoryController.getCategory)
-router.get('/products', ProductController.getProducts)
-router.get('/products/:id', ProductController.getProduct)
-router.get('/search', ProductController.searchProduct)
-router.get('/searchsort', ProductController.sortProducts)
+router.get('/products', productController.getProducts)
+router.get('/products/:id', productController.getProduct)
 router.post('/cart', cartController.postCart)
 
 router.get('/signin', userController.getSigninPage)
@@ -48,6 +47,12 @@ router.get('/terms',(req,res)=>{
 
 // use authenticated
 router.use(authenticated)
+// user
+router.get('/users/:id/profile', userController.getUser)
+router.get('/users/:id/orders', userController.getOrders)
+router.get('/users/:id/favorited', userController.getUserFavorites)
+router.put('/users/:id', upload.single('image'), userController.editUser)
+
 router.get('/cart', cartController.getCart)
 //favorite routes
 router.get('/favorites', userController.getFavoritespage)

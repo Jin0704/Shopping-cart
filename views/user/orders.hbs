@@ -1,0 +1,72 @@
+<div class="container row m-6" style="width: auto;height:auto"> 
+  <div class="col-md-3">
+    {{>userSideBar user=user}}
+  </div>
+  <div class="col-md-9">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">訂單編號</th>
+          <th scope="col">訂單價格</th>
+          <th scope="col">付款方式</th>
+          <th scope="col">付款狀態</th>
+          <th scope="col">運送狀態</th>
+          <th scope='col'>詳細資料</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orders}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>${{this.amount}}</td>
+          <td>{{#ifCond this.payment_method 'ATM'}}ATM轉帳{{else}}信用卡{{/ifCond}}</td>
+          <td>{{this.payment_status}} </td>
+          <td>{{ this.shipping_status }} </td>
+          <td>
+            {{#ifCond this.payment_status '已付款'}}
+            <form action="/orders/{{this.id}}/cancel" method="POST">
+              <button type="submit" class="btn btn-link">取消訂單</button>
+            </form>            
+            {{else}}
+              {{#ifCond this.payment_status '訂單取消'}}
+                <button type="button" class="btn btn-link"  disabled>                
+                  <a href="/orders/{{this.id}}/cancel">
+                    取消訂單
+                  </a>
+                </button>
+              {{else}}
+              <button type="button" class="btn btn-link">
+                <a href="/orders/{{this.id}}/payment">
+                  立即付款
+                </a>
+              </button>
+              {{/ifCond}}  
+            {{/ifCond}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <hr>
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="/users/{{user.id}}/orders?page={{prev}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{#each totalPage}}
+        {{#ifCond this ../page}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+        {{else}}
+        <li class="page-item"><a class="page-link" href="/users/{{user.id}}/orders?page={{this}}">{{this}}</a></li>
+        {{/ifCond}}
+        {{/each}}
+        <li class="page-item"><a class="page-link" href="/users/{{user.id}}/orders?page={{next}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div> 

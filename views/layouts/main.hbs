@@ -52,22 +52,29 @@
       </form>
     </div> }}
       <nav class="my-2 my-md-0 mr-md-3">
-        {{#if user.isAdmin}}
-          <a href="/admin" class="p-2 text-dark">管理者後台</a>
+        <i class="fas fa-shopping-cart">
+          <a class="p-2 text-dark" href="/cart">購物車</a>
+        </i>
+        {{#if user}}
+          <a class="p-2 text-dark" href="/favorites">收藏</a>
+          <a class="p-2 text-dark" href="/orders">訂單</a>
         {{/if}}
         {{#if user}}
           <i class="fas fa-user">
             {{user.email}}
             您好!
           </i>
-          <a href="/logout" class="p-2 text-dark">登出</a>
+          {{#if user.isAdmin}}
+            <a href="/admin" class="p-2 text-dark">管理者後台</a>
+          {{else}}
+            <a
+              href="/users/{{user.id}}/profile"
+              class="p-2 text-dark"
+            >使用者後台</a>
+          {{/if}}
+          <a href="/logout" class="p-2 text-dark"><button>登出</button></a>
         {{else}}
           <a href="/signin" class="p-2 text-dark">登入</a>
-        {{/if}}
-        <a class="p-2 text-dark" href="/cart">購物車</a>
-        {{#if user}}
-          <a class="p-2 text-dark" href="/favorites">收藏</a>
-          <a class="p-2 text-dark" href="/orders">訂單</a>
         {{/if}}
       </nav>
     </div>

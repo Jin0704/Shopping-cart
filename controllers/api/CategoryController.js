@@ -7,7 +7,7 @@ const categoryController = {
     let data
     try{
       result = await redis.getKey('api-categories')
-      data = result ? result : await CategoryService.getCategories(req);
+      data = result ? result : await CategoryService.getCategoriesAPI(req);
     }catch(err){
       console.error(err)
       return responseBuilder.error(req,res,500,err)

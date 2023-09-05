@@ -4,8 +4,8 @@ const config = {
   "development": {
     "username": process.env.RDS_USERNAME || "root",
     "password": process.env.RDS_PASSWORD || "password",
-    "host": process.env.RDS_HOSTNAME || "127.0.0.1",
-    "port": process.env.RDS_PORT || "3306",
+    "host": process.env.RDS_HOSTNAME || "db",
+    "port": process.env.RDS_PORT || 3306,
     "database": "shopping_cart",
     "dialect": "mysql"
   },

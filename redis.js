@@ -1,37 +1,42 @@
-const redis = require('redis')
+// const redis = require('redis')
 require('dotenv').config()
-const connectionOption = { host: process.env.REDIS_HOST, port:process.env.REDIS_PORT}
+const { Redis } = require('ioredis') // 改用ioredis
+
+const connectionOption = { 
+  host:process.env.REDIS_HOST ||'127.0.0.1',
+  port:process.env.REDIS_PORT || 6379
+}
+
 const expireDay = 60 * 60 * 24;
 
-const Redis = {
-  redisClient:null,
-  connectRedis: async()=>{
+class Cache {
+  static redisClient= null
+  static async connectRedis(){
     try{
-      this.redisClient = await redis.createClient(connectionOption)
+      this.redisClient = new Redis(connectionOption)
       this.redisClient.on('err',(err)=>{
         console.error(err)
       })
-      await this.redisClient.connect()
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
     return true;
-  },
-  setKey: async (key,value)=>{
+  }
+  static async setKey(key,value){
     console.log('====== data insert into redis ======')
     await this.redisClient.set(key,value, 'EX', expireDay)
     return true;
-  },
-  getKey: async (key)=>{
+  }
+  static async getKey(key){
     console.log('====== data from redis ======')
     const value = await this.redisClient.get(key);
     return JSON.parse(value);
-  },
-  clearKey: async(key)=>{
+  }
+  static async clearKey(key){
     await this.redisClient.del(key);
     return true
   }
 }
 
-module.exports = Redis
+module.exports = Cache

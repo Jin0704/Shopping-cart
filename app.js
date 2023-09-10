@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const db = require('./models')
 const exphbs = require('express-handlebars')
 const routes = require('./routes')
 const methodoverride = require('method-override')
@@ -9,8 +8,10 @@ const flash = require('connect-flash')
 const cookieParser = require('cookie-parser')
 const path = require('path')
 const passport = require('passport')
+// redis init
 const redis = require('./redis')
 redis.connectRedis()
+
 require('./config/passport')
 const port = process.env.PORT || 3000
 if (process.env.NODE_ENV !== 'production') {
@@ -45,8 +46,8 @@ app.use((req, res, next) => {
 
 
 app.listen(port, () => {
-  //同步資料庫
-  db.sequelize.sync()
+  // //同步資料庫
+  // db.sequelize.sync()
   console.log(`http://localhost:${port}`)
 })
 

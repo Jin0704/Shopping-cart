@@ -28,7 +28,7 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      valid_date: {
+      validDate: {
         type: Sequelize.DATE
       },
       createdAt: {

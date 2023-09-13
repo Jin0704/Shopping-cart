@@ -11,6 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // 一個折扣碼有多個訂單
+      PromotionCode.hasMany(models.Order, { foreignKey:'orderId'})
+      PromotionCode.belongsToMany(models.Category,{
+        as:'PromotionCodeCategories',
+        through: {
+          model:models.PromotionCodeCategory,
+          unique: false
+        },
+        foreignKey:'promotionCodeId',
+      })
+      
     }
   };
   PromotionCode.init({
@@ -26,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       values:['percentage','fix']
     },
     description: DataTypes.TEXT,
-    valid_date: DataTypes.DATE
+    validDate: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'PromotionCode',

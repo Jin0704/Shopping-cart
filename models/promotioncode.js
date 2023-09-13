@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       // 一個折扣碼有多個訂單
-      PromotionCode.hasMany(models.Order, { foreignKey:'orderId'})
+      PromotionCode.hasMany(models.Order, { foreignKey:'promotionCodeId'})
       PromotionCode.belongsToMany(models.Category,{
         as:'PromotionCodeCategories',
         through: {
@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     code: DataTypes.STRING,
     count: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN,
+    discount: DataTypes.INTEGER,
     usage: {
       type:DataTypes.ENUM,
       values:['date','limited','unlimited']

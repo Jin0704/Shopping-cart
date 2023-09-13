@@ -9,14 +9,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       code: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       count: {
         type: Sequelize.INTEGER
       },
       status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
+      discount: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },      
       usage: {
         type: Sequelize.ENUM,
         values:['date','limited','unlimited']

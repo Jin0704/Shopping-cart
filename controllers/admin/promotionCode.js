@@ -30,7 +30,7 @@ class PromotionCodeController {
       await yupCheck.promotionCodeShape(req.body)
       await PromotionCodeService.create(req.body)
       req.flash('success_messages', '新增成功')
-      return res.redirect('/admin/promotionCode')
+      return res.redirect('/admin/promotionCodes')
     }catch(err){
       console.error(err)
       return res.render('error',{err})

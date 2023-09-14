@@ -16,8 +16,7 @@ class PromotionCodeController {
 
   static async findOne(req,res){
     try{
-      let promotionCode = await PromotionCode.findByPk(req.params.id)
-      promotionCode = promotionCode ? promotionCode.toJSON() : null
+      const promotionCode = await PromotionCodeService.findOne(req.params.id)
       return res.render('admin/promotionCode',{promotionCode})
     }catch(err){
       console.error(err)

@@ -44,16 +44,72 @@
         <div class="form-group">
           <label for="usage">使用限制</label>
           <select  name="usage" class="col-md-12">
-            <option value="limited">次數限制</option>
-            <option value="date">時間限制</option>
             <option value="unlimited">無限制</option>
+            <option value="usageLimited">次數限制</option>
+            <option value="date">時間限制</option>
           </select>
           </input>
-        </div>  
+        </div> 
+        {{#if promotionCode}}
+        <div class="form-group" id="usageLimited">
+          <label for="usageLimited">次數上限</label>
+          <input type="number" class="form-control usageLimited" name="usageLimited" placeholder="{{promotionCode.usageLimited}}" value="{{promotionCode.usageLimited}}">
+          </input>
+        </div> 
+        <div class="form-group" id="validDate">
+          <label for="validDate">使用期限</label>
+          <input type="date" class="form-control validDate" name="validDate" placeholder="{{promotionCode.validDate}}" value="{{promotionCode.validDate}}">
+          </input>
+        </div> 
+        {{else}}
+        <div class="form-group" id="usageLimited">
+          <label for="usageLimited">次數上限</label>
+          <input type="text" class="form-control usageLimited" name="usageLimited" placeholder="使用次數限制" value="" >
+          </input>
+        </div> 
+        <div class="form-group" id="validDate">
+          <label for="validDate">使用期限</label>
+          <input type="date" class="form-control validDate" name="validDate" placeholder="使用期限" value="">
+          </input>
+        </div> 
+        {{/if}} 
         <div>
           <button type="submit" class="btn btn-primary" style="display: flex;justify-content:end">Submit</button>
         </div>
       </form>
   </div>
-
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function(){
+
+    $('#validDate').hide()
+    $('#usageLimited').hide()
+
+    $('select[name="usage"]').change(function(){
+      var selectOption = $(this).val()
+      if(selectOption ==='date'){
+        $('#validDate').show()
+        $('#usageLimited').hide()
+      }else{
+        $('#validDate').hide()
+        $('#usageLimited').show()
+      }
+    })
+
+    $('form').submit(function(event){
+      event.preventDefault()
+      if(!$(".validDate").val()){
+        var currentDate = new Date()
+        var formattedDate = currentDate.toISOString().split('T')[0];
+        $(".validDate").val(formattedDate)
+      }
+      if(!$(".usageLimited").val()){
+        $(".usageLimited").val(0)
+      }
+      this.submit()
+    })
+
+  })
+</script>

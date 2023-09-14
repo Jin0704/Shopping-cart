@@ -13,9 +13,13 @@ class PromotionCodeService{
     }
   }
   
-  static async findOne(code){
+  static async findOne(id){
     try{
-      const data = await PromotionCode.findAll({raw:true,nest:true})
+      let data = await PromotionCode.findByPk(id)
+      data = data ? data.toJSON() : null
+      if(data){
+        data.validDate = data.validDate.toISOString().split('T')[0]
+      }
       return data
     }catch(err){
       console.error(err)

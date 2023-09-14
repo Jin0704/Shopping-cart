@@ -25,7 +25,7 @@ module.exports = {
       },      
       usage: {
         type: Sequelize.ENUM,
-        values:['date','limited','unlimited']
+        values:['date','usageLimited','unlimited']
       },
       type: {
         type: Sequelize.ENUM,
@@ -36,6 +36,10 @@ module.exports = {
       },
       validDate: {
         type: Sequelize.DATE
+      },
+      usageLimited:{
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

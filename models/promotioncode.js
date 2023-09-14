@@ -31,14 +31,18 @@ module.exports = (sequelize, DataTypes) => {
     discount: DataTypes.INTEGER,
     usage: {
       type:DataTypes.ENUM,
-      values:['date','limited','unlimited']
+      values:['date','usageLimited','unlimited']
     },
     type:{ 
       type:DataTypes.ENUM,
       values:['percentage','fix']
     },
     description: DataTypes.TEXT,
-    validDate: DataTypes.DATE
+    usageLimited: DataTypes.INTEGER,
+    validDate:{ 
+      type:DataTypes.DATE,
+      defaultValue: new Date()
+    }
   }, {
     sequelize,
     modelName: 'PromotionCode',

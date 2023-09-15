@@ -3,6 +3,7 @@ const Cart = db.Cart
 const CartItem = db.CartItem
 const PaymentMethod = db.PaymentMethod
 const CartService = require('../services/cart')
+const { uuid } = require('uuidv4');
 require('dotenv').config()
 
 let cartController = {
@@ -34,7 +35,7 @@ let cartController = {
     try {
       const cart = await Cart.findOrCreate({
         where: {
-          id: req.session.cartId || 0
+          id: req.session.cartId || uuid()
         }
       })
 

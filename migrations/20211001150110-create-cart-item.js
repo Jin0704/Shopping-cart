@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       CartId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       ProductId: {
         type: Sequelize.INTEGER

@@ -13,6 +13,7 @@ const nodemailer = require('nodemailer')
 const redis = require('../redis')
 const yupCheck = require('../helper/yupCheck')
 const newebpay = require('../helper/newebpayHelper')
+const ComputeHelper =  require('../helper/compute')
 // let mailer = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -49,13 +50,15 @@ const orderController = {
   },
   postOrder: async (req, res) => {
     try {
-      const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
-      if (!cart) {
+      let cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
+      cart = cart ? cart.toJSON() : null
+      if (!cart || !cart?.items.length) {
         req.flash('error_messages', '購物車中沒有商品!')
         return res.redirect('back')
       }
       let input = req.body
       input.UserId = req.user.id
+      input.amount = await ComputeHelper.compute(cart)
       await yupCheck.orderShape(input)
       const order = await Order.create({
         ...input
@@ -97,7 +100,7 @@ const orderController = {
       // })
 
       //async await
-      const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
+      // const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
       // await cartItem.destroy()
       // await cart.destroy()
 

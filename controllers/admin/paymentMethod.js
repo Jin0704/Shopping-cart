@@ -23,15 +23,13 @@ const PaymentMethodController = {
   },
   getPaymentMethod: async(req,res)=>{
     try {
-      const paymentMethod = await PaymentMethod.findByPk(req.params.id)
-      return res.render('admin/paymentMethod', { paymentMethod: paymentMethod.toJSON() })
+      let paymentMethod = await PaymentMethod.findByPk(req.params.id)
+      paymentMethod = paymentMethod ? paymentMethod.toJSON() : null
+      return res.render('admin/paymentMethod', { paymentMethod })
     } catch (error) {
       console.log(error)
-      return res.render('error',{err})
+      return res.render('error',{error})
     }
-  },
-  createPaymentMethod: async (req, res) => {
-    return res.render('admin/createPaymentMethod')
   },
   postPaymentMethod: async(req,res)=>{
     try {

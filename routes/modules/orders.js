@@ -9,6 +9,7 @@ const authenticated = (req, res, next) => {
   res.redirect('/signin')
 }
 
+router.post('/compute', orderController.checkPromotionCode)
 router.get('/', authenticated, orderController.getOrders)
 router.post('/', authenticated, orderController.postOrder)
 router.post('/:id/cancel', authenticated, orderController.cancelOrder)

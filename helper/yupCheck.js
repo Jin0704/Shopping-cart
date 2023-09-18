@@ -103,6 +103,31 @@ const yupCheck = {
       console.error(err)
       throw new Error(err)
     }
+  },
+  promotionCodeShape: async(input)=>{
+    const bodyShape= yup.object().shape({
+      code: yup.string().required(),
+      status: yup.number().oneOf([0,1]).default(0),
+      usage: yup.string().oneOf(['date','usageLimited','unlimited']).required().default('unlimited'),
+      type: yup.string().oneOf(['fix','percentage']).required(),
+      discount: yup.number().required(),
+      description: yup.string().nullable(),
+      validDate : yup.date().nullable().when("usage",{
+        is:'date',
+        then: (schema) => schema.required()
+      }),
+      usageLimited: yup.number().nullable().when("usage",{
+        is:'usageLimited',
+        then: (schema)=>schema.required()
+      })
+    })
+    try{
+      await bodyShape.validate(input)
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
   }
 }
 

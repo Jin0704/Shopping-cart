@@ -1,87 +1,90 @@
-<div class="row col-md-9">
-  <nav class="my-2 ">
-    <a class="p-2 text-dark" href="/admin/products">商品</a> |
-    <a class="p-2 text-dark" href="/admin/orders">訂單</a> |
-    <a class="p-2 text-dark" href="/admin/categories">分類</a> |
-    <a class="p-2 text-dark" href="/admin/paymentMethods">付款方式</a>
-  </nav>
-</div>
-<br>
-<div class="d-flex col-md-12">
-  <div class="col-md-2">
-    <a href='/admin/products/create'>
-      <button type="button" class="btn btn-primary">點我上架新產品!</button>
-    </a>
+<div class="container row">
+  <div class="col-md-2 mt-2 mb-2">
+    {{>adminLeft}}
   </div>
-  <div class="col-md-3"></div>
-  <div class="col-md-4">
-    <form action="/admin/products" method="get">
-      <label for="search">搜尋:
-        <input type="search" name="keyword" id="keyword" placeholder=" 搜尋產品" class="rounded-pill" value="{{keyword}}">
-        <button type="submit" class="btn-primary">送出</button>
-      </label>
-    </form>
-  </div>
-</div>
-
-<br />
-<br />
-{{>messages}}
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">產品序號</th>
-      <th scope="col">產品名稱</th>
-      <th scope="col">產品分類</th>
-      <th scope="col">圖片</th>
-      <th scope="col">價格</th>
-      <th scope="col">編輯</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each products}}
-    <tr>
-      <th scope="row">{{this.id}}</th>
-      <td>{{this.name}}</td>
-      <td>{{this.Category.name}}</td>
-      <td><img src="{{this.image}}" width="150" height="150"></td>
-      <td>{{this.price}}</td>
-      <td>
-        <button type="button" class="btn btn-link">
-          <a href="/admin/products/{{this.id}}">
-            Show
-          </a>
-        </button>
-        <button type="button" class="btn btn-link">
-          <a href="/admin/products/{{this.id}}/edit">
-            Edit
-          </a>
-        </button>
-        <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link">Delete</button>
+  <div class="row col-md-10 mb-2 mt-2">
+    <br>
+    <div class="d-flex col-md-12">
+      <div class="col-md-2">
+        <a href='/admin/products/create'>
+          <button type="button" class="btn btn-primary">點我上架新產品!</button>
+        </a>
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-4">
+        <form action="/admin/products" method="get">
+          <label for="search">搜尋:
+            <input type="search" name="keyword" id="keyword" placeholder=" 搜尋產品" class="rounded-pill" value="{{keyword}}">
+            <button type="submit" class="btn-primary">送出</button>
+          </label>
         </form>
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
-<nav aria-label="Page navigation example" class="d-flex justify-content-center">
-  <ul class="pagination">
-    <li class="page-item">
-      <a class="page-link" href="/admin/products?page={{prev}}&keyword={{keyword}}" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-    {{#each totalPage}}
-    {{#ifCond this ../page}}
-    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
-    {{else}}
-    <li class="page-item"><a class="page-link" href="/admin/products?page={{this}}&keyword={{keyword}}">{{this}}</a></li>
-    {{/ifCond}}
-    {{/each}}
-    <li class="page-item"><a class="page-link" href="/admin/products?page={{next}}&keyword={{keyword}}" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <hr>
+    {{>messages}}
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">產品序號</th>
+          <th scope="col">產品名稱</th>
+          <th scope="col">產品分類</th>
+          <th scope="col">圖片</th>
+          <th scope="col">價格</th>
+          <th scope="col">編輯</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.Category.name}}</td>
+          <td><img src="{{this.image}}" width="150" height="150"></td>
+          <td>{{this.price}}</td>
+          <td>
+            <button type="button" class="btn btn-link">
+              <a href="/admin/products/{{this.id}}">
+                Show
+              </a>
+            </button>
+            <button type="button" class="btn btn-link">
+              <a href="/admin/products/{{this.id}}/edit">
+                Edit
+              </a>
+            </button>
+            <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-link">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <div class="col-md-12 d-flex justify-content-center mt-2">
+    <nav aria-label="Page navigation example" class="justify-content-center">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="/admin/products?page={{prev}}&keyword={{keyword}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{#each totalPage}}
+        {{#ifCond this ../page}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+        {{else}}
+        <li class="page-item"><a class="page-link" href="/admin/products?page={{this}}&keyword={{keyword}}">{{this}}</a></li>
+        {{/ifCond}}
+        {{/each}}
+        <li class="page-item"><a class="page-link" href="/admin/products?page={{next}}&keyword={{keyword}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    </div>
+  </div>
+</div>

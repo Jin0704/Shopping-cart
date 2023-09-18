@@ -26,7 +26,10 @@ module.exports = (sequelize, DataTypes) => {
   };
   PromotionCode.init({
     code: DataTypes.STRING,
-    count: DataTypes.INTEGER,
+    count: {
+      type:DataTypes.INTEGER,
+      defaultValue: 0
+    },
     status: DataTypes.BOOLEAN,
     discount: DataTypes.INTEGER,
     usage: {

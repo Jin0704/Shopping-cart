@@ -46,7 +46,6 @@
           </td>
         </tr>
         {{/each}}
-        {{#if cart.items}}
         <tr>
           <td></td>
           <td></td>
@@ -54,29 +53,20 @@
             <h2>Total: </h2>
           </td>
           <td>
-            <h2>{{totalPrice}}</h2>
+            {{#if totalPrice}}
+            <h2 class="totalPrice">{{totalPrice}}</h2>
+            {{else}}
+            <h2 class="totalPrice">0</h2>
+            {{/if}}
           </td>
           <td></td>
         </tr>
-        {{else}}
-        <tr>
-          <td></td>
-          <td></td>
-          <td style="text-align: center;">
-            <a href="/products">
-              <h2>趕快去買東西吧~</h2>
-            </a>
-          </td>
-          <td></td>
-          <td></td>
-        </tr>
-        {{/if}}
       </tbody>
     </table>
   </div>
 
   <div class="box border col-md-3">
-    <form id="promotionCodeForm" action="/orders/compute" method="post" hidden>
+    <form id="promotionCodeForm" action="/orders/compute" method="post">
       <table class="table">
         <thead class="thead-dark">
           <tr>
@@ -126,6 +116,7 @@
               <input type="hidden" name="amount" value="{{totalPrice}}">
               <input type="hidden" name="shipping_status" value="尚未出貨">
               <input type="hidden" name="payment_status" value="尚未付款">
+              <input type="hidden" name="promotionCode" value="code">
               <hr>
               <table class="table">
                 <thead class="thead-dark">
@@ -164,23 +155,37 @@
   </div>
 </div>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function(){
-    $('#promotionCodeForm').submit(function(event){
+  $(document).ready(function () {
+    $('#promotionCodeForm').submit(function (event) {
       event.preventDefault()
-      
-      var code = $('#promotionCode').val()
-      $.ajax({
-          type:'POST',
-          dataType: 'text/json',
-          data: {code},
-          url: "/orders/compute",
-          success : function(data){
-            console.log('data:',data)
-          }
-        })
+
+      var code = $('#promotionCode').val() 
+
+      checkPromotionCode(code)
     })
+
+    function checkPromotionCode(code){
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {code},
+        url: "/orders/compute",
+        success: function (data) {
+          //取得code
+          console.log('===============data:', data)
+          //寫入form中供之後到後端驗算
+          $('input[name="promotionCode"]').val(data.code)
+          // 修正畫面顯示的內容
+          var totalPrice = $(".totalPrice").text()
+          
+        },
+        error: function (xhr, status, error) {
+          console.error('请求失败:', error);
+        }
+      })
+    }
 
 
   })

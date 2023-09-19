@@ -50,7 +50,31 @@
           <td></td>
           <td></td>
           <td style="text-align: right;">
-            <h2>Total: </h2>
+            <h2>小計: </h2>
+          </td>
+          <td>
+            {{#if totalPrice}}
+            <h2>{{totalPrice}}</h2>
+            {{else}}
+            <h2>0</h2>
+            {{/if}}
+          </td>
+        </tr>           
+        <tr>
+          <td></td>
+          <td></td>
+          <td style="text-align: right;">
+            <h2>折扣: </h2>
+          </td>
+          <td>
+            <h2 class="discount">0</h2>
+          </td>
+        </tr>            
+        <tr>
+          <td></td>
+          <td></td>
+          <td style="text-align: right;">
+            <h2>總計: </h2>
           </td>
           <td>
             {{#if totalPrice}}
@@ -59,8 +83,7 @@
             <h2 class="totalPrice">0</h2>
             {{/if}}
           </td>
-          <td></td>
-        </tr>
+        </tr>    
       </tbody>
     </table>
   </div>
@@ -77,9 +100,9 @@
           <tr>
             <td class="row">
               <div class="form-group d-flex">
-                <label for="promotionCode" class="m-auto"></label>
-                <input type="text" class="form-control ml-3" id="promotionCode" placeholder="輸入優惠碼"
-                  name="promotionCode">
+                <label for="code" class="m-auto"></label>
+                <input type="text" class="form-control ml-3" id="code" placeholder="輸入優惠碼"
+                  name="code">
               </div>
               <div>
                 <button type="submit" class="btn btn-primary d-flex ml-3">Submit</button>
@@ -116,7 +139,7 @@
               <input type="hidden" name="amount" value="{{totalPrice}}">
               <input type="hidden" name="shipping_status" value="尚未出貨">
               <input type="hidden" name="payment_status" value="尚未付款">
-              <input type="hidden" name="promotionCode" value="code">
+              <input type="hidden" name="promotionCode" value="">
               <hr>
               <table class="table">
                 <thead class="thead-dark">
@@ -161,8 +184,7 @@
     $('#promotionCodeForm').submit(function (event) {
       event.preventDefault()
 
-      var code = $('#promotionCode').val() 
-
+      var code = $('#code').val() 
       checkPromotionCode(code)
     })
 
@@ -174,19 +196,30 @@
         url: "/orders/compute",
         success: function (data) {
           //取得code
-          console.log('===============data:', data)
           //寫入form中供之後到後端驗算
           $('input[name="promotionCode"]').val(data.code)
           // 修正畫面顯示的內容
           var totalPrice = $(".totalPrice").text()
-          
+          var discount = computeDiscount(totalPrice,data)
+          var afterDiscount = (totalPrice-discount).toFixed(2)
+          $(".discount").text(discount)
+          $(".totalPrice").text(afterDiscount)
         },
         error: function (xhr, status, error) {
-          console.error('请求失败:', error);
+          console.error("優惠碼不存在!");
         }
       })
     }
 
+    function computeDiscount(totalPrice,promotionCode){
+      var discount=0
+      if(promotionCode.type=='fix'){
+        discount = promotionCode.discount
+      }else{
+        discount = totalPrice * promotionCode.discount / 100
+      }
+      return discount
+    }
 
   })
 </script>

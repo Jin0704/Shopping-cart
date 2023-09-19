@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const db = require('../models')
 const Cart = db.Cart
-const CartItem = db.CartItem
 const Order = db.Order
 const OrderItem = db.OrderItem
 const User = db.User
@@ -49,9 +48,12 @@ const orderController = {
       return res.render('error',{err:'個人訂單錯誤'})
     }
   },
+  // Todo: refactor
   postOrder: async (req, res) => {
+    // start a transaction
+    const t = await db.sequelize.transaction()
     try {
-      console.log('==========input:',input)
+      // check cart existing
       let cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
       cart = cart ? cart.toJSON() : null
       if (!cart || !cart?.items.length) {
@@ -59,12 +61,22 @@ const orderController = {
         return res.redirect('back')
       }
       let input = req.body
+      // compute amount
+      let amount = await ComputeHelper.compute(cart)
+      // check promotionCode
+      let promotionCode = input.promotionCode ? await PromotionCodeService.findOne(input.promotionCode) : null
+      // compute discount
+      let discount = promotionCode ? await ComputeHelper.computePromotionCodeDiscount(promotionCode, amount) : 0
+      // format input
+      input.promotionCodeId = promotionCode ? promotionCode.id : null
       input.UserId = req.user.id
-      input.amount = await ComputeHelper.compute(cart)
+      input.discount = discount
+      input.amount = amount - discount
+
       await yupCheck.orderShape(input)
       const order = await Order.create({
         ...input
-      })
+      },{transaction:t})
       var results = []
       for (let i = 0; i < cart.items.length; i++) {
         // console.log(order.id, cart.id, cart.items[i].id)
@@ -75,7 +87,7 @@ const orderController = {
             price: cart.items[i].price,
             quantity: cart.items[i].CartItem.quantity,
             subtotal: cart.items[i].price * cart.items[i].CartItem.quantity
-          })
+          },{transaction:t})
         )
       }
 
@@ -110,6 +122,7 @@ const orderController = {
       req.session.cartId = ''
       await redis.clearKey(`user${req.user.id}_orders`)
       await redis.clearKey("admin-orders")
+      await t.commit()
       return res.redirect('/orders')
       //  Promise.all(results).then(() => {
       //   console.log('------------')
@@ -119,6 +132,7 @@ const orderController = {
       // })
     } catch (err) {
       console.log(err)
+      await t.rollback()
       return res.render('error',{err:'建立訂單錯誤'})
     }
   },
@@ -126,7 +140,7 @@ const orderController = {
   checkPromotionCode: async (req,res)=>{
     try{
       const promotionCode = await PromotionCodeService.findOne(req.body.code)
-      if(!promotionCode){
+      if(!promotionCode.code){
         req.flash('error_messages', '優惠碼不存在')
         return res.redirect(400,'back')
       }

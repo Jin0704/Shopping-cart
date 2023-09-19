@@ -8,10 +8,10 @@ class PromotionCodeService {
     try{
       let data = await PromotionCode.findOne({
         where:{ code, status:true },
-        attributes:['code','count','discount','status','type','usageLimited','validDate','usage']
+        attributes:['id','code','count','discount','status','type','usageLimited','validDate','usage']
       })
       data = data ? await this.isValid(data.toJSON()) : false
-      return  _.pick(data,['code','discount','type'])
+      return  _.pick(data,['id','code','discount','type'])
     }catch(err){
       console.error(err)
       throw new Error(err)

@@ -1,5 +1,6 @@
 const db = require('../models')
 
+//Todo : Refactor
 class ComputeHelper {
   static async compute(input){
     try{
@@ -16,6 +17,18 @@ class ComputeHelper {
     }
   }
 
+  static async computePromotionCodeDiscount(promotionCode,amount){
+    try{
+      if(promotionCode.type=='fix'){
+        return promotionCode.discount
+      }else{
+        return amount * promotionCode.discount / 100
+      }
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  }
 
 }
 

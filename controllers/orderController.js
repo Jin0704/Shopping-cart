@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const db = require('../models')
 const Cart = db.Cart
-const CartItem = db.CartItem
 const Order = db.Order
 const OrderItem = db.OrderItem
 const User = db.User
@@ -13,6 +12,8 @@ const nodemailer = require('nodemailer')
 const redis = require('../redis')
 const yupCheck = require('../helper/yupCheck')
 const newebpay = require('../helper/newebpayHelper')
+const ComputeHelper =  require('../helper/compute')
+const PromotionCodeService = require('../services/promotionCode')
 // let mailer = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -47,19 +48,35 @@ const orderController = {
       return res.render('error',{err:'個人訂單錯誤'})
     }
   },
+  // Todo: refactor
   postOrder: async (req, res) => {
+    // start a transaction
+    const t = await db.sequelize.transaction()
     try {
-      const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
-      if (!cart) {
+      // check cart existing
+      let cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
+      cart = cart ? cart.toJSON() : null
+      if (!cart || !cart?.items.length) {
         req.flash('error_messages', '購物車中沒有商品!')
         return res.redirect('back')
       }
       let input = req.body
+      // compute amount
+      let amount = await ComputeHelper.compute(cart)
+      // check promotionCode
+      let promotionCode = input.promotionCode ? await PromotionCodeService.findOne(input.promotionCode) : null
+      // compute discount
+      let discount = promotionCode ? await ComputeHelper.computePromotionCodeDiscount(promotionCode, amount) : 0
+      // format input
+      input.promotionCodeId = promotionCode ? promotionCode.id : null
       input.UserId = req.user.id
+      input.discount = discount
+      input.amount = amount - discount
+
       await yupCheck.orderShape(input)
       const order = await Order.create({
         ...input
-      })
+      },{transaction:t})
       var results = []
       for (let i = 0; i < cart.items.length; i++) {
         // console.log(order.id, cart.id, cart.items[i].id)
@@ -70,7 +87,7 @@ const orderController = {
             price: cart.items[i].price,
             quantity: cart.items[i].CartItem.quantity,
             subtotal: cart.items[i].price * cart.items[i].CartItem.quantity
-          })
+          },{transaction:t})
         )
       }
 
@@ -97,7 +114,7 @@ const orderController = {
       // })
 
       //async await
-      const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
+      // const cartItem = await CartItem.findOne({ where: { CartId: cart.id } })
       // await cartItem.destroy()
       // await cart.destroy()
 
@@ -105,6 +122,7 @@ const orderController = {
       req.session.cartId = ''
       await redis.clearKey(`user${req.user.id}_orders`)
       await redis.clearKey("admin-orders")
+      await t.commit()
       return res.redirect('/orders')
       //  Promise.all(results).then(() => {
       //   console.log('------------')
@@ -114,9 +132,25 @@ const orderController = {
       // })
     } catch (err) {
       console.log(err)
+      await t.rollback()
       return res.render('error',{err:'建立訂單錯誤'})
     }
   },
+
+  checkPromotionCode: async (req,res)=>{
+    try{
+      const promotionCode = await PromotionCodeService.findOne(req.body.code)
+      if(!promotionCode.code){
+        req.flash('error_messages', '優惠碼不存在')
+        return res.redirect(400,'back')
+      }
+      return res.status(200).send(promotionCode)
+    }catch(err){
+      console.log(err)
+      return res.render('error',{err:'輸入優惠碼錯誤'})
+    }
+  },
+
   cancelOrder: async (req, res) => {
     try {
       const order = await Order.findByPk(req.params.id, {})

@@ -1,33 +1,30 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('CartItems', {
+    await queryInterface.createTable('PromotionCodeCategories', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      CartId: {
-        type: Sequelize.UUID
-      },
-      ProductId: {
+      promotionCodeId: {
         type: Sequelize.INTEGER
       },
-      quantity: {
+      categoryId: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('CartItems');
+    await queryInterface.dropTable('PromotionCodeCategories');
   }
 };

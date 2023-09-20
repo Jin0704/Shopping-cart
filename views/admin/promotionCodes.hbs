@@ -1,0 +1,61 @@
+<div class="container row">
+  <div class="col-md-2 mt-2 mb-2">
+    {{>adminLeft}}
+  </div>
+  <div class="col-md-10 mb-2">
+    <a href='/admin/promotionCodes/create'>
+      <button type="button" class="btn btn-primary">新增折扣碼</button>
+    </a>
+
+    <br />
+    <hr>
+    {{>messages}}
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">編號</th>
+          <th scope="col">代碼</th>
+          <th scope="col">狀態</th>
+          <th scope="col">折扣類別</th>
+          <th scope="col">折扣金額/百分比</th>
+          <th scope="col">詳細資料</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each promotionCodes}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>{{this.code}}</td>
+          {{#if this.status}}
+          <td>開啟</td>
+          {{else}}
+          <td>關閉</td>
+          {{/if}}
+          {{#ifCond this.type 'fix'}}
+          <td>金額</td>
+          {{else}}
+          <td>百分比</td>
+          {{/ifCond}}
+          <td>{{this.discount}}</td>
+          <td>
+            <button type="button" class="btn btn-link">
+              <a href="/admin/promotionCodes/{{this.id}}">
+                編輯
+              </a>
+            </button>
+          </td>
+          <td>
+            <form action="/admin/promotionCodes/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-link">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <hr>
+  </div>
+</div>

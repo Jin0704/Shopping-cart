@@ -1,139 +1,225 @@
-{{!-- <h1>顯示購物車</h1> --}}
 {{>messages}}
-<div class="box border">
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col"></th>
-        <th scope="col">Price</th>
-        <th scope="col">quantity</th>
-        <th scope="col">Subtotal</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each cart.items}}
-      <tr>
-        <td>
-          <div style="display: flow-root;">
-            <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
-            <span>{{this.name}}</span>
-          </div>
-        </td>
-        <td>
-          <p>$ {{this.price}}</p>
-        </td>
-        <td>
-          <div style="display: flex;">
-            <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
-              <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+<div class="container row col-md-12">
+  <div class="box border col-md-9">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Price</th>
+          <th scope="col">quantity</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each cart.items}}
+        <tr>
+          <td>
+            <div style="display: flow-root;">
+              <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+              <span>{{this.name}}</span>
+            </div>
+          </td>
+          <td>
+            <p>$ {{this.price}}</p>
+          </td>
+          <td>
+            <div style="display: flex;">
+              <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+              </form>
+              <span style="margin: 0 20px;">
+                {{this.CartItem.quantity}}
+              </span>
+              <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+              </form>
+            </div>
+          </td>
+          <td>{{this.price}} * {{this.CartItem.quantity}}</td>
+          <td>
+            <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-link">
+                <i class="fas fa-trash"></i>
+              </button>
             </form>
-            <span style="margin: 0 20px;">
-              {{this.CartItem.quantity}}
-            </span>
-            <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
-              <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+          </td>
+        </tr>
+        {{/each}}
+        <tr>
+          <td></td>
+          <td></td>
+          <td style="text-align: right;">
+            <h2>小計: </h2>
+          </td>
+          <td>
+            {{#if totalPrice}}
+            <h2>{{totalPrice}}</h2>
+            {{else}}
+            <h2>0</h2>
+            {{/if}}
+          </td>
+        </tr>           
+        <tr>
+          <td></td>
+          <td></td>
+          <td style="text-align: right;">
+            <h2>折扣: </h2>
+          </td>
+          <td>
+            <h2 class="discount">0</h2>
+          </td>
+        </tr>            
+        <tr>
+          <td></td>
+          <td></td>
+          <td style="text-align: right;">
+            <h2>總計: </h2>
+          </td>
+          <td>
+            {{#if totalPrice}}
+            <h2 class="totalPrice">{{totalPrice}}</h2>
+            {{else}}
+            <h2 class="totalPrice">0</h2>
+            {{/if}}
+          </td>
+        </tr>    
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box border col-md-3">
+    <form id="promotionCodeForm" action="/orders/compute" method="post">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="row">優惠碼輸入</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row">
+              <div class="form-group d-flex">
+                <label for="code" class="m-auto"></label>
+                <input type="text" class="form-control ml-3" id="code" placeholder="輸入優惠碼"
+                  name="code">
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary d-flex ml-3">Submit</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+    <table class="table ">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="row">購物人資訊</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <form action="orders" method="POST">
+              <div class="form-group" style="display: flex; width:fit-content">
+                <label for="name" class="m-auto">Name: </label>
+                <input type="text" class="form-control ml-3" id="name" placeholder="Enter name" name="name" required>
+              </div>
+              <div class="form-group" style="display: flex; width:fit-content">
+                <label for="phone" class="m-auto">Phone</label>
+                <input type="text" class="form-control ml-3" id="phone" placeholder="Enter phone" name="phone" required>
+              </div>
+              <div class="form-group" style="display: flex; width:fit-content">
+                <label for="address" class="m-auto">Address</label>
+                <input type="text" class="form-control ml-3" id="address" placeholder="Enter address" name="address"
+                  required>
+              </div>
+              <input type="hidden" name="cartId" value="{{cart.id}}">
+              <input type="hidden" name="amount" value="{{totalPrice}}">
+              <input type="hidden" name="shipping_status" value="尚未出貨">
+              <input type="hidden" name="payment_status" value="尚未付款">
+              <input type="hidden" name="promotionCode" value="">
+              <hr>
+              <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="row">付款方式</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {{#each paymentMethods}}
+                      <div id="payment" class="form-check m-3">
+                        <input class="form-check-input" type="radio" name="PaymentMethodId" id="payment_method"
+                          value="{{this.id}}" required>
+                        <label class="form-check-label" for="PaymentMethodId">
+                          {{this.name}}
+                        </label>
+                      </div>
+                      {{/each}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <hr>
+              <div class="d-flex justify-content-end m-3">
+                <input type="reset" class="btn btn-primary ">
+                <button type="submit" class="btn btn-primary ml-3">送出</button>
+              </div>
             </form>
-          </div>
-        </td>
-        <td>{{this.price}} * {{this.CartItem.quantity}}</td>
-        <td>
-          <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-link">
-              <i class="fas fa-trash"></i>
-            </button>
-          </form>
-        </td>
-      </tr>
-      {{/each}}
-      {{#if cart.items}}
-      <tr>
-        <td></td>
-        <td></td>
-        <td style="text-align: right;">
-          <h2>Total: </h2>
-        </td>
-        <td>
-          <h2>{{totalPrice}}</h2>
-        </td>
-        <td></td>
-      </tr>
-      {{else}}
-      <tr>
-        <td></td>
-        <td></td>
-        <td style="text-align: center;">
-          <a href="/products"><h2>趕快去買東西吧~</h2></a>
-        </td>
-        <td></td>
-        <td></td>
-      </tr>
-      {{/if}}
-    </tbody>
-  </table>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+  </div>
 </div>
 
-<div class="box border">
-  <table class="table ">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="row">購物人資訊</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <form action="orders" method="POST">
-            <div class="form-group" style="display: flex; width:fit-content">
-              <label for="name" class="m-auto">Name: </label>
-              <input type="text" class="form-control ml-3" id="name" placeholder="Enter name" name="name" required>
-            </div>
-            <div class="form-group" style="display: flex; width:fit-content">
-              <label for="phone" class="m-auto">Phone</label>
-              <input type="text" class="form-control ml-3" id="phone" placeholder="Enter phone" name="phone" required>
-            </div>
-            <div class="form-group" style="display: flex; width:fit-content">
-              <label for="address" class="m-auto">Address</label>
-              <input type="text" class="form-control ml-3" id="address" placeholder="Enter address" name="address"
-                required>
-            </div>
-            <input type="hidden" name="cartId" value="{{cart.id}}">
-            <input type="hidden" name="amount" value="{{totalPrice}}">
-            <input type="hidden" name="shipping_status" value="尚未出貨">
-            <input type="hidden" name="payment_status" value="尚未付款">
-            <hr>
-            <table class="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="row">付款方式</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    {{#each paymentMethods}}
-                    <div id="payment" class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="PaymentMethodId" id="payment_method"
-                        value="{{this.id}}" required>
-                      <label class="form-check-label" for="PaymentMethodId">
-                        {{this.name}}
-                      </label>
-                    </div>
-                    {{/each}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <hr>
-            <div class="d-flex justify-content-end m-3">
-              <input type="reset" class="btn btn-primary ">
-              <button type="submit" class="btn btn-primary ml-3">送出</button>
-            </div>
-          </form>
-        </td>
-      </tr>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#promotionCodeForm').submit(function (event) {
+      event.preventDefault()
 
-    </tbody>
+      var code = $('#code').val() 
+      checkPromotionCode(code)
+    })
 
-  </table>
-</div>
+    function checkPromotionCode(code){
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {code},
+        url: "/orders/compute",
+        success: function (data) {
+          //取得code
+          //寫入form中供之後到後端驗算
+          $('input[name="promotionCode"]').val(data.code)
+          // 修正畫面顯示的內容
+          var totalPrice = $(".totalPrice").text()
+          var discount = computeDiscount(totalPrice,data)
+          var afterDiscount = (totalPrice-discount).toFixed(2)
+          $(".discount").text(discount)
+          $(".totalPrice").text(afterDiscount)
+        },
+        error: function (xhr, status, error) {
+          console.error("優惠碼不存在!");
+        }
+      })
+    }
+
+    function computeDiscount(totalPrice,promotionCode){
+      var discount=0
+      if(promotionCode.type=='fix'){
+        discount = promotionCode.discount
+      }else{
+        discount = totalPrice * promotionCode.discount / 100
+      }
+      return discount
+    }
+
+  })
+</script>

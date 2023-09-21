@@ -1,12 +1,13 @@
-const db = require('../../models')
-const PromotionCode = db.PromotionCode
-const PromotionCodeService = require('../../services/admin/promotionCode')
 const yupCheck = require('../../helper/yupCheck')
 
 class PromotionCodeController {
-  static async findAll(req,res){
+  constructor(promotionCodeService) {
+      this.promotionCodeService = promotionCodeService
+  }
+
+  findAll = async(req,res)=>{
     try{
-      const promotionCodes = await PromotionCodeService.findAll()
+      const promotionCodes = await this.promotionCodeService.findAll()
       return res.render('admin/promotionCodes',{promotionCodes})
     }catch(err){
       console.error(err)
@@ -14,9 +15,9 @@ class PromotionCodeController {
     }
   }
 
-  static async findOne(req,res){
+  findOne = async(req,res)=>{
     try{
-      const promotionCode = await PromotionCodeService.findOne(req.params.id)
+      const promotionCode = await this.promotionCodeService.findOne(req.params.id)
       return res.render('admin/promotionCode',{promotionCode})
     }catch(err){
       console.error(err)
@@ -24,10 +25,10 @@ class PromotionCodeController {
     }
   }
 
-  static async create(req,res){
+  create = async(req,res)=>{
     try{
       await yupCheck.promotionCodeShape(req.body)
-      await PromotionCodeService.create(req.body)
+      await this.promotionCodeService.create(req.body)
       req.flash('success_messages', '新增成功')
       return res.redirect('/admin/promotionCodes')
     }catch(err){
@@ -36,10 +37,10 @@ class PromotionCodeController {
     }
   }
 
-  static async update(req,res){
+  update = async(req,res)=>{
     try{
       await yupCheck.promotionCodeShape(req.body)
-      await PromotionCodeService.update(req.params.id,req.body)
+      await this.promotionCodeService.update(req.params.id,req.body)
       req.flash('success_messages', '更新成功')
       return res.redirect('/admin/promotionCodes')
     }catch(err){
@@ -48,10 +49,9 @@ class PromotionCodeController {
     }
   }
 
-  static async delete(req,res){
+  delete = async (req,res)=>{
     try {
-      const promotionCode = await PromotionCode.findByPk(req.params.id)
-      await promotionCode.destroy()
+      await this.promotionCodeService.delete(req.params.id)
       req.flash('success_messages', '刪除成功')
       return res.redirect('/admin/promotionCodes')
     } catch (err) {

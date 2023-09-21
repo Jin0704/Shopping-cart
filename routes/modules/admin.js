@@ -6,7 +6,7 @@ const ProductController = require('../../controllers/admin/product')
 const OrderController = require('../../controllers/admin/order')
 const CategoryController = require('../../controllers/admin/category')
 const PaymentMethodController = require('../../controllers/admin/paymentMethod')
-const PromotionCodeController = require('../../controllers/admin/promotionCode')
+const promotionCode = require('./promotionCode')
 const authenticatedAdmin = require('../../middleware/auth').authenticatedAdmin
 
 router.use(authenticatedAdmin)
@@ -38,11 +38,7 @@ router.post('/paymentMethods',PaymentMethodController.postPaymentMethod)
 router.get('/paymentMethods/:id', PaymentMethodController.getPaymentMethod)
 router.put('/paymentMethods/:id', PaymentMethodController.editPaymentMethod)
 router.delete('/paymentMethods/:id', PaymentMethodController.deletePaymentMethod)
-// promotioncode
-router.get('/promotionCodes', PromotionCodeController.findAll)
-router.post('/promotionCodes',PromotionCodeController.create)
-router.get('/promotionCodes/:id', PromotionCodeController.findOne)
-router.put('/promotionCodes/:id', PromotionCodeController.update)
-router.delete('/promotionCodes/:id', PromotionCodeController.delete)
+
+router.use('/promotionCodes',promotionCode)
 
 module.exports = router

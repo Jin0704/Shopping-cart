@@ -54,7 +54,7 @@
           </td>
           <td>
             {{#if totalPrice}}
-            <h2>{{totalPrice}}</h2>
+            <h2 class="totalPrice">{{totalPrice}}</h2>
             {{else}}
             <h2>0</h2>
             {{/if}}
@@ -78,9 +78,9 @@
           </td>
           <td>
             {{#if totalPrice}}
-            <h2 class="totalPrice">{{totalPrice}}</h2>
+            <h2 class="orderAmount">{{totalPrice}}</h2>
             {{else}}
-            <h2 class="totalPrice">0</h2>
+            <h2 class="orderAmount">0</h2>
             {{/if}}
           </td>
         </tr>    
@@ -201,11 +201,14 @@
           // 修正畫面顯示的內容
           var totalPrice = $(".totalPrice").text()
           var discount = computeDiscount(totalPrice,data)
-          var afterDiscount = (totalPrice-discount).toFixed(2)
+          var orderAmount = (totalPrice-discount).toFixed(2)
           $(".discount").text(discount)
-          $(".totalPrice").text(afterDiscount)
+          $(".orderAmount").text(orderAmount)
         },
         error: function (xhr, status, error) {
+          //輸入錯誤 回復
+          $(".discount").text(0)
+          $(".orderAmount").text($(".totalPrice").text())
           console.error("優惠碼不存在!");
         }
       })

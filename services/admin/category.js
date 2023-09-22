@@ -1,15 +1,22 @@
 const db = require('../../models')
 const Category = db.Category
-const yupCheck = require('../../helper/yupCheck')
+const CommonService = require('../../services/common')
 
-const CategoryService = {
-  getCategories: async(req)=>{
+class CategoryService{
+  static async getCategory(id){
     try{
-      let offset = 0
+      const data = await Category.findByPk(id)
+      if(!data) throw new Error('Category not exists!')
+      return data
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  }
+  static async findAll(req){
+    try{
       const perPage = req.query.perPage ? req.query.perPage : 10
-      if (req.query.page) {
-        offset = (req.query.page - 1) * perPage
-      }
+      const offset = req.query.page ? (req.query.page - 1) * perPage : 0
       const categories = await Category.findAndCountAll({
         raw: true,
         nest: true,
@@ -17,82 +24,54 @@ const CategoryService = {
         offset:offset,
         attributes:['id','name','status']
       })
-      const page = Number(req.query.page) || 1
-      const pages = Math.ceil(categories.count / perPage)
-      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
-      const prev = page - 1 < 1 ? 1 : page - 1
-      const next = page + 1 > pages ? pages : page + 1
-
-      return  {
-        categories: categories.rows,
-        page: page,
-        totalPage: totalPage,
-        prev: prev,
-        next: next
-      }
+      const pagination = await CommonService.calculatePagination({},categories.count,req.query.page)
+      return  { categories, pagination }
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
-  },
-  getCategory: async(id)=>{
+  }
+  static async findOne(id){
     try{
-      const data = await Category.findByPk(id)
-      if(!data){
-        throw new Error('Category not exists!')
-      }
-      return { data }
+      const data = await this.getCategory(id)
+      return data
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
-  },
-  createCategory: async(input)=>{
+  }
+  static async create(input){
     try{
-      const category = await Category.findOne({
-         where: { name: input.name } 
-      })
-      if(category) throw new Error('Category have existed!')
-      await yupCheck.categoryShape(req.body)
-      await Category.create({
-        name: input.name,
-        status: input.status
-      })
+      await this.checkCategory(input.name)
+      await Category.create(input)
       return {'messages':'新增成功!'}
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
-  },
-  editCategory: async(req)=>{
+  }
+  static async update(id,input){
     try{
-      const category = await Category.findByPk(req.params.id)
-      if(!category) throw new Error('Category not exists!')
-      await yupCheck.categoryShape(req.body)
-      await category.update({
-        name: req.body.name,
-        status: req.body.status
-      })
+      const category = await this.getCategory(id)
+      input.name = input.name === category.name ? input.name : await this.checkCategory(input.name)
+      await category.update(input)
       return { 'messages':'更新成功'} 
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
-  },
-  deleteCategory: async(id)=>{
+  }
+  static async delete(id){
     try{
-      const category = await Category.findByPk(id)
-      if(!category){
-        throw new Error('Category not exists!')
-      }
+      const category = await this.getCategory(id)
       await category.destroy()
       return { 'messages': '刪除成功!'}
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
-  },
-  editCategoryStatus: async(req)=>{
+  }
+  static async editCategoryStatus(req){
     try{
       const category = await Category.findByPk(req.params.id)
       if(!category){
@@ -102,6 +81,16 @@ const CategoryService = {
         status: req.body.status
       })
       return { 'messages': '更新成功!'}
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  }
+  static async checkCategory(name){
+    try{
+      const data = await Category.findOne({ where:{name}})
+      if(data) throw new Error('Category have existed!')
+      return name
     }catch(err){
       console.error(err)
       throw new Error(err)

@@ -28,7 +28,7 @@ class PromotionCodeService{
 
   async create(input){
     try{
-      await this.checkCode(input)
+      await this.checkCode(input.code)
       await this.db.PromotionCode.create(input)
       return true
     }catch(err){
@@ -41,7 +41,7 @@ class PromotionCodeService{
     try{
       const promotionCode = await this.db.PromotionCode.findByPk(id)
       if(!promotionCode) throw new Error('PromotionCode not existed!')
-      input.code = input.code === promotionCode.code ? input.code : await this.checkCode(input)
+      input.code = input.code === promotionCode.code ? input.code : await this.checkCode(input.code)
       await promotionCode.update(input)
       return true
     }catch(err){
@@ -61,13 +61,11 @@ class PromotionCodeService{
     }
   }
 
-  async checkCode(input){
+  async checkCode(code){
     try{
-      const promotionCode = await this.db.PromotionCode.findOne({
-        where: { code: input.code } 
-      })
+      const promotionCode = await this.db.PromotionCode.findOne({ where: { code }})
       if(promotionCode) throw new Error('Code exists!')
-      return input.code
+      return code
     }catch(err){
       console.error(err)
       throw new Error(err)

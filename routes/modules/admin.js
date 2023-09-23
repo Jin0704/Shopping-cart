@@ -35,6 +35,7 @@ router.delete('/categories/:id', CategoryController.deleteCategory)
 //paymentMethods
 router.get('/paymentMethods', PaymentMethodController.getPaymentMethods)
 router.post('/paymentMethods',PaymentMethodController.postPaymentMethod)
+router.get('/paymentMethods/create', PaymentMethodController.createPaymentMethod)
 router.get('/paymentMethods/:id', PaymentMethodController.getPaymentMethod)
 router.put('/paymentMethods/:id', PaymentMethodController.editPaymentMethod)
 router.delete('/paymentMethods/:id', PaymentMethodController.deletePaymentMethod)

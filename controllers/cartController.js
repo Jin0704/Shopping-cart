@@ -1,8 +1,8 @@
 const db = require('../models')
 const Cart = db.Cart
 const CartItem = db.CartItem
-const PaymentMethod = db.PaymentMethod
 const CartService = require('../services/cart')
+const PaymentMethodService = require('../services/paymentMethod')
 const { uuid } = require('uuidv4');
 require('dotenv').config()
 
@@ -10,20 +10,14 @@ let cartController = {
   getCart: async (req, res) => {
     try {
       let data ={}
-      // return Cart.findOne({ include: 'items' })
       if(process.env.NODE_ENV !=='production'){
-        console.log(process.env.NODE_ENV)
         console.log('***********')
         console.log(req.session)
         console.log('***********')
-        // console.log(req.user.id)
       }
       data['cart'] = await CartService.getCart(req)
       data['totalPrice'] = await CartService.computeTotalPrice(data['cart'])
-      data['paymentMethods'] = await PaymentMethod.findAll({
-        raw:true,
-        where:{status:1}
-      })
+      data['paymentMethods'] = await PaymentMethodService.findAll()
       
       return res.render('cart', { ...data})
     } catch (err) {

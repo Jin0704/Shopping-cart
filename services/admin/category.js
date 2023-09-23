@@ -1,7 +1,6 @@
 const db = require('../../models')
 const Category = db.Category
 const CommonService = require('../../services/common')
-
 class CategoryService{
   static async getCategory(id){
     try{
@@ -25,7 +24,7 @@ class CategoryService{
         attributes:['id','name','status']
       })
       const pagination = await CommonService.calculatePagination({},categories.count,req.query.page)
-      return  { categories, pagination }
+      return  { categories: categories.rows , pagination }
     }catch(err){
       console.error(err)
       throw new Error(err)
@@ -44,7 +43,7 @@ class CategoryService{
     try{
       await this.checkCategory(input.name)
       await Category.create(input)
-      return {'messages':'新增成功!'}
+      return true
     }catch(err){
       console.error(err)
       throw new Error(err)
@@ -55,7 +54,7 @@ class CategoryService{
       const category = await this.getCategory(id)
       input.name = input.name === category.name ? input.name : await this.checkCategory(input.name)
       await category.update(input)
-      return { 'messages':'更新成功'} 
+      return true
     }catch(err){
       console.error(err)
       throw new Error(err)
@@ -65,7 +64,7 @@ class CategoryService{
     try{
       const category = await this.getCategory(id)
       await category.destroy()
-      return { 'messages': '刪除成功!'}
+      return true
     }catch(err){
       console.error(err)
       throw new Error(err)

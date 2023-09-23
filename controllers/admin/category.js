@@ -10,8 +10,8 @@ const CategoryController = {
       if(redisResponse) return res.render('admin/categories', {...redisResponse})
       
       const { categories , pagination } =  await CategoryService.findAll(req)
-      await redis.setKey('admin-categories',JSON.stringify({ categories: categories.rows, ...pagination }))
-      return res.render('admin/categories', { categories: categories.rows, ...pagination })
+      await redis.setKey('admin-categories',JSON.stringify({ categories, ...pagination }))
+      return res.render('admin/categories', { categories, ...pagination })
     } catch (err) {
       console.log(err)
       return res.render('error',{err})
@@ -21,7 +21,7 @@ const CategoryController = {
   getCategory: async(req,res)=>{
     try {
       const category = await CategoryService.findOne(req.params.id)
-      return res.render('admin/category', { category: category.toJSON(), })
+      return res.render('admin/category', { category: category.toJSON() })
     } catch (err) {
       console.log(err)
       return res.render('error',{err})

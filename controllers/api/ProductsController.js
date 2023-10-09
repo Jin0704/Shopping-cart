@@ -16,15 +16,13 @@ let ProductController = {
   },
 
   getProduct: async (req, res) => {
-    let data;
     try {
       let data = await redis.getKey(`api-products-${req.params.id}`) ? await redis.getKey(`api-products-${req.params.id}`):await ProductService.getProduct(req)
+      return responseBuilder.success(res, 200, data)
     } catch (err) {
       console.error(err)
       return responseBuilder.error(req, res, 400, err)
     }
-
-    return responseBuilder.success(res, 200, data)
   },
 }
 

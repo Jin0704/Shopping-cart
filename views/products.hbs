@@ -30,6 +30,7 @@
         {{>left categories=categories}}
       </div>
       <div class="col-md-9 row">
+        <div class="col-md-12">{{>messages}}</div>
         {{#each products}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
@@ -44,13 +45,12 @@
                 <small class="text-muted">$ {{this.price}}</small>
                 <a href="/categories/{{this.Category.id}}"><small class="text-muted">{{this.Category.name}}</small></a>
                 <div class="btn-group">
-                  {{#if this.isFavorited}}
+                  {{!-- {{#if this.isFavorited}}
                   <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
                       class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
-                  {{else}}
-                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
-                        class="fas fa-heart" style="color:thistle"></i></button></form>
-                  {{/if}}
+                  {{else}} --}}
+                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-sm btn-outline-secondary mr-2">收藏</button></form>
+                  {{!-- {{/if}} --}}
                   <form action="/cart" method="POST">
                     <input type="hidden" name="productId" value="{{this.id}}">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">加入購物車</button>

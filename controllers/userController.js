@@ -146,7 +146,7 @@ const userController = {
 
   addFavorite: async (req, res) => {
     try {
-      const product = await Favorite.create({
+      await Favorite.create({
         UserId: req.user.id,
         ProductId: req.params.productId
       })

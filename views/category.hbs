@@ -30,6 +30,7 @@
         {{>left categories=categories}}
       </div>
       <div class="col-md-9 row">
+        <div class="col-md-12">{{>messages}}</div>
         {{#each products}}
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
@@ -37,20 +38,19 @@
                 src={{this.image}}></img></a>
             <div class="card-body">
               <p class="card-text">
-              <h4><a href="/categories/{{categoryId}}">{{this.name}}</a></h4>
+              <h4><a href="/products/{{this.id}}">{{this.name}}</a></h4>
               <span>{{this.description}}</span>
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">$ {{this.price}}</small>
                 <small class="text-muted"><a href="/categories/{{this.Category.id}}">{{this.Category.name}}</a></small>
                 <div class="btn-group">
-                  {{#if this.isFavorited}}
+                  {{!-- {{#if this.isFavorited}}
                   <form action="/favorites/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
                       class="btn btn-link"><i class="fas fa-heart" style="color: red;"></i></button></form>
-                  {{else}}
-                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><i
-                        class="fas fa-heart" style="color:thistle"></i></button></form>
-                  {{/if}}
+                  {{else}} --}}
+                  <form action="/favorites/{{this.id}}" method="POST"><button type="submit" class="btn btn-link"><button type="submit" class="btn btn-sm btn-outline-secondary mr-2">收藏</button></form>
+                  {{!-- {{/if}} --}}
                   <form action="/cart" method="POST">
                     <input type="hidden" name="productId" value="{{this.id}}">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">加入購物車</button>

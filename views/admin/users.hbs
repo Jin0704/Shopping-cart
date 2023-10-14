@@ -1,0 +1,39 @@
+<div class="conatiner row">
+  <div class="col-md-2 mt-2 mb-2">
+    {{>adminLeft}}
+  </div>
+  <div class="col-md-10 mb-2">
+  <hr>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">編號</th>
+        <th scope="col">性別</th>
+        <th scope="col">信箱</th>
+        <th scope="col">名稱</th>
+        <th scope="col">住址</th>
+        <th scope="col">積分</th>
+        <th scope="col">註冊時間</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each users}}
+      <tr>
+        <td>{{inc @index}}</td>
+        {{#ifCond this.gender 1}}
+        <td>男</td>
+        {{else}}
+        <td>女</td>
+        {{/ifCond}}
+        <td>{{this.email}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this.address}}</td>
+        <td>{{this.rewardPoint}}</td>
+        <td>{{formatDate this.createdAt}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <hr>
+  </div>      
+</div>

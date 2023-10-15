@@ -8,5 +8,6 @@ const settingService = new SettingService(db)
 const settingController = new SettingController(settingService)
 
 router.get('/', settingController.getSettings)
+router.post('/', settingController.editSettings)
 
 module.exports = router

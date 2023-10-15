@@ -15,20 +15,32 @@
     <tbody align="center">
       <tr>
         <td>折扣碼</td>
-        {{#ifCond setting.isPromotionCode 1}}
-        <td>開啟</td>
-        {{else}}
-        <td>關閉</td>
-        {{/ifCond}}
+        <td>
+          <form action="/admin/settings" method="post">
+            {{#ifCond setting.isPromotionCode 1}}
+            <input type="text" name="isPromotionCode" value="0" hidden>
+            <button type="submit" id="submitLink">開啟</button>
+            {{else}}
+            <input type="text" name="isPromotionCode" value="1" hidden>
+            <button type="submit" id="submitLink">關閉</button>
+            {{/ifCond}}
+          </form>
+        </td>  
         <td><a href="/admin/promotionCodes">點我</a></td>
       </tr>
       <tr>
         <td>積分</td>
-        {{#ifCond setting.isRewardPoint 1}}
-        <td><a href="#">開啟</a></td>
-        {{else}}
-        <td>關閉</td>
-        {{/ifCond}}
+        <td>
+          <form action="/admin/settings" method="post">
+            {{#ifCond setting.isRewardPoint 1}}
+            <input type="text" name="isRewardPoint" value="0" hidden>
+            <button type="submit" id="submitLink">開啟</button>
+            {{else}}
+            <input type="text" name="isRewardPoint" value="1" hidden>
+            <button type="submit" id="submitLink">關閉</button>
+            {{/ifCond}}
+          </form>
+        </td>
         <td><a href="/admin/rewardPoints">點我</a></td>
       </tr>     
     </tbody>
@@ -36,3 +48,13 @@
   <hr>
   </div>      
 </div>
+
+
+<style>
+  #submitLink {
+  background: none;
+  border: none;
+  color: #78c2ad; /* 设置文本颜色 */
+  cursor: pointer; /* 显示手型光标 */
+}
+</style>

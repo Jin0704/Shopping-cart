@@ -13,6 +13,17 @@ class SettingController {
       return res.render('error',{err})
     }
   }
+
+  editSettings = async(req,res)=>{
+    try{
+      const input = req.body
+      const setting = await this.settingService.editSettings(input)
+      return res.render('admin/settings', { setting })
+    }catch(err){
+      console.error(err)
+      return res.render('error',{err})
+    }
+  }
 }
 
 module.exports = SettingController

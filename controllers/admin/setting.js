@@ -18,6 +18,7 @@ class SettingController {
     try{
       const input = req.body
       const setting = await this.settingService.editSettings(input)
+      req.flash('success_messages', '更新成功')
       return res.render('admin/settings', { setting })
     }catch(err){
       console.error(err)

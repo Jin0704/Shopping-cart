@@ -7,6 +7,8 @@ const OrderController = require('../../controllers/admin/order')
 const CategoryController = require('../../controllers/admin/category')
 const PaymentMethodController = require('../../controllers/admin/paymentMethod')
 const promotionCode = require('./promotionCode')
+const user = require('./user')
+const setting = require('./setting')
 const authenticatedAdmin = require('../../middleware/auth').authenticatedAdmin
 
 router.use(authenticatedAdmin)
@@ -41,5 +43,8 @@ router.put('/paymentMethods/:id', PaymentMethodController.editPaymentMethod)
 router.delete('/paymentMethods/:id', PaymentMethodController.deletePaymentMethod)
 
 router.use('/promotionCodes',promotionCode)
+router.use('/users',user)
+router.use('/settings', setting)
+
 
 module.exports = router

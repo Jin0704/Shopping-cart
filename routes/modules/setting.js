@@ -9,5 +9,6 @@ const settingController = new SettingController(settingService)
 
 router.get('/', settingController.getSettings)
 router.post('/', settingController.editSettings)
+router.get('/rewardPoints',settingController.getRewardPointSetting)
 
 module.exports = router

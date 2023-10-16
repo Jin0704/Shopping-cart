@@ -25,6 +25,17 @@ class SettingController {
       return res.render('error',{err})
     }
   }
+
+  getRewardPointSetting = async(req,res)=>{
+    try{
+      const setting = await this.settingService.getSettings()
+      return res.render('admin/rewardPoints', { setting })
+    }catch(err){
+      console.error(err)
+      return res.render('error', {err})
+    }
+  }
+
 }
 
 module.exports = SettingController

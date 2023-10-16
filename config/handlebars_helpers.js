@@ -13,5 +13,11 @@ module.exports = {
   },
   multiply: function(a,b){
     return +a * +b
+  },
+  inc: function(value,options){
+    return parseInt(value)+1
+  },
+  formatDate: function(value, options){
+    return value.toISOString().split('T')[0]
   }
 }

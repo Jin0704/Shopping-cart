@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     PaymentMethodId: DataTypes.INTEGER,
     promotionCodeId: DataTypes.INTEGER,
     discount: DataTypes.INTEGER,
+    rewardPoint: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Order',

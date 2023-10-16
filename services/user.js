@@ -41,7 +41,7 @@ const UserService = {
       }
       const userData = user.toJSON()
       delete userData.password
-      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
+      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn:process.env.JWT_EXPIRES_IN })
 
       return {
         status: 'success',

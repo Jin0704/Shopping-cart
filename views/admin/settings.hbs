@@ -1,0 +1,61 @@
+<div class="conatiner row">
+  <div class="col-md-2 mt-2 mb-2">
+    {{>adminLeft}}
+  </div>
+  <div class="col-md-10 mb-2">
+  <hr>
+  {{>messages}}
+  <table class="table table-bordered">
+    <thead class="thead-dark" align="center">
+      <tr>
+        <th scope="col">功能</th>
+        <th scope="col">狀態</th>
+        <th scope="col">詳細內容</th>
+      </tr>
+    </thead>
+    <tbody align="center">
+      <tr>
+        <td>折扣碼</td>
+        <td>
+          <form action="/admin/settings" method="post">
+            {{#ifCond setting.isPromotionCode 1}}
+            <input type="text" name="isPromotionCode" value="0" hidden>
+            <button type="submit" id="submitLink">開啟</button>
+            {{else}}
+            <input type="text" name="isPromotionCode" value="1" hidden>
+            <button type="submit" id="submitLink">關閉</button>
+            {{/ifCond}}
+          </form>
+        </td>  
+        <td><a href="/admin/promotionCodes">點我</a></td>
+      </tr>
+      <tr>
+        <td>積分</td>
+        <td>
+          <form action="/admin/settings" method="post">
+            {{#ifCond setting.isRewardPoint 1}}
+            <input type="text" name="isRewardPoint" value="0" hidden>
+            <button type="submit" id="submitLink">開啟</button>
+            {{else}}
+            <input type="text" name="isRewardPoint" value="1" hidden>
+            <button type="submit" id="submitLink">關閉</button>
+            {{/ifCond}}
+          </form>
+        </td>
+        <td><a href="/admin/settings/rewardPoints">點我</a></td>
+      </tr>     
+    </tbody>
+  </table>
+  <hr>
+  </div>      
+</div>
+
+
+<style>
+  #submitLink {
+  background: none;
+  border: none;
+  color: #78c2ad; /* 设置文本颜色 */
+  cursor: pointer; /* 显示手型光标 */
+}
+</style>

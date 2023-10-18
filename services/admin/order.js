@@ -1,5 +1,7 @@
 const db = require('../../models')
 const Order = db.Order
+const UserService = require("../user")
+const ComputeHelper = require('../../helper/compute')
 
 const OrderService = {
   getOrders: async(req)=>{
@@ -45,30 +47,48 @@ const OrderService = {
       throw new Error(err)
     }
   },
-  putOrder: async(req)=>{
+  // for admin 
+  getAdminOrder: async(id)=>{
     try{
-      const order  = await Order.findByPk(req.params.id)
+      const order  = await Order.findByPk(id, { include: ['items','methods'] })
       if(!order){
         throw new Error('order not exists!')
       }
-      await order.update({
-        payment_status: req.body.payment_status,
-        shipping_status: req.body.shipping_status
-      })
-      return { 'message':'更新成功'}
+      return order.toJSON()
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
   },
-  deleteOrder: async(req)=>{
+
+  putOrder: async(id,input)=>{
     try{
-      const order  = await Order.findByPk(req.params.id)
+      const order  = await Order.findByPk(id)
+      if(!order){
+        throw new Error('order not exists!')
+      }
+      await order.update({
+        payment_status: input.payment_status,
+        shipping_status: input.shipping_status
+      })
+      if(input.payment_status=='已付款'){
+        const rewardPoint = await ComputeHelper.convertOrderAmountToRewardPoint(order.dataValues.amount)
+        await UserService.updateRewardPoint(order.dataValues.UserId,rewardPoint)
+      }
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  },
+  deleteOrder: async(id)=>{
+    try{
+      const order  = await Order.findByPk(id)
       if(!order){
         throw new Error('order not exists!')
       }
       await order.destroy()
-      return { 'message':'刪除成功'}
+      return true
     }catch(err){
       console.error(err)
       throw new Error(err)

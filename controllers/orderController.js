@@ -14,6 +14,7 @@ const yupCheck = require('../helper/yupCheck')
 const newebpay = require('../helper/newebpayHelper')
 const ComputeHelper =  require('../helper/compute')
 const PromotionCodeService = require('../services/promotionCode')
+const UserService = require('../services/user')
 // let mailer = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -219,8 +220,10 @@ const orderController = {
           params:data['Result']['TradeNo'],
           OrderId: orders[0].dataValues.id
         })
-        await redis.clearKey(`user${orders[0].UserId}_orders`)
-        await redis.clearKey("admin-orders")
+        // 訂單付款後消費金額累點
+        const rewardPoints =  await ComputeHelper.convertOrderAmountToRewardPoint(data['Result']['Amt'])
+        // 更新使用者積分
+        await UserService.updateRewardPoint(rewardPoints)
         return true
       }
     } catch (err) {

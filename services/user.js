@@ -97,6 +97,17 @@ const UserService = {
       console.error(err)
       throw new Error(err)
     }
+  },
+  updateRewardPoint: async(id,point)=>{
+    try{
+      const user = await User.findByPk(id)
+      await user.update({rewardPoint:point})
+      console.log('=====update rewardPoint===')
+      return true
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 const db = require('../../models')
-const redis = require('../../redis')
 const Order = db.Order
+const OrderService = require('../../services/admin/order')
 
 const OrderController = {
   getOrders: async (req, res) => {
@@ -41,8 +41,8 @@ const OrderController = {
 
   getOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id, { include: ['items','methods'] })
-      return res.render('admin/order', { order: order.toJSON(), })
+      const order = await OrderService.getAdminOrder(req.params.id)
+      return res.render('admin/order', { order })
     } catch (error) {
       console.log(error)
       return res.render('error',{err})
@@ -52,13 +52,7 @@ const OrderController = {
 
   putOrder: async (req, res) => {
     try {
-      let order = await Order.findByPk(req.params.id)
-      await order.update({
-        payment_status: req.body.payment_status,
-        shipping_status: req.body.shipping_status
-      })
-      await redis.clearKey(`user${order.UserId}_orders`)
-      await redis.clearKey("admin-orders")
+      await OrderService.putOrder(req.params.id,req.body)
       req.flash('success_messages', '更新成功')
       return res.redirect('/admin/orders')
     } catch (err) {
@@ -69,10 +63,7 @@ const OrderController = {
 
   deleteOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id)
-      await order.destroy()
-      await redis.clearKey(`user${order.UserId}_orders`)
-      await redis.clearKey("admin-orders")
+      await OrderService.deleteOrder(req.params.id)
       req.flash('success_messages', '刪除成功')
       return res.redirect('/admin/orders')
     } catch (err) {

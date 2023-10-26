@@ -10,6 +10,7 @@ const promotionCode = require('./promotionCode')
 const user = require('./user')
 const setting = require('./setting')
 const categories = require('./category')
+const paymentMethods = require('./paymentMethod')
 const authenticatedAdmin = require('../../middleware/auth').authenticatedAdmin
 
 router.use(authenticatedAdmin)
@@ -30,13 +31,8 @@ router.put('/orders/:id', OrderController.putOrder)
 router.delete('/orders/:id', OrderController.deleteOrder)
 // categories
 router.use('/categories',categories)
-//paymentMethods
-router.get('/paymentMethods', PaymentMethodController.getPaymentMethods)
-router.post('/paymentMethods',PaymentMethodController.postPaymentMethod)
-router.get('/paymentMethods/create', PaymentMethodController.createPaymentMethod)
-router.get('/paymentMethods/:id', PaymentMethodController.getPaymentMethod)
-router.put('/paymentMethods/:id', PaymentMethodController.editPaymentMethod)
-router.delete('/paymentMethods/:id', PaymentMethodController.deletePaymentMethod)
+// paymentMethods
+router.use('/paymentMethods',paymentMethods)
 
 router.use('/promotionCodes',promotionCode)
 router.use('/users',user)

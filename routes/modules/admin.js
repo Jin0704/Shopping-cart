@@ -9,6 +9,7 @@ const user = require('./user')
 const products = require('./product')
 const setting = require('./setting')
 const categories = require('./category')
+const orders = require('./order')
 const paymentMethods = require('./paymentMethod')
 const authenticatedAdmin = require('../../middleware/auth').authenticatedAdmin
 
@@ -18,10 +19,7 @@ router.get('/', (req, res) => res.redirect('/admin/products'))
 //Products
 router.use('/products',products)
 //Orders
-router.get('/orders', OrderController.getOrders)
-router.get('/orders/:id', OrderController.getOrder)
-router.put('/orders/:id', OrderController.putOrder)
-router.delete('/orders/:id', OrderController.deleteOrder)
+router.use('/orders',orders)
 // categories
 router.use('/categories',categories)
 // paymentMethods

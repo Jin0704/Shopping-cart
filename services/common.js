@@ -1,4 +1,3 @@
-const db = require('../models')
 
 class  CommonService{
   static PAGE_LIMIT=6

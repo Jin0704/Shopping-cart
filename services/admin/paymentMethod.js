@@ -1,10 +1,13 @@
-const db = require('../../models')
-const PaymentMethod = db.PaymentMethod
+const yupCheck = require('../../helper/yupCheck')
 
 class PaymentMethodService{
-  static async getPaymentMethod(id){
+  constructor(db){
+    this.db = db
+  }
+
+  async getPaymentMethod(id){
     try{
-      const data = await PaymentMethod.findByPk(id)
+      const data = await this.db.PaymentMethod.findByPk(id)
       if(!data) throw new Error('PaymentMethod not exists!')
       return data
     }catch(err){
@@ -13,9 +16,9 @@ class PaymentMethodService{
     }
   }
 
-  static async findAll(){
+  async findAll(){
     try{
-      const paymentMethods = await PaymentMethod.findAll({raw:true})
+      const paymentMethods = await this.db.PaymentMethod.findAll({raw:true})
       return paymentMethods
     }catch(err){
       console.error(err)
@@ -23,7 +26,7 @@ class PaymentMethodService{
     }
   }
 
-  static async findOne(id){
+  async findOne(id){
     try{
       const paymentMethod = await this.getPaymentMethod(id)
       return paymentMethod.toJSON()
@@ -33,10 +36,11 @@ class PaymentMethodService{
     }
   }
 
-  static async create(input){
+  async create(input){
     try{
       await this.checkPaymentMethod(input.name)
-      await PaymentMethod.create(input)
+      await yupCheck.paymentMethodShape(input)
+      await this.db.PaymentMethod.create(input)
       return true
     }catch(err){
       console.error(err)
@@ -44,9 +48,10 @@ class PaymentMethodService{
     }
   }
 
-  static async update(id,input){
+  async update(id,input){
     try{
       const paymentMethod = await this.getPaymentMethod(id)
+      await yupCheck.paymentMethodShape(input)
       input.name = input.name === paymentMethod.name ? input.name : await this.checkPaymentMethod(input.name)
       await paymentMethod.update(input)
       return true
@@ -56,7 +61,7 @@ class PaymentMethodService{
     }
   }
 
-  static async delete(id){
+  async delete(id){
     try{
       const paymentMethod = await this.getPaymentMethod(id)
       await paymentMethod.destroy()
@@ -67,9 +72,9 @@ class PaymentMethodService{
     }
   }
 
-  static async checkPaymentMethod(name){
+  async checkPaymentMethod(name){
     try{
-      const data = await PaymentMethod.findOne({ where:{name}})
+      const data = await this.db.PaymentMethod.findOne({ where:{name}})
       if(data) throw new Error('PaymentMethod have existed!')
       return name
     }catch(err){

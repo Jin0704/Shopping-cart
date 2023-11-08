@@ -1,76 +1,54 @@
-const db = require('../../models')
-const Order = db.Order
-const OrderService = require('../../services/admin/order')
+const CommonService = require('../../services/common')
 
-const OrderController = {
-  getOrders: async (req, res) => {
-    try {
-      let PAGE_OFFSET = 0
-      const OrderPagelimit = 10
-      if (req.query.page) {
-        PAGE_OFFSET = (req.query.page - 1) * OrderPagelimit
-      }
-      //要改用sql語法去撈關聯資料，用include會有問題
-      const orders = await Order.findAndCountAll({
-        raw: true,
-        nest: true,
-        // includes: ['items'],
-        limit: OrderPagelimit,
-        offset: PAGE_OFFSET,
+class OrderController {
+  constructor(OrderService){
+    this.OrderService = OrderService
+  }
+
+  findAll = async(req,res)=>{
+    try{
+      const orders = await this.OrderService.findAll(req)
+      const pagination = await CommonService.calculatePagination({}, orders.count, req.query.page)
+      return res.render('admin/orders',{
+        orders:orders.rows, ...pagination
       })
-      //others
-        const page = Number(req.query.page) || 1
-        const pages = Math.ceil(orders.count / OrderPagelimit)
-        const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
-        const prev = page - 1 < 1 ? 1 : page - 1
-        const next = page + 1 > pages ? pages : page + 1
-
-      return res.render('admin/orders', {
-        orders: orders.rows,
-        page: page,
-        totalPage: totalPage,
-        prev: prev,
-        next: next
-      })
-    } catch (err) {
-      console.log(err)
-      return res.render('error',{err})
+    }catch(err){
+      console.error(err)
+      return res.status(400).render('error',{err})
     }
+  }
 
-  },
-
-  getOrder: async (req, res) => {
-    try {
-      const order = await OrderService.getAdminOrder(req.params.id)
-      return res.render('admin/order', { order })
-    } catch (error) {
-      console.log(error)
-      return res.render('error',{err})
+  findOne = async(req,res)=>{
+    try{
+      const order = await this.OrderService.findOneForAdmin(req.params.id)
+      return res.render('admin/order',{order:order.toJSON()})
+    }catch(err){
+      console.error(err)
+      return res.status(400).render('error',{err})
     }
+  }
 
-  },
-
-  putOrder: async (req, res) => {
-    try {
-      await OrderService.putOrder(req.params.id,req.body)
+  update = async(req,res)=>{
+    try{
+      await this.OrderService.update(req.params.id,req.body)
       req.flash('success_messages', '更新成功')
-      return res.redirect('/admin/orders')
-    } catch (err) {
-      console.log(err)
-      return res.render('error',{err})
+      res.redirect('/admin/orders')
+    }catch(err){
+      console.error(err)
+      return res.status(400).render('error',{err})
     }
-  },
+  }
 
-  deleteOrder: async (req, res) => {
-    try {
-      await OrderService.deleteOrder(req.params.id)
-      req.flash('success_messages', '刪除成功')
-      return res.redirect('/admin/orders')
-    } catch (err) {
-      console.log(err)
-      return res.render('error',{err})
-    }
-  },  
+  delete = async(req,res)=>{
+    try{
+      await this.OrderService.delete(req.params.id)
+      req.flash('success_messages', '成功刪除')
+      res.redirect('/admin/orders')
+    }catch(err){
+      console.error(err)
+      return res.status(400).render('error',{err})
+    }    
+  }
 }
 
 module.exports = OrderController

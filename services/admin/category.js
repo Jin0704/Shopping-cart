@@ -1,10 +1,12 @@
-const db = require('../../models')
-const Category = db.Category
-const CommonService = require('../../services/common')
+
+const yupCheck = require('../../helper/yupCheck')
 class CategoryService{
-  static async getCategory(id){
+  constructor(db){
+    this.db = db
+  }
+  async getCategory(id){
     try{
-      const data = await Category.findByPk(id)
+      const data = await this.db.Category.findByPk(id)
       if(!data) throw new Error('Category not exists!')
       return data
     }catch(err){
@@ -12,25 +14,25 @@ class CategoryService{
       throw new Error(err)
     }
   }
-  static async findAll(req){
+  async findAll(req){
     try{
-      const perPage = req.query.perPage ? req.query.perPage : 10
+      const perPage = req.query.perPage ? req.query.perPage : 6
       const offset = req.query.page ? (req.query.page - 1) * perPage : 0
-      const categories = await Category.findAndCountAll({
+      const categories = await this.db.Category.findAndCountAll({
         raw: true,
         nest: true,
         limit: perPage,
         offset:offset,
         attributes:['id','name','status']
       })
-      const pagination = await CommonService.calculatePagination({},categories.count,req.query.page)
-      return  { categories: categories.rows , pagination }
+      return  categories
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
   }
-  static async findOne(id){
+
+  async findOne(id){
     try{
       const data = await this.getCategory(id)
       return data
@@ -39,18 +41,20 @@ class CategoryService{
       throw new Error(err)
     }
   }
-  static async create(input){
+  async create(input){
     try{
+      await yupCheck.categoryShape(input)
       await this.checkCategory(input.name)
-      await Category.create(input)
+      await this.db.Category.create(input)
       return true
     }catch(err){
       console.error(err)
       throw new Error(err)
     }
   }
-  static async update(id,input){
+  async update(id,input){
     try{
+      await yupCheck.categoryShape(input)
       const category = await this.getCategory(id)
       input.name = input.name === category.name ? input.name : await this.checkCategory(input.name)
       await category.update(input)
@@ -60,9 +64,12 @@ class CategoryService{
       throw new Error(err)
     }
   }
-  static async delete(id){
+  async delete(id){
     try{
       const category = await this.getCategory(id)
+      // check 如果有產品綁定這個分類則不可刪除
+      const isUsed = await this.checkCategoryIsUsed(id)
+      if(isUsed) throw new Error('尚有產品使用此分類!')
       await category.destroy()
       return true
     }catch(err){
@@ -70,9 +77,9 @@ class CategoryService{
       throw new Error(err)
     }
   }
-  static async editCategoryStatus(req){
+  async editCategoryStatus(req){
     try{
-      const category = await Category.findByPk(req.params.id)
+      const category = await this.db.Category.findByPk(req.params.id)
       if(!category){
         throw new Error('Category not exists!')
       }
@@ -85,11 +92,21 @@ class CategoryService{
       throw new Error(err)
     }
   }
-  static async checkCategory(name){
+  async checkCategory(name){
     try{
-      const data = await Category.findOne({ where:{name}})
+      const data = await this.db.Category.findOne({ where:{name}})
       if(data) throw new Error('Category have existed!')
       return name
+    }catch(err){
+      console.error(err)
+      throw new Error(err)
+    }
+  }
+  // 確認該分類沒有綁定任何產品
+  async checkCategoryIsUsed(id){
+    try{
+      const data = await this.db.Product.findAll({raw:true,nest:true, where:{ CategoryId:id }})
+      return data.length > 0
     }catch(err){
       console.error(err)
       throw new Error(err)
